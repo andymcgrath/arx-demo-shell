@@ -152,7 +152,7 @@ export const SEED: DemoState = {
 
 export function deriveStep(s: Partial<DemoState>): number {
   if (s.pharmacyStatus === "delivered") return 6;
-  if (s.pharmacyStatus === "processing" || s.pharmacyStatus === "shipped") return 5;
+  if (s.pharmacyStatus === "processing" || s.pharmacyStatus === "ready" || s.pharmacyStatus === "shipped") return 5;
   if (s.paStatus === "approved" || s.paStatus === "denied") return 4;
   if (
     s.paStatus === "submitted" ||

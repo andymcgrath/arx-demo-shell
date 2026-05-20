@@ -1181,6 +1181,7 @@ export default function Index() {
                   setPharmacyPickerOpen(false);
                   readyRx();
                   setTimeout(() => shipRx(), 10000);
+                  setTimeout(() => deliverRx(), 20000);
                 }}
                               >
                                 <span className={selectedPharmacy === sp ? "font-semibold" : ""}>{sp}</span>
