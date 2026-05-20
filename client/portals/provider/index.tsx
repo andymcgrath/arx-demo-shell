@@ -60,12 +60,6 @@ function BrandSidebar() {
           alt="iAssist illustration"
         />
       </div>
-      <div className="provider-sidebar__footer">
-        <img
-          src="https://cdn.builder.io/api/v1/image/assets%2F4c828a6b97e546bc967a796675ca457e%2Fcfbb35e5585d498f8ae600f5ebdb6767?format=webp&width=800"
-          alt="AssistRx"
-        />
-      </div>
     </aside>
   );
 }
