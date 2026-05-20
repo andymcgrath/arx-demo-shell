@@ -131,7 +131,7 @@ export const SEED: DemoState = {
 
   events: [],
 
-  enrollmentFormTabOpen: true,
+  enrollmentFormTabOpen: false,
 };
 
 // ── Step derivation ───────────────────────────────────────────────────────────
