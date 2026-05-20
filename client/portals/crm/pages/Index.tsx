@@ -449,6 +449,14 @@ export default function Index() {
                 style={{ width: 16, height: 16, background: "linear-gradient(135deg, #0176d3 0%, #014486 100%)", borderRadius: 3 }}
               >C</div>
               Onboarding
+              <span
+                role="button"
+                className="ml-1 flex items-center justify-center rounded hover:bg-[#e5e5e5] transition-colors"
+                style={{ width: 16, height: 16 }}
+                onClick={(e) => { e.stopPropagation(); setActivePatientSubTab("enrollment-form"); }}
+              >
+                <X size={10} className="text-[#706e6b]" />
+              </span>
               {activePatientSubTab === "onboarding" && (
                 <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: SF_BLUE }} />
               )}
@@ -469,6 +477,14 @@ export default function Index() {
               <span className="flex flex-col leading-none text-left gap-0">
                 <span>FAX-2026-00431</span>
                 <span className="text-[10px] text-[#706e6b] font-normal">Enrollment Form</span>
+              </span>
+              <span
+                role="button"
+                className="ml-1 flex items-center justify-center rounded hover:bg-[#e5e5e5] transition-colors"
+                style={{ width: 16, height: 16 }}
+                onClick={(e) => { e.stopPropagation(); setActivePatientSubTab("onboarding"); }}
+              >
+                <X size={10} className="text-[#706e6b]" />
               </span>
               {activePatientSubTab === "enrollment-form" && (
                 <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: SF_BLUE }} />
