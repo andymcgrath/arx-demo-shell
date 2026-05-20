@@ -143,8 +143,8 @@ function RadioQuestion({
 // ── Step 1: Login ─────────────────────────────────────────────────────────────
 
 function LoginStep({ onSubmit }: { onSubmit: () => void }) {
-  const [npi, setNpi] = useState("");
-  const [pin, setPin] = useState("");
+  const [npi, setNpi] = useState("3299879499");
+  const [pin, setPin] = useState("05367975");
 
   const canSubmit = npi.trim().length > 0 && pin.trim().length > 0;
 
