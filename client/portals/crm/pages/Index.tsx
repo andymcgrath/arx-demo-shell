@@ -155,6 +155,84 @@ interface Stage {
   lastUpdatedAgo: string | null;
 }
 
+const STAGES_PAP_AUDIT: Stage[] = [
+  {
+    id: "EA-14272",
+    name: "Enrollment Assistance",
+    statusLabel: "Complete",
+    statusDetail: "Enrollment Completed",
+    isComplete: true,
+    isNotStarted: false,
+    fields: [],
+    lastUpdated: "5/15/2026",
+    lastUpdatedAgo: "4 days ago",
+  },
+  {
+    id: "BI-14273",
+    name: "Benefits Investigation",
+    statusLabel: "Complete",
+    statusDetail: "No Insurance Found; Free Goods Eligible",
+    isComplete: true,
+    isNotStarted: false,
+    fields: [],
+    lastUpdated: "5/19/2026",
+    lastUpdatedAgo: "today",
+  },
+  {
+    id: "PAP-14279",
+    name: "PAP Enrollment",
+    statusLabel: "Stage not started",
+    statusDetail: "Pending income verification",
+    isComplete: false,
+    isNotStarted: true,
+    fields: [
+      { label: "Program", value: "Free Goods" },
+      { label: "Income Status", value: null },
+    ],
+    lastUpdated: null,
+    lastUpdatedAgo: null,
+  },
+  {
+    id: "TP-14277",
+    name: "Triage to Pharmacy",
+    statusLabel: "Stage not started",
+    statusDetail: "Awaiting PAP enrollment",
+    isComplete: false,
+    isNotStarted: true,
+    fields: [
+      { label: "Pharmacy Name", value: "Biologics" },
+      { label: "First Dispense Date", value: null },
+    ],
+    lastUpdated: null,
+    lastUpdatedAgo: null,
+  },
+  {
+    id: "AUDIT-14280",
+    name: "PAP Audit",
+    statusLabel: "Stage not started",
+    statusDetail: "Scheduled — 90 days post-enrollment",
+    isComplete: false,
+    isNotStarted: true,
+    fields: [
+      { label: "Audit Type", value: "ABV Insurance Check" },
+      { label: "Scheduled Date", value: null },
+    ],
+    lastUpdated: null,
+    lastUpdatedAgo: null,
+  },
+  {
+    id: "PA-14274",
+    name: "Prior Authorization",
+    statusLabel: "Stage not started",
+    statusDetail: "Pending audit result",
+    isComplete: false,
+    isNotStarted: true,
+    fields: [],
+    lastUpdated: null,
+    lastUpdatedAgo: null,
+  },
+];
+
 const STAGES: Stage[] = [
   {
     id: "EA-14272",
@@ -338,8 +416,12 @@ export default function Index() {
   const consentStatus = useDemoStore((s) => s.consentStatus);
   const biStatus = useDemoStore((s) => s.biStatus);
   const paStatus = useDemoStore((s) => s.paStatus);
+  const papStatus = useDemoStore((s) => s.papStatus);
+  const incomeStatus = useDemoStore((s) => s.incomeStatus);
+  const pharmacyStatus = useDemoStore((s) => s.pharmacyStatus);
   const runBI = useDemoStore((s) => s.runBI);
   const completeBI = useDemoStore((s) => s.completeBI);
+  const isPapFlow = flowType === "Fax_PAP_Audit";
   const [activeCaseTab, setActiveCaseTab] = useState("summary");
   const [activeRightTab, setActiveRightTab] = useState(isFaxFlow ? "missing-info" : "quick-answers");
   const [caseSummaryCollapsed, setCaseSummaryCollapsed] = useState(false);
@@ -360,7 +442,8 @@ export default function Index() {
   useEffect(() => {
     if (consentStatus === "confirmed" && biStatus === "none") {
       runBI();
-      const t = setTimeout(() => completeBI("coverage_found"), 3000);
+      const result = isPapFlow ? "no_insurance" : "coverage_found";
+      const t = setTimeout(() => completeBI(result), 3000);
       return () => clearTimeout(t);
     }
   }, [consentStatus, biStatus]);
@@ -378,15 +461,49 @@ export default function Index() {
     ? { id: "EA-14272", name: "Enrollment Assistance", statusLabel: "Pending", statusDetail: "Awaiting patient consent", isComplete: false, isNotStarted: false, fields: [], lastUpdated: "5/15/2026", lastUpdatedAgo: "4 days ago" }
     : { id: "EA-14272", name: "Enrollment Assistance", statusLabel: "Complete", statusDetail: "Enrollment Completed", isComplete: true, isNotStarted: false, fields: [], lastUpdated: "5/15/2026", lastUpdatedAgo: "4 days ago" };
 
+  const biCompleteDetail = isPapFlow
+    ? "No Insurance Found; Free Goods Assessment Initiated"
+    : "Patient Has Coverage; Prior Authorization Required";
+
   const biStage: Stage = biStatus === "none"
     ? { id: "BI-14273", name: "Benefits Investigation", statusLabel: "Not Started", statusDetail: "Waiting for patient consent", isComplete: false, isNotStarted: true, fields: [], lastUpdated: null, lastUpdatedAgo: null }
     : biStatus === "running"
     ? { id: "BI-14273", name: "Benefits Investigation", statusLabel: "Running", statusDetail: "Investigating patient benefits...", isComplete: false, isNotStarted: false, fields: [], lastUpdated: null, lastUpdatedAgo: null }
-    : { id: "BI-14273", name: "Benefits Investigation", statusLabel: "Complete", statusDetail: "Patient Has Coverage; Prior Authorization Required", isComplete: true, isNotStarted: false, fields: [], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" };
+    : { id: "BI-14273", name: "Benefits Investigation", statusLabel: "Complete", statusDetail: biCompleteDetail, isComplete: true, isNotStarted: false, fields: [], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" };
 
-  const STAGES_LIVE: Stage[] = STAGES.map((s) =>
-    s.id === "EA-14272" ? eaStage : s.id === "BI-14273" ? biStage : s.id === "PA-14274" ? paStage : s
-  );
+  const papStage: Stage = papStatus === "none"
+    ? { id: "PAP-14279", name: "PAP Enrollment", statusLabel: "Pending", statusDetail: "Awaiting income verification", isComplete: false, isNotStarted: true, fields: [{ label: "Program", value: "Free Goods" }, { label: "Income Status", value: null }], lastUpdated: null, lastUpdatedAgo: null }
+    : papStatus === "active"
+    ? { id: "PAP-14279", name: "PAP Enrollment", statusLabel: "Complete", statusDetail: "Patient enrolled — Free Goods approved", isComplete: true, isNotStarted: false, fields: [{ label: "Program", value: "Free Goods" }, { label: "Income Status", value: "Verified" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" }
+    : papStatus === "audit_pending"
+    ? { id: "PAP-14279", name: "PAP Enrollment", statusLabel: "Audit Pending", statusDetail: "Insurance audit initiated", isComplete: false, isNotStarted: false, fields: [{ label: "Program", value: "Free Goods" }, { label: "Income Status", value: "Verified" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" }
+    : { id: "PAP-14279", name: "PAP Enrollment", statusLabel: "Discontinued", statusDetail: "Patient has insurance — PAP discontinued", isComplete: false, isNotStarted: false, fields: [{ label: "Program", value: "Free Goods" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" };
+
+  const tpStage: Stage = pharmacyStatus === "none"
+    ? { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "Pending", statusDetail: "Awaiting PAP enrollment", isComplete: false, isNotStarted: true, fields: [{ label: "Pharmacy", value: "Biologics" }], lastUpdated: null, lastUpdatedAgo: null }
+    : pharmacyStatus === "processing"
+    ? { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "In Progress", statusDetail: "First dispense processing", isComplete: false, isNotStarted: false, fields: [{ label: "Pharmacy", value: "Biologics" }, { label: "First Dispense", value: "Initiated" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" }
+    : { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "Complete", statusDetail: "First dispense shipped", isComplete: true, isNotStarted: false, fields: [{ label: "Pharmacy", value: "Biologics" }, { label: "First Dispense", value: "Shipped" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" };
+
+  const auditStage: Stage = papStatus !== "audit_pending" && paStatus === "none"
+    ? { id: "AUDIT-14280", name: "PAP Audit", statusLabel: "Scheduled", statusDetail: "ABV audit — 90 days post-enrollment", isComplete: false, isNotStarted: true, fields: [{ label: "Audit Type", value: "ABV Insurance Check" }], lastUpdated: null, lastUpdatedAgo: null }
+    : papStatus === "audit_pending"
+    ? { id: "AUDIT-14280", name: "PAP Audit", statusLabel: "In Progress", statusDetail: "Conducting ABV audit — insurance found", isComplete: false, isNotStarted: false, fields: [{ label: "Audit Type", value: "ABV Insurance Check" }, { label: "Result", value: "Insurance Identified" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" }
+    : { id: "AUDIT-14280", name: "PAP Audit", statusLabel: "Complete", statusDetail: "Insurance found — PA required", isComplete: true, isNotStarted: false, fields: [{ label: "Audit Type", value: "ABV Insurance Check" }, { label: "Result", value: "Insurance Identified" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" };
+
+  const STAGES_LIVE: Stage[] = isPapFlow
+    ? STAGES_PAP_AUDIT.map((s) =>
+        s.id === "EA-14272" ? eaStage
+        : s.id === "BI-14273" ? biStage
+        : s.id === "PAP-14279" ? papStage
+        : s.id === "TP-14277" ? tpStage
+        : s.id === "AUDIT-14280" ? auditStage
+        : s.id === "PA-14274" ? paStage
+        : s
+      )
+    : STAGES.map((s) =>
+        s.id === "EA-14272" ? eaStage : s.id === "BI-14273" ? biStage : s.id === "PA-14274" ? paStage : s
+      );
 
   const [patientAccountCollapsed, setPatientAccountCollapsed] = useState(false);
   const [patientContactCollapsed, setPatientContactCollapsed] = useState(false);
@@ -794,7 +911,7 @@ export default function Index() {
                       <FieldRow label="Status" value="Active" />
                       <FieldRow label="Reimbursement Plan" value="" />
                       <FieldRow label="Sub-Status" value="" />
-                      <FieldRow label="Insured?" value="Yes" />
+                      <FieldRow label="Insured?" value={isPapFlow ? "No" : "Yes"} />
                       <FieldRow label="Prior Authorization Phone #" value="(407) 885-9999" />
                       <FieldRow label="Subscriber Name" value="" />
                       <FieldRow label="Internal Comments" value="" />
@@ -809,7 +926,7 @@ export default function Index() {
                       <FieldRow label="Stage" value="BI-14273" isLink />
                       <FieldRow label="Selected Product Coverage" value="Pharmacy" />
                       <FieldRow label="Payer" value="" />
-                      <FieldRow label="Payer Type" value="Commercial" />
+                      <FieldRow label="Payer Type" value={isPapFlow ? "No Insurance" : "Commercial"} />
                       <FieldRow label="Benefit Source" value="BI" />
                       <FieldRow label="External Comments" value="" />
                       <FieldRow label="Subscriber Tax #" value="" />
@@ -839,8 +956,8 @@ export default function Index() {
                       <tr className="hover:bg-[#f3f3f3]">
                         <td className="px-3 py-2 border-b border-[#dddbda]"><SfLink>BIPC-0455</SfLink></td>
                         <td className="px-3 py-2 border-b border-[#dddbda]"><SfLink>Jascayd 10mg</SfLink></td>
-                        <td className="px-3 py-2 border-b border-[#dddbda]">Covered</td>
-                        <td className="px-3 py-2 border-b border-[#dddbda]">Yes</td>
+                        <td className="px-3 py-2 border-b border-[#dddbda]">{isPapFlow ? "No Coverage" : "Covered"}</td>
+                        <td className="px-3 py-2 border-b border-[#dddbda]">{isPapFlow ? "No" : "Yes"}</td>
                         <td className="px-3 py-2 border-b border-[#dddbda]">
                           <button className="border border-[#dddbda] rounded px-1 py-0.5 bg-white hover:bg-[#f3f3f3]">
                             <ChevronDown size={11} className="text-[#706e6b]" />
@@ -1103,7 +1220,7 @@ export default function Index() {
               {/* Stages accordion */}
               <div className="border border-[#dddbda] rounded">
                 <SectionHeader
-                  title="Stages (7)"
+                  title={`Stages (${STAGES_LIVE.length})`}
                   collapsed={stagesCollapsed}
                   onToggle={() => setStagesCollapsed(!stagesCollapsed)}
                   rightContent={
@@ -1120,7 +1237,7 @@ export default function Index() {
                 {!stagesCollapsed && (
                   <>
                     <div className="px-3 py-1.5 text-[11px] text-[#706e6b] border-b border-[#dddbda]">
-                      7 items • Sorted by Created Date • Updated a few seconds ago
+                      {STAGES_LIVE.length} items • Sorted by Created Date • Updated a few seconds ago
                     </div>
                     <div className="overflow-x-auto">
                       <table className="w-full text-[12px]" style={{ minWidth: 700 }}>
