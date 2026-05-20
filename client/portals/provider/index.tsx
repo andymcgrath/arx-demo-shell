@@ -1,6 +1,8 @@
 import { useState } from "react";
 
-type Step = "login" | "pa-review" | "pa-questions";
+import { useDemoStore } from "@/store/demoStore";
+
+type Step = "login" | "pa-review" | "pa-questions" | "pa-submitted";
 
 // ── SVG icons ─────────────────────────────────────────────────────────────────
 
@@ -237,15 +239,21 @@ function PaReviewStep({ onNext }: { onNext: () => void }) {
 
 // ── Step 3: PA Questions (multi-question with nav) ────────────────────────────
 
-function PaQuestionsStep({ onBack, onCancel }: { onBack: () => void; onCancel: () => void }) {
+function PaQuestionsStep({ onBack, onCancel, onNext }: { onBack: () => void; onCancel: () => void; onNext: () => void }) {
   const [q1, setQ1] = useState<string | null>(null);
   const [q2, setQ2] = useState<string | null>(null);
   const [q3, setQ3] = useState<string | null>(null);
   const [comments, setComments] = useState("");
   const [saved, setSaved] = useState(false);
+  const submitPA = useDemoStore((s) => s.submitPA);
 
   function handleSave() {
     setSaved(true);
+  }
+
+  function handleNext() {
+    submitPA({ source: "provider_portal", comments });
+    onNext();
   }
 
   return (
@@ -296,8 +304,30 @@ function PaQuestionsStep({ onBack, onCancel }: { onBack: () => void; onCancel: (
         <button onClick={onCancel} className="pa-btn-tertiary">Cancel</button>
         <div className="pa-nav-actions">
           <button onClick={onBack} className="pa-btn-secondary">Back</button>
-          <button className="pa-btn-primary">Next</button>
+          <button onClick={handleNext} className="pa-btn-primary">Next</button>
         </div>
+      </div>
+    </main>
+  );
+}
+
+// ── Step 4: PA Submitted confirmation ───────────────────────────────────────
+
+function PaSubmittedStep({ onDone }: { onDone: () => void }) {
+  return (
+    <main className="provider-content provider-content--pa">
+      <p className="pa-section-title">Electronic Prior Authorization</p>
+      <PaSummaryTable />
+
+      <div style={{ textAlign: "center", padding: "40px 0 32px" }}>
+        <CheckedCircleIcon className="" />
+        <h2 style={{ marginTop: 16, marginBottom: 8, fontSize: 20, fontWeight: 700, color: "#1C1C1C" }}>
+          PA Submitted
+        </h2>
+        <p style={{ color: "#6F7276", fontSize: 14, marginBottom: 32 }}>
+          The prior authorization has been submitted successfully. The patient will be notified once a decision is made.
+        </p>
+        <button onClick={onDone} className="pa-btn-secondary">Done</button>
       </div>
     </main>
   );
@@ -317,8 +347,10 @@ export default function ProviderPortal() {
         <PaQuestionsStep
           onBack={() => setStep("pa-review")}
           onCancel={() => setStep("login")}
+          onNext={() => setStep("pa-submitted")}
         />
       )}
+      {step === "pa-submitted" && <PaSubmittedStep onDone={() => setStep("login")} />}
     </div>
   );
 }
