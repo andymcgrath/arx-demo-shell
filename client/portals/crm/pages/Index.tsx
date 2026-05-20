@@ -442,8 +442,28 @@ export default function Index() {
   useEffect(() => {
     if (consentStatus === "confirmed" && biStatus === "none") {
       runBI();
+      // Switch to the BI stage detail tab so the "Running" state is visible
+      setOpenStageTabs((prev) =>
+        prev.some((s) => s.id === "BI-14273")
+          ? prev
+          : [
+              ...prev,
+              {
+                id: "BI-14273",
+                name: "Benefits Investigation",
+                statusLabel: "Running",
+                statusDetail: "Investigating patient benefits...",
+                isComplete: false,
+                isNotStarted: false,
+                fields: [],
+                lastUpdated: null,
+                lastUpdatedAgo: null,
+              },
+            ]
+      );
+      setActiveTopTab("BI-14273");
       const result = isPapFlow ? "no_insurance" : "coverage_found";
-      const t = setTimeout(() => completeBI(result), 3000);
+      const t = setTimeout(() => completeBI(result), 15000);
       return () => clearTimeout(t);
     }
   }, [consentStatus, biStatus]);
