@@ -469,14 +469,7 @@ export default function Index() {
   }, [enrollmentFormTabOpen]);
 
   useEffect(() => {
-    if (isPapFlow && papStatus === "active" && pharmacyStatus === "none") {
-      const t = setTimeout(() => fillRx(), 1200);
-      return () => clearTimeout(t);
-    }
-  }, [isPapFlow, papStatus, pharmacyStatus]);
-
-  useEffect(() => {
-    if (consentStatus === "confirmed" && biStatus === "none") {
+    if (!isPapFlow && consentStatus === "confirmed" && biStatus === "none") {
       runBI();
       // Switch to the BI stage detail tab so the "Running" state is visible
       setOpenStageTabs((prev) =>

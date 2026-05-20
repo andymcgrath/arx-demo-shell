@@ -116,7 +116,7 @@ function StepBar() {
   const flowType     = useDemoStore((s) => s.flowType);
   const biStatus     = useDemoStore((s) => s.biStatus);
   const STEP_LABELS  = flowType === "Fax_PAP_Audit" ? STEP_LABELS_PAP_AUDIT : STEP_LABELS_DEFAULT;
-  const biRunning    = biStatus === "running";
+  const biRunning    = biStatus === "running" && flowType !== "Fax_PAP_Audit";
 
   return (
     <div className="flex items-center gap-0 px-6 py-2">
