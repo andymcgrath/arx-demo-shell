@@ -39,7 +39,7 @@ export default function PrescriptionsSection() {
             {/* White logo on teal background */}
             <ProgramLogo
               variant="white"
-              className="h-10 w-auto max-w-[120px] object-contain flex-shrink-0"
+              className="h-8 w-auto max-w-[160px] object-contain flex-shrink-0"
             />
             <div className="flex-1 text-left">
               <p className="text-xs text-white/80">{rx.status}</p>

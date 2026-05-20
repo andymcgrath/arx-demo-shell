@@ -1,7 +1,5 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/portalRouter";
 import { ChevronRight, ArrowRight, HelpCircle } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { useChatContext } from "@/components/ChatContext";
 import ProgramLogo from "@/components/brand/ProgramLogo";
 import { PROGRAM, CHATBOT_ICON } from "@/config/branding";
@@ -15,10 +13,7 @@ export default function PAStatus() {
   const timeStr = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
 
   return (
-    <div className="min-h-screen flex flex-col bg-arx-background">
-      <Header />
-
-      <main className="flex-grow pt-24 pb-8">
+    <main className="flex-grow pb-8">
         <div className="max-w-lg mx-auto px-4 space-y-5">
 
           {/* PA Submitted card */}
@@ -110,9 +105,6 @@ export default function PAStatus() {
           </section>
 
         </div>
-      </main>
-
-      <Footer />
-    </div>
+    </main>
   );
 }

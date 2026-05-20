@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/portalRouter";
 import { MapPin, ChevronRight } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import EnrollmentShell from "@/components/enrollment/EnrollmentShell";
 
 interface AddressForm { address: string; city: string; state: string; zip: string; }
@@ -46,9 +44,7 @@ export default function DeliveryAddress() {
   const set = (field: keyof AddressForm) => (v: string) => setForm(prev => ({ ...prev, [field]: v }));
 
   return (
-    <div className="min-h-screen flex flex-col bg-arx-background pt-16">
-      <Header />
-      <main className="flex-grow">
+    <main className="flex-grow">
         <EnrollmentShell icon={<MapPin className="w-7 h-7" />} title="Where do you want to receive your shipment?" stepsFilled={1} stepsTotal={2}>
           <div className="space-y-4">
             <FloatingInput label="Address" value={form.address} onChange={set("address")} required />
@@ -66,8 +62,6 @@ export default function DeliveryAddress() {
             </button>
           </div>
         </EnrollmentShell>
-      </main>
-      <Footer />
-    </div>
+    </main>
   );
 }

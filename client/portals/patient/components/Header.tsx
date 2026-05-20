@@ -1,45 +1,102 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "@/lib/portalRouter";
 import { useChatContext } from "@/components/ChatContext";
 import ManufacturerLogo from "@/components/brand/ManufacturerLogo";
 import { MANUFACTURER, CHATBOT_ICON, PROGRAM } from "@/config/branding";
 import { hexToColorFilter } from "@/lib/brandFilter";
+import { useDemoStore, type FlowType } from "@/store/demoStore";
 
-const NAV_LINKS = [
-  { label: "Home", path: "/" },
-  {
-    group: "Enrollment Flow",
-    items: [
-      { label: "Confirm Details", path: "/confirm-details" },
-      { label: "Consent", path: "/consent" },
-      { label: "Signature", path: "/signature" },
-      { label: "Upload Insurance", path: "/upload-insurance" },
-      { label: "Enrollment Complete", path: "/enrollment-complete" },
-    ],
-  },
-  {
-    group: "PA Journey",
-    items: [
-      { label: "PA Submitted", path: "/pa-status" },
-      { label: "PA Denied / Appeal", path: "/pa-denied" },
-      { label: "PA Approved", path: "/pa-approved" },
-      { label: "Copay Enrollment", path: "/copay-enroll" },
-    ],
-  },
-  {
-    group: "Order Flow",
-    items: [
-      { label: "Delivery Address", path: "/delivery-address" },
-      { label: "Delivery Date", path: "/delivery-date" },
-      { label: "Payment", path: "/delivery-payment" },
-      { label: "Order Confirmation", path: "/delivery-confirmation" },
-      { label: "Order Tracker", path: "/order-tracker" },
-      { label: "Order Shipped", path: "/order-shipped" },
-      { label: "Medication Delivered", path: "/medication-delivered" },
-    ],
-  },
-] as const;
+type NavEntry =
+  | { label: string; path: string }
+  | { group: string; items: { label: string; path: string }[] };
+
+const ORDER_ITEMS = [
+  { label: "Delivery Address",     path: "/delivery-address" },
+  { label: "Delivery Date",        path: "/delivery-date" },
+  { label: "Order Confirmation",   path: "/delivery-confirmation" },
+  { label: "Order Tracker",        path: "/order-tracker" },
+  { label: "Order Shipped / In Transit", path: "/order-shipped" },
+  { label: "Medication Delivered", path: "/medication-delivered" },
+];
+
+function buildNavLinks(flowType: FlowType): NavEntry[] {
+  if (flowType === "Fax_PAP_Audit") {
+    return [
+      { label: "Home", path: "/" },
+      {
+        group: "Enrollment Flow",
+        items: [
+          { label: "Confirm Details",      path: "/confirm-details" },
+          { label: "Consent",             path: "/consent" },
+          { label: "Signature",           path: "/signature" },
+          { label: "Income Verification", path: "/income-qualification" },
+          { label: "Enrollment Complete", path: "/enrollment-complete" },
+        ],
+      },
+      {
+        group: `${PROGRAM.name} PAP Program Order`,
+        items: ORDER_ITEMS,
+      },
+    ];
+  }
+
+  if (flowType === "CoA_DTP") {
+    return [
+      { label: "Home", path: "/" },
+      {
+        group: "Enrollment Flow",
+        items: [
+          { label: "Confirm Details",      path: "/confirm-details" },
+          { label: "Consent",             path: "/consent" },
+          { label: "Signature",           path: "/signature" },
+          { label: "Income Qualification", path: "/income-qualification" },
+          { label: "Enrollment Complete", path: "/enrollment-complete" },
+        ],
+      },
+      {
+        group: `${PROGRAM.name} CoA Direct-to-Patient Order`,
+        items: ORDER_ITEMS,
+      },
+    ];
+  }
+
+  // Default: Fax_QS_PA_Approved
+  return [
+    { label: "Home", path: "/" },
+    {
+      group: "Enrollment Flow",
+      items: [
+        { label: "Confirm Details",    path: "/confirm-details" },
+        { label: "Consent",           path: "/consent" },
+        { label: "Signature",         path: "/signature" },
+        { label: "Upload Insurance",  path: "/upload-insurance" },
+        { label: "Enrollment Complete", path: "/enrollment-complete" },
+      ],
+    },
+    {
+      group: "PA Journey",
+      items: [
+        { label: "PA Submitted",       path: "/pa-status" },
+        { label: "PA Denied / Appeal", path: "/pa-denied" },
+        { label: "PA Approved",        path: "/pa-approved" },
+        { label: "Copay Enrollment",   path: "/copay-enroll" },
+      ],
+    },
+    {
+      group: `${PROGRAM.name} Order Flow`,
+      items: [
+        { label: "Delivery Address",   path: "/delivery-address" },
+        { label: "Delivery Date",      path: "/delivery-date" },
+        { label: "Payment",            path: "/delivery-payment" },
+        { label: "Order Confirmation", path: "/delivery-confirmation" },
+        { label: "Order Tracker",      path: "/order-tracker" },
+        { label: "Order Shipped",      path: "/order-shipped" },
+        { label: "Medication Delivered", path: "/medication-delivered" },
+      ],
+    },
+  ];
+}
 
 export default function Header() {
   const { pathname } = useLocation();
@@ -47,6 +104,8 @@ export default function Header() {
   const isHome = pathname === "/";
   const { openChat } = useChatContext();
   const [menuOpen, setMenuOpen] = useState(false);
+  const flowType = useDemoStore((s) => s.flowType);
+  const navLinks = buildNavLinks(flowType);
 
   function handleNav(path: string) {
     setMenuOpen(false);
@@ -55,7 +114,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 w-full bg-white border-b border-arx-borders shadow-sm">
+      <header className="sticky top-0 z-50 w-full bg-white border-b border-arx-borders shadow-sm">
         {/* Row 1: Hamburger + Logo + Chat */}
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
           {/* Hamburger */}
@@ -141,7 +200,7 @@ export default function Header() {
 
             {/* Links */}
             <div className="flex-1 px-4 py-4 space-y-5">
-              {NAV_LINKS.map((entry) => {
+              {navLinks.map((entry) => {
                 if ("path" in entry) {
                   const isActive = pathname === entry.path;
                   return (

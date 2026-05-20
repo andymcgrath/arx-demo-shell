@@ -38,6 +38,7 @@ export interface DemoState {
   paStatus: "none" | "submitted" | "approved" | "denied";
   qsStatus: "none" | "active" | "discontinued";
   papStatus: "none" | "active" | "audit_pending" | "discontinued";
+  incomeStatus: "none" | "verified" | "ineligible";
   pharmacyStatus: "none" | "processing" | "shipped" | "delivered";
 
   // timestamps
@@ -65,6 +66,7 @@ export interface DemoEvent {
 
 export interface DemoActions {
   // enrollment
+  sendEnrollmentInvite: () => void;
   enrollPatient: () => void;
   // benefits investigation
   runBI: () => void;
@@ -76,6 +78,8 @@ export interface DemoActions {
   // quick start
   activateQS: () => void;
   discontinueQS: () => void;
+  // income qualification
+  verifyIncome: () => void;
   // PAP
   enrollPAP: () => void;
   auditPAP: () => void;
@@ -122,6 +126,7 @@ export const SEED: DemoState = {
   paStatus: "none",
   qsStatus: "none",
   papStatus: "none",
+  incomeStatus: "none",
   pharmacyStatus: "none",
 
   paSubmittedAt: null,
@@ -131,7 +136,7 @@ export const SEED: DemoState = {
 
   events: [],
 
-  enrollmentFormTabOpen: true,
+  enrollmentFormTabOpen: false,
 };
 
 // ── Step derivation ───────────────────────────────────────────────────────────
@@ -187,6 +192,14 @@ export const useDemoStore = create<DemoStore>()(
           createdAt: new Date().toISOString(),
         };
         set((s) => ({ events: [...s.events, event] }));
+      },
+
+      sendEnrollmentInvite(): void {
+        get()._snapshot();
+        const now = new Date().toISOString();
+        set({ enrollmentStatus: "enrolled", updatedAt: now, updatedBy: "HUB" });
+        set({ workflowStep: get()._deriveStep() });
+        get()._logEvent("enrollment_invited", "HUB");
       },
 
       enrollPatient(): void {
@@ -248,6 +261,14 @@ export const useDemoStore = create<DemoStore>()(
         get()._snapshot();
         set({ qsStatus: "discontinued", updatedAt: new Date().toISOString(), updatedBy: "Provider" });
         get()._logEvent("qs_discontinued", "Provider");
+      },
+
+      verifyIncome(): void {
+        get()._snapshot();
+        const now = new Date().toISOString();
+        set({ incomeStatus: "verified", papStatus: "active", updatedAt: now, updatedBy: "Patient" });
+        set({ workflowStep: get()._deriveStep() });
+        get()._logEvent("income_verified", "Patient", { threshold: 38000, result: "Eligible" });
       },
 
       enrollPAP(): void {
@@ -313,6 +334,7 @@ export const useDemoStore = create<DemoStore>()(
           ...SEED,
           flowType: flow ?? current.flowType,
           workflowStep: 1,
+          incomeStatus: "none",
           updatedAt: new Date().toISOString(),
           events: [],
         });

@@ -20,10 +20,12 @@
  *   (default)                  → /         (welcome / not yet enrolled)
  */
 import { useEffect } from "react";
-import { MemoryRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { PortalRouter, Routes, Route, useNavigate } from "@/lib/portalRouter";
 import { ChatProvider, useChatContext } from "./components/ChatContext";
 import ChatModal from "./components/ChatModal";
 import { useDemoStore } from "@/store/demoStore";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 import Index from "./pages/Index";
 import ConfirmDetails from "./pages/ConfirmDetails";
@@ -42,17 +44,26 @@ import DeliveryConfirmation from "./pages/DeliveryConfirmation";
 import OrderTracker from "./pages/OrderTracker";
 import OrderShipped from "./pages/OrderShipped";
 import MedicationDelivered from "./pages/MedicationDelivered";
+import IncomeQualification from "./pages/IncomeQualification";
 
 /** Maps current demo state to the patient-facing route */
 function derivePatientRoute(state: ReturnType<typeof useDemoStore.getState>): string {
   if (state.pharmacyStatus === "delivered") return "/medication-delivered";
   if (state.pharmacyStatus === "shipped")   return "/order-shipped";
   if (state.pharmacyStatus !== "none")      return "/order-tracker";
+
+  if (state.flowType === "CoA_DTP") {
+    if (state.paStatus === "approved")  return "/pa-approved";
+    if (state.paStatus === "submitted") return "/pa-status";
+    if (state.incomeStatus === "verified") return "/pa-status";
+    if (state.consentStatus === "confirmed") return "/income-qualification";
+    return "/";
+  }
+
   if (state.paStatus === "denied")          return "/pa-denied";
   if (state.paStatus === "approved")        return "/pa-approved";
   if (state.paStatus === "submitted")       return "/pa-status";
   if (state.consentStatus === "confirmed")  return "/enrollment-complete";
-  if (state.enrollmentStatus === "enrolled") return "/consent";
   return "/";
 }
 
@@ -63,11 +74,13 @@ function StateDrivenNav() {
   const paStatus         = useDemoStore((s) => s.paStatus);
   const consentStatus    = useDemoStore((s) => s.consentStatus);
   const enrollmentStatus = useDemoStore((s) => s.enrollmentStatus);
+  const incomeStatus     = useDemoStore((s) => s.incomeStatus);
+  const flowType         = useDemoStore((s) => s.flowType);
 
   useEffect(() => {
     const target = derivePatientRoute(useDemoStore.getState());
     navigate(target, { replace: true });
-  }, [pharmacyStatus, paStatus, consentStatus, enrollmentStatus, navigate]);
+  }, [pharmacyStatus, paStatus, consentStatus, enrollmentStatus, incomeStatus, flowType, navigate]);
 
   return null;
 }
@@ -75,40 +88,45 @@ function StateDrivenNav() {
 function PatientRoutes() {
   const ctx = useChatContext();
   return (
-    <>
-      <StateDrivenNav />
-      <Routes>
-        <Route path="/"                      element={<Index />} />
-        <Route path="/confirm-details"       element={<ConfirmDetails />} />
-        <Route path="/consent"               element={<Consent />} />
-        <Route path="/signature"             element={<Signature />} />
-        <Route path="/upload-insurance"      element={<UploadInsurance />} />
-        <Route path="/enrollment-complete"   element={<EnrollmentComplete />} />
-        <Route path="/pa-status"             element={<PAStatus />} />
-        <Route path="/pa-denied"             element={<PADenied />} />
-        <Route path="/pa-approved"           element={<PAApproved />} />
-        <Route path="/copay-enroll"          element={<CopayEnroll />} />
-        <Route path="/delivery-address"      element={<DeliveryAddress />} />
-        <Route path="/delivery-date"         element={<DeliveryDate />} />
-        <Route path="/delivery-payment"      element={<DeliveryPayment />} />
-        <Route path="/delivery-confirmation" element={<DeliveryConfirmation />} />
-        <Route path="/order-tracker"         element={<OrderTracker />} />
-        <Route path="/order-shipped"         element={<OrderShipped />} />
-        <Route path="/medication-delivered"  element={<MedicationDelivered />} />
-      </Routes>
-      {ctx?.chatOpen && <ChatModal onClose={ctx.closeChat} />}
-    </>
+    <div className="flex flex-col h-full">
+      <Header />
+      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+        <StateDrivenNav />
+        <Routes>
+          <Route path="/"                      element={<Index />} />
+          <Route path="/confirm-details"       element={<ConfirmDetails />} />
+          <Route path="/consent"               element={<Consent />} />
+          <Route path="/signature"             element={<Signature />} />
+          <Route path="/upload-insurance"      element={<UploadInsurance />} />
+          <Route path="/enrollment-complete"   element={<EnrollmentComplete />} />
+          <Route path="/pa-status"             element={<PAStatus />} />
+          <Route path="/pa-denied"             element={<PADenied />} />
+          <Route path="/pa-approved"           element={<PAApproved />} />
+          <Route path="/copay-enroll"          element={<CopayEnroll />} />
+          <Route path="/delivery-address"      element={<DeliveryAddress />} />
+          <Route path="/delivery-date"         element={<DeliveryDate />} />
+          <Route path="/delivery-payment"      element={<DeliveryPayment />} />
+          <Route path="/delivery-confirmation" element={<DeliveryConfirmation />} />
+          <Route path="/order-tracker"         element={<OrderTracker />} />
+          <Route path="/order-shipped"         element={<OrderShipped />} />
+          <Route path="/medication-delivered"  element={<MedicationDelivered />} />
+          <Route path="/income-qualification"  element={<IncomeQualification />} />
+        </Routes>
+        <Footer />
+        {ctx?.chatOpen && <ChatModal onClose={ctx.closeChat} />}
+      </div>
+    </div>
   );
 }
 
 export default function PatientPortal() {
   return (
-    <div className="portal-patient min-h-full">
-      <MemoryRouter>
+    <div className="portal-patient h-full flex flex-col">
+      <PortalRouter>
         <ChatProvider>
           <PatientRoutes />
         </ChatProvider>
-      </MemoryRouter>
+      </PortalRouter>
     </div>
   );
 }

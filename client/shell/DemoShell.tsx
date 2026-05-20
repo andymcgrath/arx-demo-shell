@@ -17,9 +17,10 @@
  * switching a panel from Patient to Analytics shows the same workflow step.
  */
 import React, { useRef, useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDemoStore, type FlowType } from "@/store/demoStore";
 import {
-  RefreshCw, Undo2, Zap, ChevronDown,
+  RefreshCw, Undo2, ChevronDown,
   LayoutTemplate, LayoutPanelLeft, LayoutGrid,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -34,12 +35,27 @@ import ProviderPortal from "@/portals/provider/index";
 
 export type PortalId = "crm" | "patient" | "analytics" | "field" | "provider";
 
+const PORTAL_SLUG: Record<PortalId, string> = {
+  crm: "hub",
+  patient: "patient",
+  analytics: "analytics",
+  field: "field",
+  provider: "provider",
+};
+
+const SLUG_TO_PORTAL: Record<string, PortalId> = {
+  hub: "crm",
+  patient: "patient",
+  analytics: "analytics",
+  field: "field",
+  provider: "provider",
+};
+
 const PORTALS: { id: PortalId; label: string; color: string }[] = [
   { id: "crm",       label: "HUB / CRM",    color: "#0176d3" },
   { id: "patient",   label: "Patient",       color: "#16a34a" },
-  { id: "analytics", label: "Analytics",     color: "#d97706" },
-  { id: "field",     label: "Field Portal",  color: "#0891b2" },
   { id: "provider",  label: "Provider",      color: "#7c3aed" },
+  { id: "analytics", label: "Analytics",     color: "#d97706" },
 ];
 
 /** Renders the portal component for the given id */
@@ -64,7 +80,7 @@ interface PanelState {
 const DEFAULT_PANELS: Record<LayoutMode, PanelState[]> = {
   "1up": [{ portal: "crm" }],
   "2up": [{ portal: "crm" }, { portal: "patient" }],
-  "3up": [{ portal: "crm" }, { portal: "patient" }, { portal: "analytics" }],
+  "3up": [{ portal: "crm" }, { portal: "patient" }, { portal: "provider" }],
 };
 
 // ── Flow options ──────────────────────────────────────────────────────────────
@@ -89,7 +105,7 @@ const STEP_LABELS = [
 function StepBar() {
   const workflowStep = useDemoStore((s) => s.workflowStep);
   return (
-    <div className="flex items-center gap-0 px-4 pb-0 pt-1">
+    <div className="flex items-center gap-0 px-6 py-2">
       {STEP_LABELS.map((label, i) => {
         const n      = i + 1;
         const done   = workflowStep > n;
@@ -175,16 +191,64 @@ function Panel({ portal, onChangePortal, showSelector, headerHeight }: PanelProp
        * is painted relative to this box, not the viewport.
        * This keeps the shell chrome always visible at the top.
        */}
-      <div
-        className="flex-1 overflow-y-auto overflow-x-hidden bg-white"
-        style={{
-          height: `calc(100vh - ${headerHeight}px)`,
-          transform: "translateZ(0)",
-          willChange: "transform",
-        }}
-      >
-        <PortalComponent id={portal} />
-      </div>
+      {portal === "patient" ? (
+        <div
+          className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-200 flex items-start justify-center py-8"
+          style={{ height: `calc(100vh - ${headerHeight}px)` }}
+        >
+          <div className="i17pro">
+            {/* Physical buttons */}
+            <div className="i17pro__btn i17pro__btn--action" />
+            <div className="i17pro__btn i17pro__btn--vol-up" />
+            <div className="i17pro__btn i17pro__btn--vol-down" />
+            <div className="i17pro__btn i17pro__btn--power" />
+            <div className="i17pro__btn i17pro__btn--camera-ctrl" />
+
+            {/* Screen */}
+            <div className="i17pro__screen" style={{ transform: "translateZ(0)", willChange: "transform" }}>
+              {/* Status bar + Dynamic Island */}
+              <div className="i17pro__statusbar" aria-hidden="true">
+                <span className="i17pro__time">9:41</span>
+                <div className="i17pro__island" />
+                <div className="i17pro__icons">
+                  <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor">
+                    <rect x="0" y="4" width="3" height="8" rx="1" opacity="0.4"/>
+                    <rect x="4.5" y="2.5" width="3" height="9.5" rx="1" opacity="0.6"/>
+                    <rect x="9" y="1" width="3" height="11" rx="1" opacity="0.8"/>
+                    <rect x="13.5" y="0" width="3" height="12" rx="1"/>
+                  </svg>
+                  <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor">
+                    <path d="M8 9a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/>
+                    <path d="M8 5.5a5.5 5.5 0 0 1 3.9 1.6l1.1-1.1A7 7 0 0 0 8 4a7 7 0 0 0-5 2l1.1 1.1A5.5 5.5 0 0 1 8 5.5z"/>
+                    <path d="M8 2A9 9 0 0 1 14.4 4.4L15.5 3.3A10.5 10.5 0 0 0 8 1 10.5 10.5 0 0 0 .5 3.3l1.1 1.1A9 9 0 0 1 8 2z" opacity="0.5"/>
+                  </svg>
+                  <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+                    <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" strokeOpacity="0.35"/>
+                    <rect x="1.5" y="1.5" width="18" height="9" rx="2.5" fill="currentColor"/>
+                    <path d="M23 4v4a2 2 0 0 0 0-4z" fill="currentColor" fillOpacity="0.4"/>
+                  </svg>
+                </div>
+              </div>
+
+              {/* Portal content */}
+              <div className="i17pro__content">
+                <PortalComponent id={portal} />
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div
+          className="flex-1 overflow-y-auto overflow-x-hidden bg-white"
+          style={{
+            height: `calc(100vh - ${headerHeight}px)`,
+            transform: "translateZ(0)",
+            willChange: "transform",
+          }}
+        >
+          <PortalComponent id={portal} />
+        </div>
+      )}
     </div>
   );
 }
@@ -196,9 +260,14 @@ export default function DemoShell() {
   const _snapshots = useDemoStore((s) => (s as Record<string, unknown>)._snapshots as unknown[]);
   const canUndo = Array.isArray(_snapshots) && _snapshots.length > 0;
 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const urlSlug = location.pathname.slice(1) || "hub";
+  const urlPortal: PortalId = SLUG_TO_PORTAL[urlSlug] ?? "crm";
+
   // Layout state
   const [layout, setLayout] = useState<LayoutMode>("1up");
-  const [panels, setPanels] = useState<PanelState[]>(DEFAULT_PANELS["1up"]);
+  const [panels, setPanels] = useState<PanelState[]>([{ portal: urlPortal }]);
 
   // Measure shell header height so panels can fill the remaining viewport
   const headerRef = useRef<HTMLElement>(null);
@@ -215,14 +284,17 @@ export default function DemoShell() {
 
   function switchLayout(next: LayoutMode) {
     setLayout(next);
-    // Preserve first panel's portal when switching, fill rest with defaults
-    const current = panels[0]?.portal ?? "crm";
+    const current = urlPortal;
     const defaults = DEFAULT_PANELS[next];
     setPanels([{ portal: current }, ...defaults.slice(1)]);
   }
 
   function updatePanel(index: number, portalId: PortalId) {
-    setPanels((prev) => prev.map((p, i) => (i === index ? { portal: portalId } : p)));
+    if (layout === "1up" && index === 0) {
+      navigate(`/${PORTAL_SLUG[portalId]}`);
+    } else {
+      setPanels((prev) => prev.map((p, i) => (i === index ? { portal: portalId } : p)));
+    }
   }
 
   const handleUndo = () => {
@@ -231,6 +303,9 @@ export default function DemoShell() {
 
   const showSelector = layout !== "1up";
 
+  // In 1up mode, always derive the active portal from the URL
+  const activePanels = layout === "1up" ? [{ portal: urlPortal }] : panels;
+
   return (
     <div className="flex flex-col h-screen bg-[#0f172a] overflow-hidden">
       {/* ── Shell header ─────────────────────────────────────────────────── */}
@@ -238,35 +313,41 @@ export default function DemoShell() {
         {/* Top row */}
         <div className="flex items-stretch">
           {/* Logo */}
-          <div className="flex items-center gap-2 px-4 py-2.5 border-r border-white/10 shrink-0">
-            <div className="w-7 h-7 rounded-md bg-indigo-500 flex items-center justify-center">
-              <Zap size={14} className="text-white" />
-            </div>
-            <span className="text-sm font-bold tracking-tight whitespace-nowrap">ARXConnect</span>
+          <div className="flex items-center px-4 py-2 border-r border-white/10 shrink-0">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2F4c828a6b97e546bc967a796675ca457e%2Fcfbb35e5585d498f8ae600f5ebdb6767?format=webp&width=800"
+              alt="AssistRx"
+              className="h-7 w-auto object-contain"
+            />
           </div>
 
           {/* Portal tabs (single-panel mode: clicking selects that portal) */}
           <nav className="flex items-stretch flex-1 overflow-x-auto">
             {PORTALS.map((tab) => {
-              const isActive = layout === "1up" && panels[0]?.portal === tab.id;
+              const isActive = layout === "1up" && urlPortal === tab.id;
+              const isDisabled = tab.id === "provider" && flowType === "Fax_PAP_Audit";
               return (
                 <button
                   key={tab.id}
                   onClick={() => {
-                    if (layout === "1up") updatePanel(0, tab.id);
+                    if (isDisabled || layout !== "1up") return;
+                    navigate(`/${PORTAL_SLUG[tab.id]}`);
                   }}
+                  title={isDisabled ? "Provider not involved in this flow" : undefined}
                   className={cn(
                     "flex items-center gap-1.5 px-4 py-2.5 text-[13px] font-medium border-b-2 transition-all whitespace-nowrap",
-                    isActive
-                      ? "text-white border-indigo-400 bg-white/5"
-                      : layout === "1up"
-                        ? "text-white/50 border-transparent hover:text-white/80 hover:bg-white/5 cursor-pointer"
-                        : "text-white/30 border-transparent cursor-default"
+                    isDisabled
+                      ? "text-white/25 border-transparent cursor-not-allowed opacity-50"
+                      : isActive
+                        ? "text-white border-indigo-400 bg-white/5"
+                        : layout === "1up"
+                          ? "text-white/50 border-transparent hover:text-white/80 hover:bg-white/5 cursor-pointer"
+                          : "text-white/30 border-transparent cursor-default"
                   )}
                 >
                   <span
                     className="w-2 h-2 rounded-full shrink-0"
-                    style={{ background: isActive ? tab.color : "rgba(255,255,255,0.2)" }}
+                    style={{ background: isDisabled ? "rgba(255,255,255,0.1)" : isActive ? tab.color : "rgba(255,255,255,0.2)" }}
                   />
                   {tab.label}
                 </button>
@@ -337,14 +418,14 @@ export default function DemoShell() {
         </div>
 
         {/* Step progress bar */}
-        <div className="px-2 pb-2">
+        <div className="px-2 py-4">
           <StepBar />
         </div>
       </header>
 
       {/* ── Portal panels ──────────────────────────────────────────────────── */}
       <div className="flex flex-1 overflow-hidden">
-        {panels.map((panel, i) => (
+        {activePanels.map((panel, i) => (
           <Panel
             key={i}
             portal={panel.portal}

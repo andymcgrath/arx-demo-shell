@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/portalRouter";
 import { ChevronRight } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import EnrollmentShell from "@/components/enrollment/EnrollmentShell";
 
 export default function Consent() {
@@ -10,10 +8,7 @@ export default function Consent() {
   const [checked, setChecked] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col bg-arx-background pt-16">
-      <Header />
-
-      <main className="flex-grow">
+    <main className="flex-grow">
         <EnrollmentShell title="Please review the consent form below" stepsFilled={1} stepsTotal={3}>
           {/* Scrollable legal content */}
           <div className="bg-arx-neutral-100 rounded-xl p-5 max-h-80 overflow-y-auto text-sm leading-relaxed space-y-4 border border-arx-borders text-arx-body-copy">
@@ -86,9 +81,6 @@ export default function Consent() {
             </button>
           </div>
         </EnrollmentShell>
-      </main>
-
-      <Footer />
-    </div>
+    </main>
   );
 }

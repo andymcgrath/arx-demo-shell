@@ -1,8 +1,7 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/portalRouter";
+import { useDemoStore } from "@/store/demoStore";
 import { ClipboardList, Camera, Check } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import EnrollmentShell from "@/components/enrollment/EnrollmentShell";
 
 interface UploadedFile {
@@ -12,6 +11,7 @@ interface UploadedFile {
 
 export default function UploadInsurance() {
   const navigate = useNavigate();
+  const enrollPatient = useDemoStore((s) => s.enrollPatient);
   const frontRef = useRef<HTMLInputElement>(null);
   const backRef = useRef<HTMLInputElement>(null);
   const [frontFile, setFrontFile] = useState<UploadedFile | null>(null);
@@ -26,10 +26,7 @@ export default function UploadInsurance() {
   const bothUploaded = !!frontFile && !!backFile;
 
   return (
-    <div className="min-h-screen flex flex-col bg-arx-background pt-16">
-      <Header />
-
-      <main className="flex-grow">
+    <main className="flex-grow">
         <EnrollmentShell
           icon={<ClipboardList className="w-7 h-7" />}
           title="Upload documents to verify insurance details"
@@ -60,7 +57,7 @@ export default function UploadInsurance() {
           {/* Submit button */}
           <div className="mt-6">
             <button
-              onClick={() => navigate("/enrollment-complete")}
+              onClick={() => { enrollPatient(); navigate("/enrollment-complete"); }}
               disabled={!bothUploaded}
               className={`w-full font-semibold py-4 rounded-lg flex items-center justify-center gap-2 transition-colors ${
                 bothUploaded
@@ -72,11 +69,15 @@ export default function UploadInsurance() {
               <Check className="w-5 h-5" />
             </button>
           </div>
-        </EnrollmentShell>
-      </main>
 
-      <Footer />
-    </div>
+          <button
+            onClick={() => { enrollPatient(); navigate("/enrollment-complete"); }}
+            className="w-full mt-3 text-sm text-arx-body-copy hover:text-arx-slate transition-colors text-center"
+          >
+            Skip for now
+          </button>
+        </EnrollmentShell>
+    </main>
   );
 }
 

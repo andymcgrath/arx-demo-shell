@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/portalRouter";
 import { ChevronRight, ChevronDown, CheckCircle2, ArrowLeft, Loader2, MessageSquare, Send } from "lucide-react";
 import { usePatientCase } from "../hooks/usePatientCase";
 import { useEnrollPatient } from "../hooks/useEnrollPatient";

@@ -1,17 +1,12 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/portalRouter";
 import { Check } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import EnrollmentShell from "@/components/enrollment/EnrollmentShell";
 
 export default function ConfirmDetails() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col bg-arx-background pt-16">
-      <Header />
-
-      <main className="flex-grow">
+    <main className="flex-grow">
         <EnrollmentShell title="Confirm your details" stepsFilled={1} stepsTotal={3}>
           <div className="space-y-4">
             <FloatingInput label="First name" defaultValue="Alex" />
@@ -29,10 +24,7 @@ export default function ConfirmDetails() {
             </button>
           </div>
         </EnrollmentShell>
-      </main>
-
-      <Footer />
-    </div>
+    </main>
   );
 }
 

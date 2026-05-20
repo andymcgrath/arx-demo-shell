@@ -1,15 +1,9 @@
-import { useNavigate } from "react-router-dom";
-import Header from "@patient/components/Header";
-import Footer from "@patient/components/Footer";
-
+import { useNavigate } from "@/lib/portalRouter";
 export default function EnrollmentComplete() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-
-      <main className="flex-grow flex items-center justify-center px-6 py-12 bg-arx-primary">
+    <main className="flex-grow flex items-center justify-center px-6 py-12 bg-arx-primary">
         <div className="text-center max-w-sm mx-auto">
           {/* Animated checkmark with radiating dashes */}
           <div className="relative flex items-center justify-center w-32 h-32 mx-auto mb-8">
@@ -59,9 +53,6 @@ export default function EnrollmentComplete() {
             Got it
           </button>
         </div>
-      </main>
-
-      <Footer />
-    </div>
+    </main>
   );
 }

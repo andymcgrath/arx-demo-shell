@@ -14,18 +14,18 @@ interface EnrollPayload {
 
 export function useEnrollPatient() {
   const [isPending, setIsPending] = useState(false);
-  const enrollPatient = useDemoStore((s) => s.enrollPatient);
+  const sendEnrollmentInvite = useDemoStore((s) => s.sendEnrollmentInvite);
 
   const mutate = useCallback(
     (payload: EnrollPayload, options?: { onSuccess?: () => void }) => {
       setIsPending(true);
       setTimeout(() => {
-        enrollPatient();
+        sendEnrollmentInvite();
         setIsPending(false);
         options?.onSuccess?.();
       }, 600);
     },
-    [enrollPatient]
+    [sendEnrollmentInvite]
   );
 
   return {

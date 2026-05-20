@@ -1,16 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/portalRouter";
 import { ArrowRight, CreditCard, ShoppingBag, CheckCircle } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-
 export default function CopayEnroll() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col bg-arx-background">
-      <Header />
-
-      <main className="flex-grow pt-24 pb-8">
+    <main className="flex-grow pb-8">
         <div className="max-w-lg mx-auto px-4 space-y-5">
 
           <div className="bg-white rounded-2xl shadow-sm p-5 border border-arx-borders">
@@ -108,9 +102,6 @@ export default function CopayEnroll() {
           </div>
 
         </div>
-      </main>
-
-      <Footer />
-    </div>
+    </main>
   );
 }

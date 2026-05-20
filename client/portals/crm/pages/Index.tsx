@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/portalRouter";
 import { useDemoStore } from "@/store/demoStore";
 import { FileText } from "lucide-react";
 import {
@@ -337,6 +337,7 @@ export default function Index() {
   const openEnrollmentFormTab = useDemoStore((s) => s.openEnrollmentFormTab);
   const consentStatus = useDemoStore((s) => s.consentStatus);
   const biStatus = useDemoStore((s) => s.biStatus);
+  const paStatus = useDemoStore((s) => s.paStatus);
   const runBI = useDemoStore((s) => s.runBI);
   const completeBI = useDemoStore((s) => s.completeBI);
   const [activeCaseTab, setActiveCaseTab] = useState("summary");
@@ -364,6 +365,15 @@ export default function Index() {
     }
   }, [consentStatus, biStatus]);
 
+  const paStage: Stage =
+    paStatus === "none"
+      ? { id: "PA-14274", name: "Prior Authorization", statusLabel: "Stage not started", statusDetail: "No Status available", isComplete: false, isNotStarted: true, fields: [], lastUpdated: null, lastUpdatedAgo: null }
+      : paStatus === "submitted"
+      ? { id: "PA-14274", name: "Prior Authorization", statusLabel: "Initiated", statusDetail: "Prior authorization initiated", isComplete: false, isNotStarted: false, fields: [], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" }
+      : paStatus === "approved"
+      ? { id: "PA-14274", name: "Prior Authorization", statusLabel: "Complete", statusDetail: "PA Approved", isComplete: true, isNotStarted: false, fields: [], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" }
+      : { id: "PA-14274", name: "Prior Authorization", statusLabel: "Denied", statusDetail: "PA Denied — Appeal initiated", isComplete: false, isNotStarted: false, fields: [], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" };
+
   const eaStage: Stage = consentStatus !== "confirmed"
     ? { id: "EA-14272", name: "Enrollment Assistance", statusLabel: "Pending", statusDetail: "Awaiting patient consent", isComplete: false, isNotStarted: false, fields: [], lastUpdated: "5/15/2026", lastUpdatedAgo: "4 days ago" }
     : { id: "EA-14272", name: "Enrollment Assistance", statusLabel: "Complete", statusDetail: "Enrollment Completed", isComplete: true, isNotStarted: false, fields: [], lastUpdated: "5/15/2026", lastUpdatedAgo: "4 days ago" };
@@ -375,7 +385,7 @@ export default function Index() {
     : { id: "BI-14273", name: "Benefits Investigation", statusLabel: "Complete", statusDetail: "Patient Has Coverage; Prior Authorization Required", isComplete: true, isNotStarted: false, fields: [], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" };
 
   const STAGES_LIVE: Stage[] = STAGES.map((s) =>
-    s.id === "EA-14272" ? eaStage : s.id === "BI-14273" ? biStage : s
+    s.id === "EA-14272" ? eaStage : s.id === "BI-14273" ? biStage : s.id === "PA-14274" ? paStage : s
   );
 
   const [patientAccountCollapsed, setPatientAccountCollapsed] = useState(false);
