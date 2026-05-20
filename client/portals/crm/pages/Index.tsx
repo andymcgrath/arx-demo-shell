@@ -447,6 +447,7 @@ export default function Index() {
   const runBI = useDemoStore((s) => s.runBI);
   const completeBI = useDemoStore((s) => s.completeBI);
   const fillRx = useDemoStore((s) => s.fillRx);
+  const approvePA = useDemoStore((s) => s.approvePA);
   const isPapFlow = flowType === "Fax_PAP_Audit";
   const [selectedPharmacy, setSelectedPharmacy] = useState("Biologics");
   const [pharmacyPickerOpen, setPharmacyPickerOpen] = useState(false);
@@ -1122,6 +1123,21 @@ export default function Index() {
               <span className="text-[13px] font-semibold text-[#3e3e3c]">
                 {activeStage.name} – {activeStage.id}
               </span>
+              {activeStage.id === "PA-14274" && paStatus !== "approved" && paStatus !== "denied" && (
+                <button
+                  onClick={approvePA}
+                  className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded text-[12px] font-semibold text-white transition-opacity hover:opacity-90"
+                  style={{ background: "#2e844a" }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Approval Received
+                </button>
+              )}
+              {activeStage.id === "PA-14274" && paStatus === "approved" && (
+                <span className="ml-auto text-[12px] font-semibold px-2.5 py-0.5 rounded" style={{ background: "#e8f4ef", color: "#2e844a" }}>
+                  Approved
+                </span>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-x-6 px-4 pt-1 pb-2">
               <div>
