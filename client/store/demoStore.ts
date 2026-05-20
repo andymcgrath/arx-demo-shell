@@ -48,6 +48,9 @@ export interface DemoState {
 
   // event log
   events: DemoEvent[];
+
+  // UI tab state
+  enrollmentFormTabOpen: boolean;
 }
 
 export interface DemoEvent {
@@ -85,6 +88,8 @@ export interface DemoActions {
   changeFlow: (flow: FlowType) => void;
   resetDemo: (flow?: FlowType) => void;
   undoLast: () => void;
+  closeEnrollmentFormTab: () => void;
+  openEnrollmentFormTab: () => void;
   // internal
   _snapshot: () => void;
   _logEvent: (type: string, portal: Portal, meta?: Record<string, unknown>) => void;
@@ -125,6 +130,8 @@ export const SEED: DemoState = {
   updatedBy: null,
 
   events: [],
+
+  enrollmentFormTabOpen: true,
 };
 
 // ── Step derivation ───────────────────────────────────────────────────────────
@@ -285,6 +292,14 @@ export const useDemoStore = create<DemoStore>()(
         set({ pharmacyStatus: "delivered", updatedAt: now, updatedBy: "HUB" });
         set({ workflowStep: get()._deriveStep() });
         get()._logEvent("rx_delivered", "HUB");
+      },
+
+      closeEnrollmentFormTab(): void {
+        set({ enrollmentFormTabOpen: false });
+      },
+
+      openEnrollmentFormTab(): void {
+        set({ enrollmentFormTabOpen: true });
       },
 
       changeFlow(flow): void {

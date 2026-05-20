@@ -332,6 +332,9 @@ export default function Index() {
   const navigate = useNavigate();
   const flowType = useDemoStore((s) => s.flowType);
   const isFaxFlow = flowType === "Fax_QS_PA_Approved" || flowType === "Fax_PAP_Audit";
+  const enrollmentFormTabOpen = useDemoStore((s) => s.enrollmentFormTabOpen);
+  const closeEnrollmentFormTab = useDemoStore((s) => s.closeEnrollmentFormTab);
+  const openEnrollmentFormTab = useDemoStore((s) => s.openEnrollmentFormTab);
   const [activeCaseTab, setActiveCaseTab] = useState("summary");
   const [activeRightTab, setActiveRightTab] = useState("quick-answers");
   const [caseSummaryCollapsed, setCaseSummaryCollapsed] = useState(false);
@@ -339,7 +342,7 @@ export default function Index() {
   const [openStageTabs, setOpenStageTabs] = useState<Stage[]>([]);
   const [activeTopTab, setActiveTopTab] = useState<string>("keanu");
   const [activePatientSubTab, setActivePatientSubTab] = useState<"onboarding" | "enrollment-form">("enrollment-form");
-  const [openSubTabs, setOpenSubTabs] = useState<Array<"onboarding" | "enrollment-form">>(["onboarding", "enrollment-form"]);
+  const openSubTabs: Array<"onboarding" | "enrollment-form"> = ["onboarding", ...(enrollmentFormTabOpen ? ["enrollment-form" as const] : [])];
   const [patientAccountCollapsed, setPatientAccountCollapsed] = useState(false);
   const [patientContactCollapsed, setPatientContactCollapsed] = useState(false);
 
@@ -457,9 +460,7 @@ export default function Index() {
                   style={{ width: 16, height: 16 }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    const remaining = openSubTabs.filter((t) => t !== "onboarding");
-                    setOpenSubTabs(remaining);
-                    if (activePatientSubTab === "onboarding" && remaining.length > 0) setActivePatientSubTab(remaining[0]);
+                    if (activePatientSubTab === "onboarding") setActivePatientSubTab("enrollment-form");
                   }}
                 >
                   <X size={10} className="text-[#706e6b]" />
@@ -493,9 +494,8 @@ export default function Index() {
                   style={{ width: 16, height: 16 }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    const remaining = openSubTabs.filter((t) => t !== "enrollment-form");
-                    setOpenSubTabs(remaining);
-                    if (activePatientSubTab === "enrollment-form" && remaining.length > 0) setActivePatientSubTab(remaining[0]);
+                    closeEnrollmentFormTab();
+                    if (activePatientSubTab === "enrollment-form") setActivePatientSubTab("onboarding");
                   }}
                 >
                   <X size={10} className="text-[#706e6b]" />
@@ -1089,7 +1089,7 @@ export default function Index() {
                             <span
                               className="cursor-pointer hover:underline font-medium"
                               style={{ color: SF_BLUE }}
-                              onClick={() => setActivePatientSubTab("enrollment-form")}
+                              onClick={() => { openEnrollmentFormTab(); setActivePatientSubTab("enrollment-form"); }}
                             >
                               {doc.fileId}
                             </span>
@@ -1099,7 +1099,7 @@ export default function Index() {
                           <span
                             className="cursor-pointer hover:underline"
                             style={{ color: SF_BLUE }}
-                            onClick={() => setActivePatientSubTab("enrollment-form")}
+                            onClick={() => { openEnrollmentFormTab(); setActivePatientSubTab("enrollment-form"); }}
                           >
                             {doc.fileName}
                           </span>
