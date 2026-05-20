@@ -310,7 +310,7 @@ export default function Index() {
   const [stagesCollapsed, setStagesCollapsed] = useState(false);
   const [openStageTabs, setOpenStageTabs] = useState<Stage[]>([]);
   const [activeTopTab, setActiveTopTab] = useState<string>("keanu");
-  const [activePatientSubTab, setActivePatientSubTab] = useState<"onboarding" | "enrollment-form">("onboarding");
+  const [activePatientSubTab, setActivePatientSubTab] = useState<"onboarding" | "enrollment-form">("enrollment-form");
   const [patientAccountCollapsed, setPatientAccountCollapsed] = useState(false);
   const [patientContactCollapsed, setPatientContactCollapsed] = useState(false);
 
