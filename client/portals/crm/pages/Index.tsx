@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDemoStore } from "@/store/demoStore";
 import { FileText } from "lucide-react";
@@ -341,8 +341,16 @@ export default function Index() {
   const [stagesCollapsed, setStagesCollapsed] = useState(false);
   const [openStageTabs, setOpenStageTabs] = useState<Stage[]>([]);
   const [activeTopTab, setActiveTopTab] = useState<string>("keanu");
-  const [activePatientSubTab, setActivePatientSubTab] = useState<"onboarding" | "enrollment-form">("enrollment-form");
+  const [activePatientSubTab, setActivePatientSubTab] = useState<"onboarding" | "enrollment-form">(
+    () => enrollmentFormTabOpen ? "enrollment-form" : "onboarding"
+  );
   const openSubTabs: Array<"onboarding" | "enrollment-form"> = ["onboarding", ...(enrollmentFormTabOpen ? ["enrollment-form" as const] : [])];
+
+  useEffect(() => {
+    if (!enrollmentFormTabOpen && activePatientSubTab === "enrollment-form") {
+      setActivePatientSubTab("onboarding");
+    }
+  }, [enrollmentFormTabOpen]);
   const [patientAccountCollapsed, setPatientAccountCollapsed] = useState(false);
   const [patientContactCollapsed, setPatientContactCollapsed] = useState(false);
 
