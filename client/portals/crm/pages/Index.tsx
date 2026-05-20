@@ -750,7 +750,189 @@ export default function Index() {
           ) : null}
         </>
       ) : activeStage ? (
-        /* ── Stage Detail View ───────────────────────────────────────────── */
+        activeStage.id === "BI-14273" && biStatus === "complete" ? (
+          /* ── BIR Detail View (post-BI completion) ──────────────────────── */
+          <div className="overflow-y-auto" style={{ height: "calc(100vh - 130px)" }}>
+            {/* BIR Record Header */}
+            <div className="border-b border-[#dddbda] bg-white px-4 pt-2 pb-0">
+              <div className="text-[11px] text-[#706e6b] mb-0.5">Benefit Investigation Result</div>
+              <div className="flex items-center justify-between py-2 gap-4">
+                <div className="flex items-center gap-3">
+                  <div
+                    className="flex items-center justify-center rounded text-white font-bold text-[10px] shrink-0"
+                    style={{ width: 36, height: 36, background: "linear-gradient(135deg, #0176d3 0%, #014486 100%)" }}
+                  >
+                    BIR
+                  </div>
+                  <h1 className="text-[20px] font-bold text-[#3e3e3c]">BIR-0431</h1>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <SfButton>Add Product Coverage</SfButton>
+                  <SfButton>Add Referral Pharmacy</SfButton>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-0 overflow-hidden">
+              {/* Left: Information + tables */}
+              <div className="flex-1 min-w-0 overflow-y-auto p-4 space-y-4">
+
+                {/* Information section */}
+                <div className="border border-[#dddbda] rounded">
+                  <div className="flex items-center gap-2 px-3 py-1.5 border-b border-[#dddbda]" style={{ background: SF_SECTION_BG }}>
+                    <ChevronDown size={14} className="text-[#706e6b]" />
+                    <span className="text-[12px] font-semibold text-[#3e3e3c]">Information</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-x-6 px-4 pt-1 pb-2">
+                    <div>
+                      <FieldRow label="Patient" value="Keanu Dixon" isLink />
+                      <FieldRow label="Record Type" value="Pharmacy" />
+                      <FieldRow label="Care" value="00001740" isLink />
+                      <FieldRow label="Benefit Type" value="Pharmacy" />
+                      <FieldRow label="Rank" value="Primary" />
+                      <FieldRow label="Benefit Source" value="BI" />
+                      <FieldRow label="Status" value="Active" />
+                      <FieldRow label="Reimbursement Plan" value="" />
+                      <FieldRow label="Sub-Status" value="" />
+                      <FieldRow label="Insured?" value="Yes" />
+                      <FieldRow label="Prior Authorization Phone #" value="(407) 885-9999" />
+                      <FieldRow label="Subscriber Name" value="" />
+                      <FieldRow label="Internal Comments" value="" />
+                      <FieldRow label="External Comments" value="" />
+                      <FieldRow label="Admin Benefit - Percentage" value="" />
+                      <FieldRow label="Admin Benefit - Dollar" value="" />
+                      <FieldRow label="PA By Product Coverage" value="" />
+                      <FieldRow label="PA Submission Process" value="" />
+                    </div>
+                    <div>
+                      <FieldRow label="Benefit Investigation Result Name" value="BIR-0431" />
+                      <FieldRow label="Stage" value="BI-14273" isLink />
+                      <FieldRow label="Selected Product Coverage" value="Pharmacy" />
+                      <FieldRow label="Payer" value="" />
+                      <FieldRow label="Payer Type" value="Commercial" />
+                      <FieldRow label="Benefit Source" value="BI" />
+                      <FieldRow label="External Comments" value="" />
+                      <FieldRow label="Subscriber Tax #" value="" />
+                      <FieldRow label="Additional Benefit Information" value="" />
+                      <FieldRow label="Internal Comments Long" value="" />
+                      <FieldRow label="External Comments Long" value="" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* BI Product Coverages table */}
+                <div className="border border-[#dddbda] rounded">
+                  <div className="flex items-center gap-2 px-3 py-1.5 border-b border-[#dddbda]" style={{ background: SF_SECTION_BG }}>
+                    <span className="text-[12px] font-semibold text-[#3e3e3c]">BI Product Coverages (1)</span>
+                  </div>
+                  <table className="w-full text-[12px]">
+                    <thead>
+                      <tr style={{ background: SF_SECTION_BG }}>
+                        <th className="text-left px-3 py-2 font-semibold text-[#3e3e3c] border-b border-[#dddbda]">BI Product Coverage Name</th>
+                        <th className="text-left px-3 py-2 font-semibold text-[#3e3e3c] border-b border-[#dddbda]">Product</th>
+                        <th className="text-left px-3 py-2 font-semibold text-[#3e3e3c] border-b border-[#dddbda]">Product Coverage Status</th>
+                        <th className="text-left px-3 py-2 font-semibold text-[#3e3e3c] border-b border-[#dddbda]">PA Required?</th>
+                        <th className="w-8 border-b border-[#dddbda]" />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="hover:bg-[#f3f3f3]">
+                        <td className="px-3 py-2 border-b border-[#dddbda]"><SfLink>BIPC-0455</SfLink></td>
+                        <td className="px-3 py-2 border-b border-[#dddbda]"><SfLink>Jascayd 10mg</SfLink></td>
+                        <td className="px-3 py-2 border-b border-[#dddbda]">Covered</td>
+                        <td className="px-3 py-2 border-b border-[#dddbda]">Yes</td>
+                        <td className="px-3 py-2 border-b border-[#dddbda]">
+                          <button className="border border-[#dddbda] rounded px-1 py-0.5 bg-white hover:bg-[#f3f3f3]">
+                            <ChevronDown size={11} className="text-[#706e6b]" />
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div className="px-3 py-2">
+                    <SfLink className="text-[12px]">View All</SfLink>
+                  </div>
+                </div>
+
+                {/* BI Referral Pharmacies table */}
+                <div className="border border-[#dddbda] rounded">
+                  <div className="flex items-center gap-2 px-3 py-1.5 border-b border-[#dddbda]" style={{ background: SF_SECTION_BG }}>
+                    <span className="text-[12px] font-semibold text-[#3e3e3c]">BI Referral Pharmacies (1)</span>
+                  </div>
+                  <table className="w-full text-[12px]">
+                    <thead>
+                      <tr style={{ background: SF_SECTION_BG }}>
+                        <th className="text-left px-3 py-2 font-semibold text-[#3e3e3c] border-b border-[#dddbda]">Referral Pharmacy Name</th>
+                        <th className="text-left px-3 py-2 font-semibold text-[#3e3e3c] border-b border-[#dddbda]">Pharmacy Name</th>
+                        <th className="text-left px-3 py-2 font-semibold text-[#3e3e3c] border-b border-[#dddbda]">Record Type</th>
+                        <th className="text-left px-3 py-2 font-semibold text-[#3e3e3c] border-b border-[#dddbda]">Network Status</th>
+                        <th className="w-8 border-b border-[#dddbda]" />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="hover:bg-[#f3f3f3]">
+                        <td className="px-3 py-2 border-b border-[#dddbda]"><SfLink>PREF-0675</SfLink></td>
+                        <td className="px-3 py-2 border-b border-[#dddbda]">Biologics</td>
+                        <td className="px-3 py-2 border-b border-[#dddbda]"><SfLink>Program Mandated</SfLink></td>
+                        <td className="px-3 py-2 border-b border-[#dddbda]">In Network</td>
+                        <td className="px-3 py-2 border-b border-[#dddbda]">
+                          <button className="border border-[#dddbda] rounded px-1 py-0.5 bg-white hover:bg-[#f3f3f3]">
+                            <ChevronDown size={11} className="text-[#706e6b]" />
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div className="px-3 py-2">
+                    <SfLink className="text-[12px]">View All</SfLink>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Right: Payer Information panel */}
+              <div className="shrink-0 border-l border-[#dddbda] p-4" style={{ width: 260 }}>
+                <div className="border border-[#dddbda] rounded">
+                  <div className="px-3 py-1.5 border-b border-[#dddbda]" style={{ background: SF_SECTION_BG }}>
+                    <span className="text-[12px] font-semibold text-[#3e3e3c]">Payer Information</span>
+                  </div>
+                  <div className="p-4 space-y-4">
+                    <div>
+                      <div className="text-[11px] text-[#706e6b] mb-1">Payer</div>
+                      <div className="text-[11px] text-[#c9c7c5] mb-2">* Select Payer</div>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          placeholder="Search Payer..."
+                          className="w-full border border-[#dddbda] rounded text-[12px] px-2 py-1.5 pr-7 outline-none focus:border-[#0176d3]"
+                        />
+                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[#706e6b]">
+                          <Settings size={11} />
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[12px] text-[#3e3e3c]">Create New Payer</span>
+                      <div
+                        className="w-9 h-5 rounded-full flex items-center px-0.5 transition-colors"
+                        style={{ background: "#dddbda" }}
+                      >
+                        <div className="w-4 h-4 rounded-full bg-white shadow" />
+                      </div>
+                    </div>
+                    <button
+                      className="w-full text-center py-1.5 rounded text-[13px] font-semibold text-white transition-colors"
+                      style={{ background: FC_BLUE }}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+        /* ── Stage Detail View (generic) ─────────────────────────────────── */
         <div className="p-4 max-w-3xl">
           <div className="border border-[#dddbda] rounded">
             <div
@@ -791,6 +973,7 @@ export default function Index() {
             </div>
           </div>
         </div>
+        )
       ) : null}
       {/* ── Onboarding Case Record (shown when keanu + onboarding sub-tab) ─ */}
       {activeTopTab === "keanu" && activePatientSubTab === "onboarding" && (
