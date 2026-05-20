@@ -254,7 +254,7 @@ const STAGES: Stage[] = [
 // ─── Stage Card ──────────────────────────────────────────────────────────────
 
 function StageCard({ stage, onHeaderClick }: { stage: Stage; onHeaderClick?: (stage: Stage) => void }) {
-  const iconBg = stage.isComplete ? FC_BLUE : "#9a9a9a";
+  const iconBg = stage.isNotStarted ? "#9a9a9a" : FC_BLUE;
   const statusColor = stage.isComplete
     ? "#2e844a"
     : stage.isNotStarted
