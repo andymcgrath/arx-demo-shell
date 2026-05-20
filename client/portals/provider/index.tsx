@@ -1,6 +1,4 @@
 import { useState } from "react";
-
-import { useState } from "react";
 import { useDemoStore } from "@/store/demoStore";
 
 type Step = "login" | "pa-questions" | "pa-submitted" | "income-verify" | "income-submitted";
