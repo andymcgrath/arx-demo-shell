@@ -93,7 +93,7 @@ const FLOW_OPTIONS: { value: FlowType; label: string }[] = [
 
 // ── Step progress bar ─────────────────────────────────────────────────────────
 
-const STEP_LABELS = [
+const STEP_LABELS_DEFAULT = [
   "Referral Received",
   "Patient Enrolled",
   "PA / Auth Submitted",
@@ -102,8 +102,19 @@ const STEP_LABELS = [
   "Rx Delivered",
 ];
 
+const STEP_LABELS_PAP_AUDIT = [
+  "Referral Received",
+  "Patient Enrolled",
+  "PAP Enrolled",
+  "First Dispense",
+  "Audit Initiated",
+  "PA Approved",
+];
+
 function StepBar() {
   const workflowStep = useDemoStore((s) => s.workflowStep);
+  const flowType     = useDemoStore((s) => s.flowType);
+  const STEP_LABELS  = flowType === "Fax_PAP_Audit" ? STEP_LABELS_PAP_AUDIT : STEP_LABELS_DEFAULT;
   return (
     <div className="flex items-center gap-0 px-6 py-2">
       {STEP_LABELS.map((label, i) => {
