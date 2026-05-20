@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "@/lib/portalRouter";
+import { useDemoStore } from "@/store/demoStore";
+import { FileText } from "lucide-react";
 import {
   ChevronDown,
   ChevronRight,
@@ -288,8 +290,20 @@ const RIGHT_TABS = [
   { id: "missing-info", label: "Missing Information" },
 ];
 
+const FAX_DOCUMENTS = [
+  {
+    fileId: "FAX-2026-00431",
+    fileName: "Enrollment_Form_KDixon_051526.pdf",
+    dateReceived: "May 15, 2026",
+    type: "Enrollment Form",
+    pages: 3,
+  },
+];
+
 export default function Index() {
   const navigate = useNavigate();
+  const flowType = useDemoStore((s) => s.flowType);
+  const isFaxFlow = flowType === "Fax_QS_PA_Approved" || flowType === "Fax_PAP_Audit";
   const [activeCaseTab, setActiveCaseTab] = useState("summary");
   const [activeRightTab, setActiveRightTab] = useState("quick-answers");
   const [caseSummaryCollapsed, setCaseSummaryCollapsed] = useState(false);
@@ -865,6 +879,76 @@ export default function Index() {
             </div>
           </div>
         </div>
+          ) : activeCaseTab === "documents" && isFaxFlow ? (
+            <div className="p-4">
+              <div className="border border-[#dddbda] rounded overflow-hidden">
+                {/* Table header */}
+                <div
+                  className="flex items-center justify-between px-3 py-2 border-b border-[#dddbda]"
+                  style={{ background: "#f3f3f3" }}
+                >
+                  <span className="text-[13px] font-semibold text-[#3e3e3c]">Related Documents</span>
+                  <span className="text-[12px] text-[#706e6b]">{FAX_DOCUMENTS.length} record{FAX_DOCUMENTS.length !== 1 ? "s" : ""}</span>
+                </div>
+                <table className="w-full text-[13px]">
+                  <thead>
+                    <tr style={{ background: "#f3f3f3" }}>
+                      {[
+                        { label: "File ID", sortable: true },
+                        { label: "File Name", sortable: true },
+                        { label: "Type" },
+                        { label: "Pages" },
+                        { label: "Date Received", sortable: true },
+                      ].map((col) => (
+                        <th
+                          key={col.label}
+                          className="text-left px-3 py-2 text-[11px] text-[#706e6b] uppercase tracking-wide font-medium border-b border-[#dddbda] whitespace-nowrap"
+                        >
+                          <div className="flex items-center gap-1">
+                            {col.label}
+                            {col.sortable && <ArrowUpDown size={10} className="text-[#706e6b]" />}
+                          </div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {FAX_DOCUMENTS.map((doc) => (
+                      <tr key={doc.fileId} className="hover:bg-[#f3f3f3] transition-colors">
+                        <td className="px-3 py-2.5 border-b border-[#dddbda]">
+                          <div className="flex items-center gap-1.5">
+                            <FileText size={13} className="text-[#706e6b] shrink-0" />
+                            <span
+                              className="cursor-pointer hover:underline font-medium"
+                              style={{ color: SF_BLUE }}
+                            >
+                              {doc.fileId}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-3 py-2.5 border-b border-[#dddbda]">
+                          <span
+                            className="cursor-pointer hover:underline"
+                            style={{ color: SF_BLUE }}
+                          >
+                            {doc.fileName}
+                          </span>
+                        </td>
+                        <td className="px-3 py-2.5 border-b border-[#dddbda] text-[#3e3e3c]">
+                          {doc.type}
+                        </td>
+                        <td className="px-3 py-2.5 border-b border-[#dddbda] text-[#3e3e3c]">
+                          {doc.pages}
+                        </td>
+                        <td className="px-3 py-2.5 border-b border-[#dddbda] text-[#3e3e3c] whitespace-nowrap">
+                          {doc.dateReceived}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           ) : (
             <div className="p-8 text-[13px] text-[#706e6b] text-center">
               No {CASE_TABS.find((t) => t.id === activeCaseTab)?.label} records found.
