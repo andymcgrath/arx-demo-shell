@@ -254,7 +254,7 @@ const STAGES: Stage[] = [
 // ─── Stage Card ──────────────────────────────────────────────────────────────
 
 function StageCard({ stage, onHeaderClick }: { stage: Stage; onHeaderClick?: (stage: Stage) => void }) {
-  const iconBg = stage.isNotStarted ? "#9a9a9a" : FC_BLUE;
+  const iconBg = stage.isComplete ? FC_BLUE : "#9a9a9a";
   const statusColor = stage.isComplete
     ? "#2e844a"
     : stage.isNotStarted
@@ -364,13 +364,19 @@ export default function Index() {
     }
   }, [consentStatus, biStatus]);
 
+  const eaStage: Stage = consentStatus !== "confirmed"
+    ? { id: "EA-14272", name: "Enrollment Assistance", statusLabel: "Pending", statusDetail: "Awaiting patient consent", isComplete: false, isNotStarted: false, fields: [], lastUpdated: "5/15/2026", lastUpdatedAgo: "4 days ago" }
+    : { id: "EA-14272", name: "Enrollment Assistance", statusLabel: "Complete", statusDetail: "Enrollment Completed", isComplete: true, isNotStarted: false, fields: [], lastUpdated: "5/15/2026", lastUpdatedAgo: "4 days ago" };
+
   const biStage: Stage = biStatus === "none"
     ? { id: "BI-14273", name: "Benefits Investigation", statusLabel: "Not Started", statusDetail: "Waiting for patient consent", isComplete: false, isNotStarted: true, fields: [], lastUpdated: null, lastUpdatedAgo: null }
     : biStatus === "running"
     ? { id: "BI-14273", name: "Benefits Investigation", statusLabel: "Running", statusDetail: "Investigating patient benefits...", isComplete: false, isNotStarted: false, fields: [], lastUpdated: null, lastUpdatedAgo: null }
     : { id: "BI-14273", name: "Benefits Investigation", statusLabel: "Complete", statusDetail: "Patient Has Coverage; Prior Authorization Required", isComplete: true, isNotStarted: false, fields: [], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" };
 
-  const STAGES_LIVE: Stage[] = STAGES.map((s) => s.id === "BI-14273" ? biStage : s);
+  const STAGES_LIVE: Stage[] = STAGES.map((s) =>
+    s.id === "EA-14272" ? eaStage : s.id === "BI-14273" ? biStage : s
+  );
 
   const [patientAccountCollapsed, setPatientAccountCollapsed] = useState(false);
   const [patientContactCollapsed, setPatientContactCollapsed] = useState(false);
