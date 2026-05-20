@@ -336,24 +336,25 @@ const STAGES: Stage[] = [
 // ─── Stage Card ──────────────────────────────────────────────────────────────
 
 function StageCard({ stage, onHeaderClick }: { stage: Stage; onHeaderClick?: (stage: Stage) => void }) {
-  const isRunning = stage.statusLabel === "Running" || stage.statusLabel === "In Progress";
+  const isRunning = stage.statusLabel === "Running";
+  const isInProgress = stage.statusLabel === "In Progress";
   const iconBg = stage.isNotStarted ? "#9a9a9a" : FC_BLUE;
   const statusColor = stage.isComplete
     ? "#2e844a"
     : stage.isNotStarted
     ? "#706e6b"
-    : isRunning
+    : (isRunning || isInProgress)
     ? "#0176d3"
     : "#3e3e3c";
 
   return (
     <div
       className="py-3 border-b border-[#dddbda] last:border-b-0"
-      style={isRunning ? { background: "linear-gradient(90deg, #f0f7ff 0%, #fff 100%)" } : undefined}
+      style={(isRunning || isInProgress) ? { background: "linear-gradient(90deg, #f0f7ff 0%, #fff 100%)" } : undefined}
     >
       <div className="flex items-start gap-2.5">
         <div
-          className={`flex items-center justify-center shrink-0${isRunning ? " animate-pulse" : ""}`}
+          className="flex items-center justify-center shrink-0"
           style={{ width: 28, height: 28, background: iconBg, borderRadius: 6 }}
         >
           {isRunning
@@ -447,6 +448,8 @@ export default function Index() {
   const runBI = useDemoStore((s) => s.runBI);
   const completeBI = useDemoStore((s) => s.completeBI);
   const fillRx = useDemoStore((s) => s.fillRx);
+  const startShippingSequence = useDemoStore((s) => s.startShippingSequence);
+  const deliverRx = useDemoStore((s) => s.deliverRx);
   const approvePA = useDemoStore((s) => s.approvePA);
   const isPapFlow = flowType === "Fax_PAP_Audit";
   const [selectedPharmacy, setSelectedPharmacy] = useState("Biologics");
@@ -529,7 +532,15 @@ export default function Index() {
     ? { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "Pending", statusDetail: "Awaiting PAP enrollment", isComplete: false, isNotStarted: true, fields: [{ label: "Pharmacy", value: selectedPharmacy }], lastUpdated: null, lastUpdatedAgo: null }
     : pharmacyStatus === "processing"
     ? { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "In Progress", statusDetail: "First dispense processing", isComplete: false, isNotStarted: false, fields: [{ label: "Pharmacy", value: selectedPharmacy }, { label: "First Dispense", value: "Initiated" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" }
+    : pharmacyStatus === "ready"
+    ? { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "In Progress", statusDetail: "Ready for delivery", isComplete: false, isNotStarted: false, fields: [{ label: "Pharmacy", value: selectedPharmacy }, { label: "First Dispense", value: "Ready" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" }
     : { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "Complete", statusDetail: "First dispense shipped", isComplete: true, isNotStarted: false, fields: [{ label: "Pharmacy", value: selectedPharmacy }, { label: "First Dispense", value: "Shipped" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" };
+
+  const psStage: Stage = pharmacyStatus === "shipped"
+    ? { id: "PS-14278", name: "Pharmacy Status", statusLabel: "In Transit", statusDetail: "First dispense shipped — in transit to patient", isComplete: false, isNotStarted: false, fields: [{ label: "Carrier", value: "FedEx" }, { label: "Tracking #", value: "775899987245" }, { label: "Est. Delivery", value: "May 26, 2026" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" }
+    : pharmacyStatus === "delivered"
+    ? { id: "PS-14278", name: "Pharmacy Status", statusLabel: "Complete", statusDetail: "First dispense delivered", isComplete: true, isNotStarted: false, fields: [{ label: "Carrier", value: "FedEx" }, { label: "Tracking #", value: "775899987245" }, { label: "Delivered", value: "May 26, 2026" }], lastUpdated: "5/26/2026", lastUpdatedAgo: "today" }
+    : { id: "PS-14278", name: "Pharmacy Status", statusLabel: "Stage not started", statusDetail: "No Status available", isComplete: false, isNotStarted: true, fields: [], lastUpdated: null, lastUpdatedAgo: null };
 
   const auditStage: Stage = papStatus !== "audit_pending" && paStatus === "none"
     ? { id: "AUDIT-14280", name: "PAP Audit", statusLabel: "Scheduled", statusDetail: "ABV audit — 90 days post-enrollment", isComplete: false, isNotStarted: true, fields: [{ label: "Audit Type", value: "ABV Insurance Check" }], lastUpdated: null, lastUpdatedAgo: null }
@@ -548,7 +559,12 @@ export default function Index() {
         : s
       )
     : STAGES.map((s) =>
-        s.id === "EA-14272" ? eaStage : s.id === "BI-14273" ? biStage : s.id === "PA-14274" ? paStage : s
+        s.id === "EA-14272" ? eaStage
+        : s.id === "BI-14273" ? biStage
+        : s.id === "PA-14274" ? paStage
+        : s.id === "TP-14277" ? tpStage
+        : s.id === "PS-14278" ? psStage
+        : s
       );
 
   const [patientAccountCollapsed, setPatientAccountCollapsed] = useState(false);
@@ -1114,8 +1130,18 @@ export default function Index() {
                 <Zap size={12} className="text-white" fill="white" />
               </div>
               <span className="text-[13px] font-semibold text-[#3e3e3c]">
-                {activeStage.name} {activeStage.id}
+                {activeStage.id === "BI-14273" ? "Benefit Investigation Result" : activeStage.name} {activeStage.id}
               </span>
+              {activeStage.id === "BI-14273" && biStatus === "running" && (
+                <button
+                  onClick={() => completeBI(isPapFlow ? "no_insurance" : "coverage_found")}
+                  className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded text-[12px] font-semibold text-white transition-opacity hover:opacity-90"
+                  style={{ background: FC_BLUE }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Update Status
+                </button>
+              )}
               {activeStage.id === "PA-14274" && paStatus !== "approved" && paStatus !== "denied" && (
                 <button
                   onClick={approvePA}
@@ -1129,6 +1155,41 @@ export default function Index() {
               {activeStage.id === "PA-14274" && paStatus === "approved" && (
                 <span className="ml-auto text-[12px] font-semibold px-2.5 py-0.5 rounded" style={{ background: "#e8f4ef", color: "#2e844a" }}>
                   Approved
+                </span>
+              )}
+              {activeStage.id === "TP-14277" && pharmacyStatus === "processing" && (
+                <button
+                  onClick={startShippingSequence}
+                  className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded text-[12px] font-semibold text-white transition-opacity hover:opacity-90"
+                  style={{ background: FC_BLUE }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                  Dispatch to Pharmacy
+                </button>
+              )}
+              {activeStage.id === "TP-14277" && pharmacyStatus === "ready" && (
+                <span className="ml-auto text-[12px] font-semibold px-2.5 py-0.5 rounded animate-pulse" style={{ background: "#e8f0fa", color: FC_BLUE }}>
+                  Shipping…
+                </span>
+              )}
+              {activeStage.id === "TP-14277" && (pharmacyStatus === "shipped" || pharmacyStatus === "delivered") && (
+                <span className="ml-auto text-[12px] font-semibold px-2.5 py-0.5 rounded" style={{ background: "#e8f4ef", color: "#2e844a" }}>
+                  Dispatched
+                </span>
+              )}
+              {activeStage.id === "PS-14278" && pharmacyStatus === "shipped" && (
+                <button
+                  onClick={deliverRx}
+                  className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded text-[12px] font-semibold text-white transition-opacity hover:opacity-90"
+                  style={{ background: "#2e844a" }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Mark Delivered
+                </button>
+              )}
+              {activeStage.id === "PS-14278" && pharmacyStatus === "delivered" && (
+                <span className="ml-auto text-[12px] font-semibold px-2.5 py-0.5 rounded" style={{ background: "#e8f4ef", color: "#2e844a" }}>
+                  Delivered
                 </span>
               )}
             </div>
@@ -1160,7 +1221,11 @@ export default function Index() {
                               <button
                                 key={sp}
                                 className="w-full text-left px-3 py-2 text-[13px] hover:bg-[#f3f3f3] transition-colors flex items-center justify-between"
-                                onClick={() => { setSelectedPharmacy(sp); setPharmacyPickerOpen(false); }}
+                                onClick={() => {
+                  setSelectedPharmacy(sp);
+                  setPharmacyPickerOpen(false);
+                  startShippingSequence();
+                }}
                               >
                                 <span className={selectedPharmacy === sp ? "font-semibold" : ""}>{sp}</span>
                                 {selectedPharmacy === sp && (

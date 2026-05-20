@@ -3,11 +3,27 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "typecheck": "tsc",
+    "dev": "vite --port 8080",
+    "build:client": "vite build",
+    "build:server": "vite build --config vite.config.server.ts",
+    "build:react": "pnpm run build:client && pnpm run build:server",
+    "start": "node dist/server/node-build.mjs",
     "test": "vitest --run",
-    "setup": "node scripts/setup-portals.mjs"
+    "format.fix": "prettier --write .",
+    "typecheck": "tsc",
+    "electron:dev": "concurrently \"pnpm run dev\" \"wait-on http://localhost:8080 && electron .\"",
+    "electron:build": "pnpm run build:react && electron-builder"
+  },
+  "build": {
+    "appId": "com.yourname.yourapp",
+    "productName": "Your App Name",
+    "files": ["dist/spa/**/*", "public/electron.js"],
+    "directories": { "output": "dist" },
+    "publish": {
+      "provider": "github",
+      "releaseType": "release"
+    },
+    "mac": { "target": "dmg" }
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
