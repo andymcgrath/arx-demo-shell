@@ -50,15 +50,31 @@ function PanelLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-function CheckRow({ text }: { text: string }) {
+function CheckRow({ text, visible }: { text: string; visible: boolean }) {
   return (
     <div className="flex items-start gap-2 py-1">
-      <CheckCircle2
-        size={18}
+      <div
         className="shrink-0 mt-0.5"
-        style={{ color: "#2e844a", fill: "#2e844a", stroke: "white" }}
-      />
-      <span className="text-[13px] text-[#3e3e3c]">{text}</span>
+        style={{
+          transition: "opacity 0.4s ease, transform 0.4s ease",
+          opacity: visible ? 1 : 0,
+          transform: visible ? "scale(1)" : "scale(0.4)",
+        }}
+      >
+        <CheckCircle2
+          size={18}
+          style={{ color: "#2e844a", fill: "#2e844a", stroke: "white" }}
+        />
+      </div>
+      <span
+        className="text-[13px]"
+        style={{
+          transition: "color 0.3s ease",
+          color: visible ? "#3e3e3c" : "#aaabac",
+        }}
+      >
+        {text}
+      </span>
     </div>
   );
 }
@@ -150,16 +166,18 @@ function MaterialCatalog({
 
 function ItemDetails({
   consentStatus,
+  checksVisible,
+  validating,
   orderAdded,
   onAddToOrder,
-  isLoading,
 }: {
   consentStatus: string;
+  checksVisible: 0 | 1 | 2;
+  validating: boolean;
   orderAdded: boolean;
   onAddToOrder: () => void;
-  isLoading: boolean;
 }) {
-  const disabled = consentStatus !== "pending" || orderAdded;
+  const canAdd = consentStatus === "pending" && !orderAdded && !validating;
 
   return (
     <div className="flex flex-col h-full">
@@ -173,22 +191,23 @@ function ItemDetails({
 
       <hr className="border-[#dddbda] mb-3" />
 
-      <CheckRow text="Patient has valid mobile phone number" />
-      <CheckRow text="Patient communication consent status is pending capture" />
+      <CheckRow text="Patient has valid mobile phone number" visible={checksVisible >= 1} />
+      <CheckRow text="Patient communication consent status is pending capture" visible={checksVisible >= 2} />
 
       <hr className="border-[#dddbda] mt-3 mb-4" />
 
       <div className="flex justify-center">
         <button
           onClick={onAddToOrder}
-          disabled={disabled || isLoading}
-          className="flex items-center gap-2 px-5 py-1.5 text-[13px] font-medium rounded text-white transition-opacity"
+          disabled={!canAdd}
+          className="flex items-center gap-2 px-5 py-1.5 text-[13px] font-medium rounded text-white"
           style={{
-            background: disabled || isLoading ? "#aaabac" : FC_BLUE,
-            cursor: disabled || isLoading ? "not-allowed" : "pointer",
+            background: !canAdd ? "#aaabac" : FC_BLUE,
+            cursor: !canAdd ? "not-allowed" : "pointer",
+            transition: "background 0.3s ease",
           }}
         >
-          {isLoading && <Loader2 size={13} className="animate-spin" />}
+          {validating && <Loader2 size={13} className="animate-spin" />}
           {orderAdded ? "Added to Order" : "Add to Order"}
         </button>
       </div>
@@ -411,6 +430,8 @@ function AccountInformation({
 export default function FulfilmentCenter() {
   const [selectedItem, setSelectedItem] = useState("electronic-consent");
   const [contactMethod, setContactMethod] = useState<"phone" | "email">("phone");
+  const [checksVisible, setChecksVisible] = useState<0 | 1 | 2>(0);
+  const [validating, setValidating] = useState(false);
   const [orderAdded, setOrderAdded] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
 
@@ -418,7 +439,13 @@ export default function FulfilmentCenter() {
   const enrollMutation = useEnrollPatient();
 
   const handleAddToOrder = () => {
-    setOrderAdded(true);
+    setValidating(true);
+    setTimeout(() => setChecksVisible(1), 600);
+    setTimeout(() => setChecksVisible(2), 1300);
+    setTimeout(() => {
+      setValidating(false);
+      setOrderAdded(true);
+    }, 1900);
   };
 
   const handlePlaceOrder = () => {
@@ -484,9 +511,10 @@ export default function FulfilmentCenter() {
           ) : (
             <ItemDetails
               consentStatus={consentStatus}
+              checksVisible={checksVisible}
+              validating={validating}
               orderAdded={orderAdded}
               onAddToOrder={handleAddToOrder}
-              isLoading={false}
             />
           )}
         </div>
