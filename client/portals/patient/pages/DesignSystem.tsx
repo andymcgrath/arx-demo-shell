@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArxButton } from "@patient/components/design-system/ArxButton";
+import { ArxButton } from "@/components/design-system/ArxButton";
 import {
   ChevronDown,
   ChevronUp,
@@ -11,7 +11,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import { cn } from "@patient/lib/utils";
+import { cn } from "@/lib/utils";
 
 /* ─────────────────────────────────────────────
    NAVIGATION STRUCTURE

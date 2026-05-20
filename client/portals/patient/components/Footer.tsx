@@ -1,5 +1,5 @@
-import ManufacturerLogo from "@patient/components/brand/ManufacturerLogo";
-import { MANUFACTURER } from "@patient/config/branding";
+import ManufacturerLogo from "@/components/brand/ManufacturerLogo";
+import { MANUFACTURER } from "@/config/branding";
 
 export default function Footer() {
   return (

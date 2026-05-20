@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, ChevronRight, Phone, DollarSign } from "lucide-react";
-import Header from "@patient/components/Header";
-import Footer from "@patient/components/Footer";
-import { useChatContext } from "@patient/components/ChatContext";
-import ProgramLogo from "@patient/components/brand/ProgramLogo";
-import { PROGRAM, CHATBOT_ICON } from "@patient/config/branding";
-import { hexToColorFilter } from "@patient/lib/brandFilter";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { useChatContext } from "@/components/ChatContext";
+import ProgramLogo from "@/components/brand/ProgramLogo";
+import { PROGRAM, CHATBOT_ICON } from "@/config/branding";
+import { hexToColorFilter } from "@/lib/brandFilter";
 
 export default function PADenied() {
   const navigate = useNavigate();

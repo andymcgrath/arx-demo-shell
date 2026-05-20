@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { hexToColorFilter } from "@patient/lib/brandFilter";
+import { hexToColorFilter } from "@/lib/brandFilter";
 import { CheckCircle, AlertCircle, Loader2, Save, Eye, EyeOff } from "lucide-react";
 import ManufacturerSection from "./admin/ManufacturerSection";
 import ProgramSection from "./admin/ProgramSection";

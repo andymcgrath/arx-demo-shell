@@ -1,10 +1,18 @@
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+<<<<<<< HEAD
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { useChatContext } from "@/components/ChatContext";
+import ProgramLogo from "@/components/brand/ProgramLogo";
+import { PROGRAM } from "@/config/branding";
+=======
 import Header from "@patient/components/Header";
 import Footer from "@patient/components/Footer";
 import { useChatContext } from "@patient/components/ChatContext";
 import ProgramLogo from "@patient/components/brand/ProgramLogo";
 import { PROGRAM } from "@patient/config/branding";
+>>>>>>> e4d3eb50d00f51b9afbe732322e8a2888a46beef
 const DELIVERY_DATE = "May 30, 10:00 AM";
 
 export default function MedicationDelivered() {

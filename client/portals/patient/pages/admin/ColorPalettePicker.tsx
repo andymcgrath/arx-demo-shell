@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { Upload, X, Pipette } from "lucide-react";
-import { cn } from "@patient/lib/utils";
+import { cn } from "@/lib/utils";
 
 type ColorTarget = "primary" | "primaryDark" | "primaryLight";
 

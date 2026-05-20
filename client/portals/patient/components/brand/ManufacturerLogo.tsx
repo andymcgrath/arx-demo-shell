@@ -1,4 +1,4 @@
-import { MANUFACTURER } from "@patient/config/branding";
+import { MANUFACTURER } from "@/config/branding";
 
 // CSS filter to recolour the CoAssist PNG to AssistRx teal #007178
 // Only used while MANUFACTURER.logo.requiresFilter is true (no proper transparent asset yet)

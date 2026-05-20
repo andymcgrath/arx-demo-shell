@@ -1,9 +1,9 @@
-import Header from "@patient/components/Header";
-import Footer from "@patient/components/Footer";
-import WelcomeCard from "@patient/components/home/WelcomeCard";
-import InfoCard from "@patient/components/home/InfoCard";
-import PrescriptionsSection from "@patient/components/home/PrescriptionsSection";
-import SuggestedSection from "@patient/components/home/SuggestedSection";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import WelcomeCard from "@/components/home/WelcomeCard";
+import InfoCard from "@/components/home/InfoCard";
+import PrescriptionsSection from "@/components/home/PrescriptionsSection";
+import SuggestedSection from "@/components/home/SuggestedSection";
 
 export default function Index() {
   return (

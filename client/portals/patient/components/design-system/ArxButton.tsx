@@ -1,4 +1,4 @@
-import { cn } from "@patient/lib/utils";
+import { cn } from "@/lib/utils";
 import { ChevronRight, ChevronLeft, ArrowUpRight } from "lucide-react";
 
 type ButtonVariant = "primary" | "outline" | "ghost" | "link" | "link-arrow" | "tertiary";

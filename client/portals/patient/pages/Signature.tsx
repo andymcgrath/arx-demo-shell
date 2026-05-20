@@ -1,9 +1,9 @@
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { PenLine, ChevronRight } from "lucide-react";
-import Header from "@patient/components/Header";
-import Footer from "@patient/components/Footer";
-import EnrollmentShell from "@patient/components/enrollment/EnrollmentShell";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import EnrollmentShell from "@/components/enrollment/EnrollmentShell";
 
 export default function Signature() {
   const navigate = useNavigate();
