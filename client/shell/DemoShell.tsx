@@ -267,7 +267,7 @@ export default function DemoShell() {
           {/* Logo */}
           <div className="flex items-center px-4 py-2 border-r border-white/10 shrink-0">
             <img
-              src="https://api.builder.io/api/v1/image/assets/TEMP/43a31f0116d6fcfd042b6234bd85d7fff2c5a73b?width=468"
+              src="https://cdn.builder.io/api/v1/image/assets%2F4c828a6b97e546bc967a796675ca457e%2Fcfbb35e5585d498f8ae600f5ebdb6767?format=webp&width=800"
               alt="AssistRx"
               className="h-7 w-auto object-contain"
             />
