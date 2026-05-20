@@ -365,7 +365,7 @@ export default function DemoShell() {
         </div>
 
         {/* Step progress bar */}
-        <div className="px-2 py-6">
+        <div className="px-2 py-4">
           <StepBar />
         </div>
       </header>
