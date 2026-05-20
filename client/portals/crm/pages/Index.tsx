@@ -309,7 +309,8 @@ export default function Index() {
   const [caseSummaryCollapsed, setCaseSummaryCollapsed] = useState(false);
   const [stagesCollapsed, setStagesCollapsed] = useState(false);
   const [openStageTabs, setOpenStageTabs] = useState<Stage[]>([]);
-  const [activeTopTab, setActiveTopTab] = useState<string>("onboarding");
+  const [activeTopTab, setActiveTopTab] = useState<string>("keanu");
+  const [activePatientSubTab, setActivePatientSubTab] = useState<"onboarding" | "enrollment-form">("onboarding");
   const [patientAccountCollapsed, setPatientAccountCollapsed] = useState(false);
   const [patientContactCollapsed, setPatientContactCollapsed] = useState(false);
 
@@ -323,7 +324,7 @@ export default function Index() {
   const handleCloseStageTab = (stageId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setOpenStageTabs((prev) => prev.filter((s) => s.id !== stageId));
-    if (activeTopTab === stageId) setActiveTopTab("onboarding");
+    if (activeTopTab === stageId) setActiveTopTab("keanu");
   };
 
   const activeStage = STAGES.find((s) => s.id === activeTopTab);
@@ -361,60 +362,6 @@ export default function Index() {
             <span className="text-[10px] text-[#706e6b]">DOB: 09/19/1981</span>
           </div>
           <button className="ml-1 p-0.5 rounded hover:bg-[#e5e5e5] transition-colors">
-            <X size={11} className="text-[#706e6b]" />
-          </button>
-        </div>
-
-        {/* Onboarding case tab */}
-        <div
-          className="flex items-center gap-2 px-3 py-2 border border-[#dddbda] cursor-pointer select-none shrink-0 transition-colors"
-          style={{
-            borderRadius: "4px 4px 0 0",
-            marginBottom: -1,
-            background: activeTopTab === "onboarding" ? "#fff" : "#ebe9e9",
-            borderBottomColor: activeTopTab === "onboarding" ? "#fff" : "#dddbda",
-            boxShadow: activeTopTab === "onboarding" ? "0 -1px 3px rgba(0,0,0,0.08)" : "none",
-          }}
-          onClick={() => setActiveTopTab("onboarding")}
-        >
-          <div
-            className="flex items-center justify-center rounded text-white font-bold text-[10px] shrink-0"
-            style={{ width: 18, height: 18, background: "linear-gradient(135deg, #0176d3 0%, #014486 100%)", borderRadius: 4 }}
-          >
-            C
-          </div>
-          <span className="text-[12px] font-semibold text-[#3e3e3c] whitespace-nowrap">Onboarding</span>
-          <button className="ml-1 p-0.5 rounded hover:bg-[#e5e5e5] transition-colors">
-            <X size={11} className="text-[#706e6b]" />
-          </button>
-        </div>
-
-        {/* Enrollment Form tab */}
-        <div
-          className="flex items-center gap-2 px-3 py-2 border border-[#dddbda] cursor-pointer select-none shrink-0 transition-colors"
-          style={{
-            borderRadius: "4px 4px 0 0",
-            marginBottom: -1,
-            background: activeTopTab === "enrollment-form" ? "#fff" : "#ebe9e9",
-            borderBottomColor: activeTopTab === "enrollment-form" ? "#fff" : "#dddbda",
-            boxShadow: activeTopTab === "enrollment-form" ? "0 -1px 3px rgba(0,0,0,0.08)" : "none",
-          }}
-          onClick={() => setActiveTopTab("enrollment-form")}
-        >
-          <div
-            className="flex items-center justify-center rounded shrink-0"
-            style={{ width: 18, height: 18, background: "#6b5ecd", borderRadius: 4 }}
-          >
-            <FileText size={10} className="text-white" />
-          </div>
-          <div className="flex flex-col leading-tight">
-            <span className="text-[12px] font-semibold text-[#3e3e3c] whitespace-nowrap">FAX-2026-00431</span>
-            <span className="text-[10px] text-[#706e6b]">Enrollment Form</span>
-          </div>
-          <button
-            className="ml-1 p-0.5 rounded hover:bg-[#e5e5e5] transition-colors"
-            onClick={(e) => { e.stopPropagation(); setActiveTopTab("onboarding"); }}
-          >
             <X size={11} className="text-[#706e6b]" />
           </button>
         </div>
@@ -457,7 +404,52 @@ export default function Index() {
       </div>
 
       {/* ── Content area (conditional on active Row 1 tab) ──────────────────── */}
-      {activeTopTab === "enrollment-form" ? (
+      {activeTopTab === "keanu" ? (
+        /* ── Patient view with sub-tabs */
+        <>
+          {/* Sub-tab strip: Onboarding | FAX-2026-00431 */}
+          <div className="border-b border-[#dddbda] flex items-end px-2 gap-0 bg-white">
+            <button
+              onClick={() => setActivePatientSubTab("onboarding")}
+              className={`flex items-center gap-2 px-4 py-3 text-[13px] whitespace-nowrap relative shrink-0 transition-colors ${
+                activePatientSubTab === "onboarding" ? "font-semibold" : "text-[#706e6b] hover:text-[#3e3e3c]"
+              }`}
+              style={{ color: activePatientSubTab === "onboarding" ? SF_BLUE : undefined }}
+            >
+              <div
+                className="flex items-center justify-center rounded text-white font-bold text-[10px] shrink-0"
+                style={{ width: 16, height: 16, background: "linear-gradient(135deg, #0176d3 0%, #014486 100%)", borderRadius: 3 }}
+              >C</div>
+              Onboarding
+              {activePatientSubTab === "onboarding" && (
+                <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: SF_BLUE }} />
+              )}
+            </button>
+            <button
+              onClick={() => setActivePatientSubTab("enrollment-form")}
+              className={`flex items-center gap-2 px-4 py-3 text-[13px] whitespace-nowrap relative shrink-0 transition-colors ${
+                activePatientSubTab === "enrollment-form" ? "font-semibold" : "text-[#706e6b] hover:text-[#3e3e3c]"
+              }`}
+              style={{ color: activePatientSubTab === "enrollment-form" ? SF_BLUE : undefined }}
+            >
+              <div
+                className="flex items-center justify-center rounded shrink-0"
+                style={{ width: 16, height: 16, background: "#6b5ecd", borderRadius: 3 }}
+              >
+                <FileText size={9} className="text-white" />
+              </div>
+              <span className="flex flex-col leading-none text-left gap-0">
+                <span>FAX-2026-00431</span>
+                <span className="text-[10px] text-[#706e6b] font-normal">Enrollment Form</span>
+              </span>
+              {activePatientSubTab === "enrollment-form" && (
+                <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: SF_BLUE }} />
+              )}
+            </button>
+          </div>
+
+          {/* Sub-tab content */}
+          {activePatientSubTab === "enrollment-form" ? (
         /* ── Enrollment Form View ──────────────────────────────────────────── */
         <div className="bg-white">
           {/* Doc header */}
@@ -621,116 +613,7 @@ export default function Index() {
 
           </div>
         </div>
-      ) : activeTopTab === "keanu" ? (
-        /* ── Patient Record View ──────────────────────────────────────────── */
-        <>
-          <div className="border-b border-[#dddbda] bg-white">
-            <div className="px-4 pt-2 pb-0">
-              <span className="text-[11px] text-[#706e6b]">Person Account</span>
-            </div>
-            <div className="flex items-center justify-between px-4 py-2 gap-4">
-              <div className="flex items-center gap-3 min-w-0">
-                <div
-                  className="flex items-center justify-center rounded text-white font-bold text-[11px] shrink-0"
-                  style={{ width: 36, height: 36, background: "linear-gradient(135deg, #2dbcbb 0%, #16818a 100%)" }}
-                >
-                  Acco
-                </div>
-                <h1 className="text-[20px] font-bold text-[#3e3e3c] truncate">Keanu Dixon</h1>
-              </div>
-              <div className="flex items-center gap-2 shrink-0 flex-wrap justify-end">
-                <SfButton>+ Follow</SfButton>
-                <SfButton>New Task</SfButton>
-                <SfButton>Create Case</SfButton>
-                <SfButton split>Create Affiliation</SfButton>
-              </div>
-            </div>
-          </div>
-          <div className="border-b border-[#dddbda] bg-white px-4 py-3 flex flex-wrap gap-x-8 gap-y-2">
-            <div className="flex flex-col min-w-[80px]">
-              <span className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium">ARx ID</span>
-              <span className="text-[13px] text-[#3e3e3c]">&nbsp;</span>
-            </div>
-            <div className="flex flex-col min-w-[110px]">
-              <span className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium">Phone</span>
-              <SfLink className="text-[13px]">(555) 867-5309</SfLink>
-            </div>
-            <div className="flex flex-col min-w-[80px]">
-              <span className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium">Birthdate</span>
-              <span className="text-[13px] text-[#3e3e3c]">09/19/1981</span>
-            </div>
-            <div className="flex flex-col min-w-[160px]">
-              <span className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium">Mailing Address</span>
-              <SfLink className="text-[13px]">United States</SfLink>
-            </div>
-            <div className="flex flex-col min-w-[100px]">
-              <span className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium">Account Source</span>
-              <span className="text-[13px] text-[#3e3e3c]">&nbsp;</span>
-            </div>
-          </div>
-          <div className="p-4">
-            <div className="border border-[#dddbda] rounded mb-4">
-              <SectionHeader
-                title="Account Information"
-                collapsed={patientAccountCollapsed}
-                onToggle={() => setPatientAccountCollapsed(!patientAccountCollapsed)}
-              />
-              {!patientAccountCollapsed && (
-                <div className="grid grid-cols-2 gap-x-6 px-4 pt-1 pb-2">
-                  <div>
-                    <FieldRow label="Account Name" value="Keanu Dixon" />
-                    <FieldRow label="ARx ID" />
-                    <FieldRow label="Birthdate" value="09/19/1981" />
-                    <FieldRow label="Preferred Name" />
-                    <FieldRow label="Gender" />
-                    <FieldRow label="Age" value="44" />
-                  </div>
-                  <div>
-                    <div className="group relative flex flex-col py-2 border-b border-[#dddbda] pr-6 min-h-[44px]">
-                      <span className="text-[11px] text-[#706e6b] mb-0.5 uppercase tracking-wide font-medium leading-tight">Account Owner</span>
-                      <div className="flex items-center gap-1.5">
-                        <div className="flex items-center justify-center rounded-full bg-[#ecebea] shrink-0" style={{ width: 18, height: 18 }}>
-                          <User size={10} className="text-[#706e6b]" />
-                        </div>
-                        <SfLink className="text-[13px]">AssistRx QA</SfLink>
-                      </div>
-                      <button className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity p-1">
-                        <Pencil size={12} className="text-[#706e6b]" />
-                      </button>
-                    </div>
-                    <FieldRow label="Account Record Type" value="Patient" />
-                    <FieldRow label="Status" value="Active" />
-                    <FieldRow label="Territory" />
-                    <FieldRow label="External Patient Id" />
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="border border-[#dddbda] rounded">
-              <SectionHeader
-                title="Contact Information"
-                collapsed={patientContactCollapsed}
-                onToggle={() => setPatientContactCollapsed(!patientContactCollapsed)}
-              />
-              {!patientContactCollapsed && (
-                <div className="grid grid-cols-2 gap-x-6 px-4 pt-1 pb-2">
-                  <div>
-                    <FieldRow label="Email" />
-                    <FieldRow label="Mobile" value="(555) 867-5309" isLink />
-                    <FieldRow label="Home Phone" />
-                    <FieldRow label="Other Phone" />
-                  </div>
-                  <div>
-                    <FieldRow label="Fax" />
-                    <FieldRow label="Mailing City" />
-                    <FieldRow label="Mailing State/Province" />
-                    <FieldRow label="Mailing Zip/Postal Code" />
-                    <FieldRow label="Mailing Country" />
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+          ) : null}
         </>
       ) : activeStage ? (
         /* ── Stage Detail View ───────────────────────────────────────────── */
@@ -774,7 +657,9 @@ export default function Index() {
             </div>
           </div>
         </div>
-      ) : (
+      ) : null}
+      {/* ── Onboarding Case Record (shown when keanu + onboarding sub-tab) ─ */}
+      {activeTopTab === "keanu" && activePatientSubTab === "onboarding" && (
         <>
           {/* Case Record Header */}
           <div className="border-b border-[#dddbda] bg-white">
@@ -1115,7 +1000,7 @@ export default function Index() {
                             <span
                               className="cursor-pointer hover:underline font-medium"
                               style={{ color: SF_BLUE }}
-                              onClick={() => setActiveTopTab("enrollment-form")}
+                              onClick={() => setActivePatientSubTab("enrollment-form")}
                             >
                               {doc.fileId}
                             </span>
@@ -1125,7 +1010,7 @@ export default function Index() {
                           <span
                             className="cursor-pointer hover:underline"
                             style={{ color: SF_BLUE }}
-                            onClick={() => setActiveTopTab("enrollment-form")}
+                            onClick={() => setActivePatientSubTab("enrollment-form")}
                           >
                             {doc.fileName}
                           </span>
