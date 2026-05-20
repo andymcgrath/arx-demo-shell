@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "@/lib/portalRouter";
+import { useDemoStore } from "@/store/demoStore";
 import { ClipboardList, Camera, Check } from "lucide-react";
 import EnrollmentShell from "@/components/enrollment/EnrollmentShell";
 
@@ -10,6 +11,7 @@ interface UploadedFile {
 
 export default function UploadInsurance() {
   const navigate = useNavigate();
+  const enrollPatient = useDemoStore((s) => s.enrollPatient);
   const frontRef = useRef<HTMLInputElement>(null);
   const backRef = useRef<HTMLInputElement>(null);
   const [frontFile, setFrontFile] = useState<UploadedFile | null>(null);
@@ -55,7 +57,7 @@ export default function UploadInsurance() {
           {/* Submit button */}
           <div className="mt-6">
             <button
-              onClick={() => navigate("/enrollment-complete")}
+              onClick={() => { enrollPatient(); navigate("/enrollment-complete"); }}
               disabled={!bothUploaded}
               className={`w-full font-semibold py-4 rounded-lg flex items-center justify-center gap-2 transition-colors ${
                 bothUploaded
@@ -69,7 +71,7 @@ export default function UploadInsurance() {
           </div>
 
           <button
-            onClick={() => navigate("/enrollment-complete")}
+            onClick={() => { enrollPatient(); navigate("/enrollment-complete"); }}
             className="w-full mt-3 text-sm text-arx-body-copy hover:text-arx-slate transition-colors text-center"
           >
             Skip for now

@@ -65,6 +65,7 @@ export interface DemoEvent {
 
 export interface DemoActions {
   // enrollment
+  sendEnrollmentInvite: () => void;
   enrollPatient: () => void;
   // benefits investigation
   runBI: () => void;
@@ -187,6 +188,14 @@ export const useDemoStore = create<DemoStore>()(
           createdAt: new Date().toISOString(),
         };
         set((s) => ({ events: [...s.events, event] }));
+      },
+
+      sendEnrollmentInvite(): void {
+        get()._snapshot();
+        const now = new Date().toISOString();
+        set({ enrollmentStatus: "enrolled", updatedAt: now, updatedBy: "HUB" });
+        set({ workflowStep: get()._deriveStep() });
+        get()._logEvent("enrollment_invited", "HUB");
       },
 
       enrollPatient(): void {

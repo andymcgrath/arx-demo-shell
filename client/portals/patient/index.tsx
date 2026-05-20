@@ -54,7 +54,6 @@ function derivePatientRoute(state: ReturnType<typeof useDemoStore.getState>): st
   if (state.paStatus === "approved")        return "/pa-approved";
   if (state.paStatus === "submitted")       return "/pa-status";
   if (state.consentStatus === "confirmed")  return "/enrollment-complete";
-  if (state.enrollmentStatus === "enrolled") return "/consent";
   return "/";
 }
 
