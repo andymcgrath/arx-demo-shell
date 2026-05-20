@@ -39,12 +39,7 @@ function RadioUncheckedIcon() {
 function AssistRxLogo() {
   return (
     <div className="provider-portal-wordmark">
-      <img
-        src="https://cdn.builder.io/api/v1/image/assets%2F4c828a6b97e546bc967a796675ca457e%2Fcfbb35e5585d498f8ae600f5ebdb6767?format=webp&width=800"
-        alt="AssistRx"
-        className="assistrx-sidebar-logo"
-      />
-      <span className="provider-portal-wordmark__label">Provider Portal</span>
+      <span className="provider-portal-wordmark__title">Provider Portal</span>
     </div>
   );
 }
