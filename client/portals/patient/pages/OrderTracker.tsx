@@ -1,17 +1,11 @@
 import { ChevronRight, Check } from "lucide-react";
 import { useNavigate } from "@/lib/portalRouter";
+import { useDemoStore } from "@/store/demoStore";
 const ORDER_NUMBER = "428046573";
 const ORDER_DATE = "May 23, 2026";
 
-const STEPS = [
-  { n: 1, label: "Order received", sub: ORDER_DATE, status: "done" },
-  { n: 2, label: "Preparing medication", sub: "In process", status: "active" },
-  { n: 3, label: "Ready for delivery", sub: null, status: "pending" },
-  { n: 4, label: "In transit", sub: null, status: "pending" },
-  { n: 5, label: "Delivered", sub: null, status: "pending" },
-] as const;
-
 type StepStatus = "done" | "active" | "pending";
+type StepDef = { n: number; label: string; sub: string | null; status: StepStatus };
 
 function StepIcon({ n, status }: { n: number; status: StepStatus }) {
   if (status === "done") return (
@@ -31,7 +25,7 @@ function StepIcon({ n, status }: { n: number; status: StepStatus }) {
   );
 }
 
-function StepRow({ step, onClick }: { step: typeof STEPS[number]; onClick?: () => void }) {
+function StepRow({ step, onClick }: { step: StepDef; onClick?: () => void }) {
   const isActive = step.status === "active";
   return (
     <button
@@ -48,8 +42,20 @@ function StepRow({ step, onClick }: { step: typeof STEPS[number]; onClick?: () =
   );
 }
 
+function buildSteps(isReady: boolean): StepDef[] {
+  return [
+    { n: 1, label: "Order received",       sub: ORDER_DATE,  status: "done" },
+    { n: 2, label: "Preparing medication", sub: isReady ? "Complete" : "In process", status: isReady ? "done" : "active" },
+    { n: 3, label: "Ready for delivery",   sub: isReady ? ORDER_DATE : null, status: isReady ? "active" : "pending" },
+    { n: 4, label: "In transit",           sub: null,         status: "pending" },
+    { n: 5, label: "Delivered",            sub: null,         status: "pending" },
+  ];
+}
+
 export default function OrderTracker() {
   const navigate = useNavigate();
+  const pharmacyStatus = useDemoStore((s) => s.pharmacyStatus);
+  const steps = buildSteps(pharmacyStatus === "ready");
   return (
     <main className="flex-grow pb-8">
         <div className="max-w-lg mx-auto px-4 space-y-5">
@@ -75,8 +81,8 @@ export default function OrderTracker() {
               <h3 className="font-semibold text-sm text-arx-primary">Assistivan delivery status</h3>
             </div>
             <div className="space-y-2">
-              {STEPS.map(step => (
-                <StepRow key={step.n} step={step} onClick={step.n === 2 ? () => navigate("/order-shipped") : undefined} />
+              {steps.map(step => (
+                <StepRow key={step.n} step={step} />
               ))}
             </div>
           </section>

@@ -448,6 +448,8 @@ export default function Index() {
   const runBI = useDemoStore((s) => s.runBI);
   const completeBI = useDemoStore((s) => s.completeBI);
   const fillRx = useDemoStore((s) => s.fillRx);
+  const readyRx = useDemoStore((s) => s.readyRx);
+  const shipRx = useDemoStore((s) => s.shipRx);
   const approvePA = useDemoStore((s) => s.approvePA);
   const isPapFlow = flowType === "Fax_PAP_Audit";
   const [selectedPharmacy, setSelectedPharmacy] = useState("Biologics");
@@ -530,6 +532,8 @@ export default function Index() {
     ? { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "Pending", statusDetail: "Awaiting PAP enrollment", isComplete: false, isNotStarted: true, fields: [{ label: "Pharmacy", value: selectedPharmacy }], lastUpdated: null, lastUpdatedAgo: null }
     : pharmacyStatus === "processing"
     ? { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "In Progress", statusDetail: "First dispense processing", isComplete: false, isNotStarted: false, fields: [{ label: "Pharmacy", value: selectedPharmacy }, { label: "First Dispense", value: "Initiated" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" }
+    : pharmacyStatus === "ready"
+    ? { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "In Progress", statusDetail: "Ready for delivery", isComplete: false, isNotStarted: false, fields: [{ label: "Pharmacy", value: selectedPharmacy }, { label: "First Dispense", value: "Ready" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" }
     : { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "Complete", statusDetail: "First dispense shipped", isComplete: true, isNotStarted: false, fields: [{ label: "Pharmacy", value: selectedPharmacy }, { label: "First Dispense", value: "Shipped" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" };
 
   const auditStage: Stage = papStatus !== "audit_pending" && paStatus === "none"
@@ -1165,7 +1169,12 @@ export default function Index() {
                               <button
                                 key={sp}
                                 className="w-full text-left px-3 py-2 text-[13px] hover:bg-[#f3f3f3] transition-colors flex items-center justify-between"
-                                onClick={() => { setSelectedPharmacy(sp); setPharmacyPickerOpen(false); }}
+                                onClick={() => {
+                  setSelectedPharmacy(sp);
+                  setPharmacyPickerOpen(false);
+                  readyRx();
+                  setTimeout(() => shipRx(), 10000);
+                }}
                               >
                                 <span className={selectedPharmacy === sp ? "font-semibold" : ""}>{sp}</span>
                                 {selectedPharmacy === sp && (

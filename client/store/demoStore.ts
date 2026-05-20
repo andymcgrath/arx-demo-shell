@@ -39,7 +39,7 @@ export interface DemoState {
   qsStatus: "none" | "active" | "discontinued";
   papStatus: "none" | "active" | "audit_pending" | "discontinued";
   incomeStatus: "none" | "verified" | "ineligible";
-  pharmacyStatus: "none" | "processing" | "shipped" | "delivered";
+  pharmacyStatus: "none" | "processing" | "ready" | "shipped" | "delivered";
 
   // timestamps
   paSubmittedAt: string | null;
@@ -90,6 +90,7 @@ export interface DemoActions {
   discontinuePAP: () => void;
   // pharmacy
   fillRx: () => void;
+  readyRx: () => void;
   shipRx: () => void;
   deliverRx: () => void;
   // flow
@@ -297,6 +298,14 @@ export const useDemoStore = create<DemoStore>()(
         get()._snapshot();
         set({ papStatus: "discontinued", updatedAt: new Date().toISOString(), updatedBy: "HUB" });
         get()._logEvent("pap_discontinued", "HUB");
+      },
+
+      readyRx(): void {
+        get()._snapshot();
+        const now = new Date().toISOString();
+        set({ pharmacyStatus: "ready", updatedAt: now, updatedBy: "HUB" });
+        set({ workflowStep: get()._deriveStep() });
+        get()._logEvent("rx_ready", "HUB");
       },
 
       fillRx(): void {
