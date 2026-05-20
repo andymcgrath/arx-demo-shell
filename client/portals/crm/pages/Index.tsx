@@ -450,7 +450,7 @@ export default function Index() {
   const [selectedPharmacy, setSelectedPharmacy] = useState("Biologics");
   const [pharmacyPickerOpen, setPharmacyPickerOpen] = useState(false);
   const [activeCaseTab, setActiveCaseTab] = useState("summary");
-  const [activeRightTab, setActiveRightTab] = useState(isFaxFlow ? "missing-info" : "quick-answers");
+  const [activeRightTab, setActiveRightTab] = useState("quick-answers");
   const [caseSummaryCollapsed, setCaseSummaryCollapsed] = useState(false);
   const [stagesCollapsed, setStagesCollapsed] = useState(false);
   const [openStageTabs, setOpenStageTabs] = useState<Stage[]>([]);
