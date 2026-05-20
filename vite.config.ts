@@ -6,52 +6,67 @@ import fs from "fs";
 /**
  * portalAliasPlugin
  *
- * Each portal was originally a standalone app where `@/` pointed to its own
- * `client/` directory. In the shell, `@/` points to the shell's `client/`.
+ * Each portal was originally a standalone Vite app where `@/` pointed to its
+ * own `client/` directory.  In the shell `@/` points to the shell's `client/`.
  *
- * This plugin intercepts `@/` imports from within a portal directory and
- * resolves them to that portal's local folder first. If the file doesn't exist
- * there, it falls back to the shell's `client/` (the default `@/` alias), so
- * shared bridges like `@/hooks/useDemoState` still resolve correctly.
+ * Strategy: rewrite `@/` import strings directly in the source code before
+ * vite:import-analysis ever sees them.  A `resolveId` hook is too late —
+ * vite:import-analysis calls an internal resolver that doesn't re-run user
+ * plugin hooks.  The `transform` hook (enforce:"pre") fires first, so we
+ * swap portal-local imports to absolute paths in-place.
+ *
+ * Rule:
+ *   • File is inside  client/portals/<name>/
+ *   • Import starts with  @/
+ *   • client/portals/<name>/<rest-of-path>  exists on disk  → rewrite to that
+ *   • Otherwise leave the import alone  → falls through to the shell @/ alias
+ *     (client/<rest-of-path>), which is where shared bridges live.
  */
-function portalAliasPlugin(): Plugin {
+function portalAliasPlugin(rootDir: string): Plugin {
   const portals = ["crm", "patient", "analytics", "field", "provider"];
-  const extensions = ["", ".ts", ".tsx", "/index.ts", "/index.tsx"];
+  const extensions = [".ts", ".tsx", "/index.ts", "/index.tsx"];
+
+  // Matches:  from "@/foo"  |  from '@/foo'
+  const importRe = /from\s+(['"])@\/([^'"]+)\1/g;
 
   return {
     name: "portal-alias",
-    resolveId(source, importer) {
-      if (!source.startsWith("@/") || !importer) return null;
-
+    enforce: "pre",
+    transform(code, id) {
       for (const portal of portals) {
-        const portalRoot = path.resolve(
-          __dirname,
-          `./client/portals/${portal}`
-        );
+        const portalRoot = path.resolve(rootDir, `client/portals/${portal}`);
+        if (!id.startsWith(portalRoot)) continue;
 
-        if (!importer.startsWith(portalRoot)) continue;
+        // This file is inside a portal — rewrite its @/ imports where possible
+        let changed = false;
+        const result = code.replace(importRe, (match, quote, relPath) => {
+          const localBase = path.resolve(portalRoot, relPath);
 
-        // Resolve relative to the portal's own root
-        const localBase = path.resolve(portalRoot, source.slice(2));
-
-        for (const ext of extensions) {
-          const candidate = localBase + ext;
-          if (fs.existsSync(candidate)) {
-            return candidate;
+          // Check bare path first (directory index), then with extensions
+          for (const ext of ["", ...extensions]) {
+            const candidate = localBase + ext;
+            // Skip if the candidate is the file itself — bridge hooks do
+            // `export * from '@/hooks/useEnrollPatient'` and the portal-local
+            // path resolves back to the same file, causing a circular import.
+            if (candidate === id) continue;
+            if (fs.existsSync(candidate)) {
+              changed = true;
+              return `from ${quote}${candidate}${quote}`;
+            }
           }
-        }
+          // Not found in portal (or only found self) → keep original
+          return match;
+        });
 
-        // File not found in portal — fall through to the default @/ → client/ alias
-        return null;
+        return changed ? { code: result, map: null } : null;
       }
-
       return null;
     },
   };
 }
 
 export default defineConfig({
-  plugins: [portalAliasPlugin(), react()],
+  plugins: [portalAliasPlugin(path.resolve(__dirname, ".")), react()],
   resolve: {
     alias: {
       // Shell-level alias — shared hooks, store, shell components
