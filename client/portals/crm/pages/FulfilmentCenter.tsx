@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link } from "@/lib/portalRouter";
-import { ChevronRight, ChevronDown, CheckCircle2, ArrowLeft, Loader2 } from "lucide-react";
+import { ChevronRight, ChevronDown, CheckCircle2, ArrowLeft, Loader2, MessageSquare, Send } from "lucide-react";
 import { usePatientCase } from "../hooks/usePatientCase";
 import { useEnrollPatient } from "../hooks/useEnrollPatient";
 
 const CASE_ID = "demo";
+const FC_BLUE = "#0176d3";
 
 // ─── Tree Node Types ────────────────────────────────────────────────────────
 
@@ -89,7 +90,6 @@ function MaterialCatalog({
           const isOpen = expanded[group.id];
           return (
             <div key={group.id}>
-              {/* Group row */}
               <div
                 className="flex items-center gap-1 py-1 px-1 cursor-pointer hover:bg-[#f3f2f2] rounded select-none"
                 onClick={() => group.children && toggle(group.id)}
@@ -106,7 +106,6 @@ function MaterialCatalog({
                 <span className="text-[#3e3e3c]">{group.label}</span>
               </div>
 
-              {/* Children */}
               {isOpen && group.children && (
                 <div className="pl-4">
                   {group.children.map((child) => {
@@ -116,11 +115,8 @@ function MaterialCatalog({
                         key={child.id}
                         className="flex flex-col py-1 px-2 cursor-pointer truncate rounded-sm"
                         style={{
-                          borderLeft: isSelected
-                            ? "3px solid #0176d3"
-                            : "3px solid transparent",
+                          borderLeft: isSelected ? "3px solid #0176d3" : "3px solid transparent",
                           background: isSelected ? "#eaf4ff" : undefined,
-                          color: isSelected ? "#0176d3" : "#3e3e3c",
                         }}
                         onClick={() => onSelect(child.id)}
                         title={`${child.label} (${child.sublabel})`}
@@ -154,14 +150,16 @@ function MaterialCatalog({
 
 function ItemDetails({
   consentStatus,
+  orderAdded,
   onAddToOrder,
   isLoading,
 }: {
   consentStatus: string;
+  orderAdded: boolean;
   onAddToOrder: () => void;
   isLoading: boolean;
 }) {
-  const disabled = consentStatus !== "pending";
+  const disabled = consentStatus !== "pending" || orderAdded;
 
   return (
     <div className="flex flex-col h-full">
@@ -186,12 +184,12 @@ function ItemDetails({
           disabled={disabled || isLoading}
           className="flex items-center gap-2 px-5 py-1.5 text-[13px] font-medium rounded text-white transition-opacity"
           style={{
-            background: disabled || isLoading ? "#aaabac" : "#0176d3",
+            background: disabled || isLoading ? "#aaabac" : FC_BLUE,
             cursor: disabled || isLoading ? "not-allowed" : "pointer",
           }}
         >
           {isLoading && <Loader2 size={13} className="animate-spin" />}
-          Add to Order
+          {orderAdded ? "Added to Order" : "Add to Order"}
         </button>
       </div>
     </div>
@@ -200,10 +198,87 @@ function ItemDetails({
 
 // ─── Column 3: Order Details ─────────────────────────────────────────────────
 
-function OrderDetails() {
+function OrderDetails({
+  orderAdded,
+  patientName,
+  phone,
+  email,
+  contactMethod,
+}: {
+  orderAdded: boolean;
+  patientName: string;
+  phone: string;
+  email: string;
+  contactMethod: "phone" | "email";
+}) {
+  if (!orderAdded) {
+    return (
+      <div className="flex flex-col h-full">
+        <PanelLabel>Order Details</PanelLabel>
+        <div className="flex items-center justify-center flex-1">
+          <span className="text-[12px] text-[#706e6b]">No items added to order yet.</span>
+        </div>
+      </div>
+    );
+  }
+
+  const isPhone = contactMethod === "phone";
+  const destination = isPhone ? phone : email;
+  const messageText = `Hi ${patientName.split(" ")[0]}, AssistRx is contacting you on behalf of your prescriber regarding your prescription enrollment. Please review and provide your communication consent by clicking the link below:\n\nhttps://arx.io/consent/${CASE_ID}\n\nReply STOP to opt out.`;
+
   return (
     <div className="flex flex-col h-full">
       <PanelLabel>Order Details</PanelLabel>
+
+      {/* Order line item */}
+      <div
+        className="border border-[#dddbda] rounded p-3 mb-4"
+        style={{ background: "#f9f9f9" }}
+      >
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[13px] font-semibold text-[#3e3e3c]">Electronic Consent</span>
+          <span
+            className="text-[11px] px-2 py-0.5 rounded font-medium"
+            style={{ background: "#e8f4ef", color: "#2e844a" }}
+          >
+            Ready
+          </span>
+        </div>
+        <div className="text-[12px] text-[#706e6b]">CommunicationConsent · ElectronicConsent</div>
+        <div className="text-[12px] text-[#706e6b] mt-1">
+          Via: <span className="font-medium text-[#3e3e3c]">{isPhone ? "SMS" : "Email"}</span> → {destination}
+        </div>
+      </div>
+
+      {/* Message preview */}
+      <div className="text-[11px] text-[#706e6b] uppercase tracking-wider font-medium mb-2 flex items-center gap-1.5">
+        <MessageSquare size={12} />
+        Message Preview
+      </div>
+      <div
+        className="rounded-lg p-3 text-[13px] leading-relaxed whitespace-pre-wrap relative"
+        style={{
+          background: "#e8f4ff",
+          color: "#1a1a2e",
+          border: "1px solid #c7dffa",
+          fontFamily: "system-ui, -apple-system, sans-serif",
+        }}
+      >
+        {messageText}
+        {/* Bubble tail */}
+        <div
+          className="absolute -bottom-2 left-4 w-0 h-0"
+          style={{
+            borderLeft: "8px solid transparent",
+            borderRight: "8px solid transparent",
+            borderTop: "8px solid #e8f4ff",
+          }}
+        />
+      </div>
+
+      <div className="mt-3 text-[11px] text-[#706e6b]">
+        Sending to: <span className="font-medium text-[#3e3e3c]">{destination}</span>
+      </div>
     </div>
   );
 }
@@ -216,16 +291,20 @@ function AccountInformation({
   email,
   contactMethod,
   onContactMethodChange,
-  onSendRequest,
-  isSending,
+  orderAdded,
+  onPlaceOrder,
+  isPlacing,
+  orderPlaced,
 }: {
   patientName: string;
   phone: string;
   email: string;
-  contactMethod: "phone" | "email" | null;
+  contactMethod: "phone" | "email";
   onContactMethodChange: (v: "phone" | "email") => void;
-  onSendRequest: () => void;
-  isSending: boolean;
+  orderAdded: boolean;
+  onPlaceOrder: () => void;
+  isPlacing: boolean;
+  orderPlaced: boolean;
 }) {
   return (
     <div className="flex flex-col h-full">
@@ -246,11 +325,12 @@ function AccountInformation({
           checked={contactMethod === "phone"}
           onChange={() => onContactMethodChange("phone")}
           className="accent-[#0176d3] w-3.5 h-3.5 cursor-pointer"
+          disabled={orderAdded}
         />
         <span className="text-[13px] text-[#3e3e3c]">{phone}</span>
         <span
           className="text-[11px] px-1.5 py-0.5 rounded"
-          style={{ background: "#e8f0fe", color: "#0176d3", fontWeight: 500 }}
+          style={{ background: "#e8f0fe", color: FC_BLUE, fontWeight: 500 }}
         >
           MOBILE
         </span>
@@ -265,11 +345,12 @@ function AccountInformation({
           checked={contactMethod === "email"}
           onChange={() => onContactMethodChange("email")}
           className="accent-[#0176d3] w-3.5 h-3.5 cursor-pointer"
+          disabled={orderAdded}
         />
-        <span className="text-[13px] text-[#3e3e3c]">{email}</span>
+        <span className="text-[13px] text-[#3e3e3c] truncate">{email}</span>
         <span
-          className="text-[11px] px-1.5 py-0.5 rounded"
-          style={{ background: "#e8f0fe", color: "#0176d3", fontWeight: 500 }}
+          className="text-[11px] px-1.5 py-0.5 rounded shrink-0"
+          style={{ background: "#e8f0fe", color: FC_BLUE, fontWeight: 500 }}
         >
           EMAIL
         </span>
@@ -278,32 +359,49 @@ function AccountInformation({
       <div className="mt-3 flex flex-col gap-0.5">
         <a
           href={`mailto:${email}`}
-          className="text-[13px] hover:underline"
-          style={{ color: "#0176d3" }}
+          className="text-[13px] hover:underline truncate"
+          style={{ color: FC_BLUE }}
         >
           {email}
         </a>
-        <span className="text-[13px]" style={{ color: "#0176d3" }}>
+        <span className="text-[13px]" style={{ color: FC_BLUE }}>
           {phone}
         </span>
       </div>
 
-      <div className="mt-auto pt-4 flex justify-end">
-        <button
-          onClick={onSendRequest}
-          disabled={!contactMethod || isSending}
-          className="flex items-center gap-2 px-4 py-1.5 text-[13px] font-medium rounded border transition-colors"
-          style={{
-            background: !contactMethod || isSending ? "#f3f2f2" : "white",
-            color: !contactMethod || isSending ? "#aaabac" : "#3e3e3c",
-            borderColor: "#dddbda",
-            cursor: !contactMethod || isSending ? "not-allowed" : "pointer",
-          }}
-        >
-          {isSending && <Loader2 size={13} className="animate-spin" />}
-          Send Consent Request
-        </button>
-      </div>
+      {/* Place Order button — shown after Add to Order */}
+      {orderAdded && (
+        <div className="mt-4 pt-4 border-t border-[#dddbda]">
+          <button
+            onClick={onPlaceOrder}
+            disabled={isPlacing || orderPlaced}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 text-[13px] font-semibold rounded text-white transition-colors"
+            style={{
+              background: orderPlaced ? "#2e844a" : isPlacing ? "#0056a3" : FC_BLUE,
+              cursor: isPlacing || orderPlaced ? "not-allowed" : "pointer",
+              border: "none",
+            }}
+          >
+            {isPlacing && <Loader2 size={13} className="animate-spin" />}
+            {orderPlaced ? (
+              <>
+                <CheckCircle2 size={14} style={{ stroke: "white" }} />
+                Order Placed
+              </>
+            ) : (
+              <>
+                <Send size={13} />
+                Place Order
+              </>
+            )}
+          </button>
+          {!orderPlaced && (
+            <p className="text-[11px] text-[#706e6b] mt-1.5 text-center">
+              Sends consent request to patient
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -313,16 +411,19 @@ function AccountInformation({
 export default function FulfilmentCenter() {
   const [selectedItem, setSelectedItem] = useState("electronic-consent");
   const [contactMethod, setContactMethod] = useState<"phone" | "email">("phone");
+  const [orderAdded, setOrderAdded] = useState(false);
+  const [orderPlaced, setOrderPlaced] = useState(false);
 
   const { data: patientCase, isLoading: caseLoading } = usePatientCase(CASE_ID);
   const enrollMutation = useEnrollPatient();
 
   const handleAddToOrder = () => {
-    enrollMutation.mutate({ caseId: CASE_ID, contactMethod });
+    setOrderAdded(true);
   };
 
-  const handleSendRequest = () => {
+  const handlePlaceOrder = () => {
     enrollMutation.mutate({ caseId: CASE_ID, contactMethod });
+    setOrderPlaced(true);
   };
 
   const consentStatus = patientCase?.consentStatus ?? "pending";
@@ -340,7 +441,7 @@ export default function FulfilmentCenter() {
         <Link
           to="/"
           className="absolute left-4 flex items-center gap-1 text-[12px] hover:underline"
-          style={{ color: "#0176d3" }}
+          style={{ color: FC_BLUE }}
         >
           <ArrowLeft size={13} />
           Back to Record
@@ -361,25 +462,20 @@ export default function FulfilmentCenter() {
       </div>
 
       {/* 4-column body */}
-      <div
-        className="flex flex-1"
-        style={{ minHeight: 380 }}
-      >
+      <div className="flex flex-1" style={{ minHeight: 380 }}>
+
         {/* Col 1 — Material Catalog (~21%) */}
         <div
           className="border-r border-[#dddbda] p-3 overflow-y-auto"
           style={{ flexBasis: "21%", minWidth: 180 }}
         >
-          <MaterialCatalog
-            selectedId={selectedItem}
-            onSelect={setSelectedItem}
-          />
+          <MaterialCatalog selectedId={selectedItem} onSelect={setSelectedItem} />
         </div>
 
-        {/* Col 2 — Item Details (~29%) */}
+        {/* Col 2 — Item Details (~25%) */}
         <div
           className="border-r border-[#dddbda] p-4 overflow-y-auto"
-          style={{ flexBasis: "29%", minWidth: 220 }}
+          style={{ flexBasis: "25%", minWidth: 200 }}
         >
           {caseLoading ? (
             <div className="flex items-center justify-center h-full">
@@ -388,18 +484,31 @@ export default function FulfilmentCenter() {
           ) : (
             <ItemDetails
               consentStatus={consentStatus}
+              orderAdded={orderAdded}
               onAddToOrder={handleAddToOrder}
-              isLoading={enrollMutation.isPending}
+              isLoading={false}
             />
           )}
         </div>
 
-        {/* Col 3 — Order Details (~29%) */}
+        {/* Col 3 — Order Details (~33%) */}
         <div
           className="border-r border-[#dddbda] p-4 overflow-y-auto"
-          style={{ flexBasis: "29%", minWidth: 220 }}
+          style={{ flexBasis: "33%", minWidth: 220 }}
         >
-          <OrderDetails />
+          {caseLoading ? (
+            <div className="flex items-center justify-center h-full">
+              <Loader2 size={20} className="animate-spin text-[#706e6b]" />
+            </div>
+          ) : (
+            <OrderDetails
+              orderAdded={orderAdded}
+              patientName={patientCase?.patientName ?? ""}
+              phone={patientCase?.phone ?? ""}
+              email={patientCase?.email ?? ""}
+              contactMethod={contactMethod}
+            />
+          )}
         </div>
 
         {/* Col 4 — Account Information (~21%) */}
@@ -418,8 +527,10 @@ export default function FulfilmentCenter() {
               email={patientCase?.email ?? ""}
               contactMethod={contactMethod}
               onContactMethodChange={setContactMethod}
-              onSendRequest={handleSendRequest}
-              isSending={enrollMutation.isPending}
+              orderAdded={orderAdded}
+              onPlaceOrder={handlePlaceOrder}
+              isPlacing={enrollMutation.isPending}
+              orderPlaced={orderPlaced}
             />
           )}
         </div>
