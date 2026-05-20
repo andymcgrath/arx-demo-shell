@@ -536,9 +536,9 @@ export default function Index() {
     : { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "Complete", statusDetail: "First dispense shipped", isComplete: true, isNotStarted: false, fields: [{ label: "Pharmacy", value: selectedPharmacy }, { label: "First Dispense", value: "Shipped" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" };
 
   const psStage: Stage = pharmacyStatus === "shipped"
-    ? { id: "PS-14278", name: "Pharmacy Status", statusLabel: "In Transit", statusDetail: "First dispense shipped — in transit to patient", isComplete: false, isNotStarted: false, fields: [{ label: "Carrier", value: "FedEx" }, { label: "Est. Delivery", value: "May 26, 2026" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" }
+    ? { id: "PS-14278", name: "Pharmacy Status", statusLabel: "In Transit", statusDetail: "First dispense shipped — in transit to patient", isComplete: false, isNotStarted: false, fields: [{ label: "Carrier", value: "FedEx" }, { label: "Tracking #", value: "775899987245" }, { label: "Est. Delivery", value: "May 26, 2026" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" }
     : pharmacyStatus === "delivered"
-    ? { id: "PS-14278", name: "Pharmacy Status", statusLabel: "Complete", statusDetail: "First dispense delivered", isComplete: true, isNotStarted: false, fields: [{ label: "Carrier", value: "FedEx" }, { label: "Delivered", value: "May 26, 2026" }], lastUpdated: "5/26/2026", lastUpdatedAgo: "today" }
+    ? { id: "PS-14278", name: "Pharmacy Status", statusLabel: "Complete", statusDetail: "First dispense delivered", isComplete: true, isNotStarted: false, fields: [{ label: "Carrier", value: "FedEx" }, { label: "Tracking #", value: "775899987245" }, { label: "Delivered", value: "May 26, 2026" }], lastUpdated: "5/26/2026", lastUpdatedAgo: "today" }
     : { id: "PS-14278", name: "Pharmacy Status", statusLabel: "Stage not started", statusDetail: "No Status available", isComplete: false, isNotStarted: true, fields: [], lastUpdated: null, lastUpdatedAgo: null };
 
   const auditStage: Stage = papStatus !== "audit_pending" && paStatus === "none"
