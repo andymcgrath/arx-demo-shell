@@ -20,7 +20,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDemoStore, type FlowType } from "@/store/demoStore";
 import {
-  RefreshCw, Undo2, Zap, ChevronDown,
+  RefreshCw, Undo2, ChevronDown,
   LayoutTemplate, LayoutPanelLeft, LayoutGrid,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -265,11 +265,12 @@ export default function DemoShell() {
         {/* Top row */}
         <div className="flex items-stretch">
           {/* Logo */}
-          <div className="flex items-center gap-2 px-4 py-2.5 border-r border-white/10 shrink-0">
-            <div className="w-7 h-7 rounded-md bg-indigo-500 flex items-center justify-center">
-              <Zap size={14} className="text-white" />
-            </div>
-            <span className="text-sm font-bold tracking-tight whitespace-nowrap">ARXConnect</span>
+          <div className="flex items-center px-4 py-2 border-r border-white/10 shrink-0">
+            <img
+              src="https://api.builder.io/api/v1/image/assets/TEMP/43a31f0116d6fcfd042b6234bd85d7fff2c5a73b?width=468"
+              alt="AssistRx"
+              className="h-7 w-auto object-contain"
+            />
           </div>
 
           {/* Portal tabs (single-panel mode: clicking selects that portal) */}

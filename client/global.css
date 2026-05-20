@@ -143,6 +143,12 @@
   margin-bottom: 40px;
 }
 
+.assistrx-sidebar-logo {
+  width: 160px;
+  height: auto;
+  object-fit: contain;
+}
+
 .provider-sidebar__illustration {
   flex: 1;
   display: flex;
