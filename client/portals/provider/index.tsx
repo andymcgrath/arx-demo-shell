@@ -1,8 +1,9 @@
 import { useState } from "react";
 
+import { useState } from "react";
 import { useDemoStore } from "@/store/demoStore";
 
-type Step = "login" | "pa-questions" | "pa-submitted";
+type Step = "login" | "pa-questions" | "pa-submitted" | "income-verify" | "income-submitted";
 
 // ── SVG icons ─────────────────────────────────────────────────────────────────
 
@@ -313,15 +314,71 @@ function PaSubmittedStep({ onDone }: { onDone: () => void }) {
   );
 }
 
+// ── Income verification step (CoA_DTP flow) ──────────────────────────────────
+
+function IncomeVerifyStep({ onBack, onCancel, onNext }: { onBack: () => void; onCancel: () => void; onNext: () => void }) {
+  const verifyIncome = useDemoStore((s) => s.verifyIncome);
+  const patientName = useDemoStore((s) => s.patientName);
+
+  function handleSubmit() {
+    verifyIncome();
+    onNext();
+  }
+
+  return (
+    <main className="provider-content provider-content--pa">
+      <p className="pa-section-title">Income Verification — CoA Direct to Patient</p>
+      <PaSummaryTable />
+
+      <div className="pa-questions-section">
+        <p style={{ fontSize: 13, color: "#3e3e3c", marginBottom: 16 }}>
+          Confirm that <strong>{patientName}</strong> meets income eligibility requirements for the Jascayd free drug program. The program covers patients whose household income qualifies them for assistance.
+        </p>
+
+        <div className="pa-question">
+          <p className="pa-question__text">Has the patient's household income been verified as eligible for the CoA program?</p>
+          <div className="pa-question__options">
+            <label className="pa-radio-option">
+              <button type="button" className="pa-radio-btn" aria-pressed="true" style={{ cursor: "default" }}>
+                <RadioCheckedIcon />
+              </button>
+              <span className="pa-radio-label">Yes — Patient confirmed eligible</span>
+            </label>
+          </div>
+        </div>
+
+        <div className="pa-comments-field" style={{ marginTop: 16 }}>
+          <label className="pa-comments-label">Clinical notes (optional):</label>
+          <input type="text" className="pa-comments-input" placeholder="e.g. Income documentation reviewed" />
+          <div className="pa-field__underline" />
+        </div>
+      </div>
+
+      <div className="pa-nav-row">
+        <button onClick={onCancel} className="pa-btn-tertiary">Cancel</button>
+        <div className="pa-nav-actions">
+          <button onClick={onBack} className="pa-btn-secondary">Back</button>
+          <button onClick={handleSubmit} className="pa-btn-primary">Submit Verification</button>
+        </div>
+      </div>
+    </main>
+  );
+}
+
 // ── Provider Portal ───────────────────────────────────────────────────────────
 
 export default function ProviderPortal() {
   const [step, setStep] = useState<Step>("login");
+  const flowType = useDemoStore((s) => s.flowType);
+
+  const isCoA = flowType === "CoA_DTP";
 
   return (
     <div className="provider-portal">
       <BrandSidebar />
-      {step === "login" && <LoginStep onSubmit={() => setStep("pa-questions")} />}
+      {step === "login" && (
+        <LoginStep onSubmit={() => setStep(isCoA ? "income-verify" : "pa-questions")} />
+      )}
       {step === "pa-questions" && (
         <PaQuestionsStep
           onBack={() => setStep("login")}
@@ -330,6 +387,29 @@ export default function ProviderPortal() {
         />
       )}
       {step === "pa-submitted" && <PaSubmittedStep onDone={() => setStep("login")} />}
+      {step === "income-verify" && (
+        <IncomeVerifyStep
+          onBack={() => setStep("login")}
+          onCancel={() => setStep("login")}
+          onNext={() => setStep("income-submitted")}
+        />
+      )}
+      {step === "income-submitted" && (
+        <main className="provider-content provider-content--pa">
+          <p className="pa-section-title">Income Verification — CoA Direct to Patient</p>
+          <PaSummaryTable />
+          <div style={{ textAlign: "center", padding: "40px 0 32px" }}>
+            <CheckedCircleIcon />
+            <h2 style={{ marginTop: 16, marginBottom: 8, fontSize: 20, fontWeight: 700, color: "#1C1C1C" }}>
+              Income Verified
+            </h2>
+            <p style={{ color: "#6F7276", fontSize: 14, marginBottom: 32 }}>
+              The patient's eligibility has been confirmed. The patient portal will be updated and the free drug shipment process can begin.
+            </p>
+            <button onClick={() => setStep("login")} className="pa-btn-secondary">Done</button>
+          </div>
+        </main>
+      )}
     </div>
   );
 }

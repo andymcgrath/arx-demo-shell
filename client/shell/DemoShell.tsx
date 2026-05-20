@@ -325,24 +325,29 @@ export default function DemoShell() {
           <nav className="flex items-stretch flex-1 overflow-x-auto">
             {PORTALS.map((tab) => {
               const isActive = layout === "1up" && urlPortal === tab.id;
+              const isDisabled = tab.id === "provider" && flowType === "Fax_PAP_Audit";
               return (
                 <button
                   key={tab.id}
                   onClick={() => {
-                    if (layout === "1up") navigate(`/${PORTAL_SLUG[tab.id]}`);
+                    if (isDisabled || layout !== "1up") return;
+                    navigate(`/${PORTAL_SLUG[tab.id]}`);
                   }}
+                  title={isDisabled ? "Provider not involved in this flow" : undefined}
                   className={cn(
                     "flex items-center gap-1.5 px-4 py-2.5 text-[13px] font-medium border-b-2 transition-all whitespace-nowrap",
-                    isActive
-                      ? "text-white border-indigo-400 bg-white/5"
-                      : layout === "1up"
-                        ? "text-white/50 border-transparent hover:text-white/80 hover:bg-white/5 cursor-pointer"
-                        : "text-white/30 border-transparent cursor-default"
+                    isDisabled
+                      ? "text-white/25 border-transparent cursor-not-allowed opacity-50"
+                      : isActive
+                        ? "text-white border-indigo-400 bg-white/5"
+                        : layout === "1up"
+                          ? "text-white/50 border-transparent hover:text-white/80 hover:bg-white/5 cursor-pointer"
+                          : "text-white/30 border-transparent cursor-default"
                   )}
                 >
                   <span
                     className="w-2 h-2 rounded-full shrink-0"
-                    style={{ background: isActive ? tab.color : "rgba(255,255,255,0.2)" }}
+                    style={{ background: isDisabled ? "rgba(255,255,255,0.1)" : isActive ? tab.color : "rgba(255,255,255,0.2)" }}
                   />
                   {tab.label}
                 </button>
