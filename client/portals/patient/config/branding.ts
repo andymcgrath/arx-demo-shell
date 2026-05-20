@@ -44,9 +44,9 @@ export const PROGRAM = {
   description: "18 mg · 30-day supply",
   logo: {
     // Transparent background, brand-colored — use on white/light backgrounds
-    colors: "/uploads/1778646057594-imgi-1-jascayd-logo-link-to-homepage.png",
+    colors: "https://cdn.builder.io/api/v1/image/assets%2F4c828a6b97e546bc967a796675ca457e%2F93554f17917044e586106d31d1ea55cb?format=webp&width=800&height=1200",
     // Transparent background, all white — use on teal/dark backgrounds
-    white: "/uploads/1778647226709-jascayd-logo-white.svg",
+    white: "https://cdn.builder.io/api/v1/image/assets%2F4c828a6b97e546bc967a796675ca457e%2Fd2e3d3ca031e42bba9ac4fe53b075a8e?format=webp&width=800&height=1200",
   },
   colors: {
     // Applied to --arx-primary, --arx-primary-dark, --arx-primary-80 in global.css
