@@ -1,6 +1,8 @@
 import { useNavigate } from "@/lib/portalRouter";
+import { useDemoStore } from "@/store/demoStore";
 export default function EnrollmentComplete() {
   const navigate = useNavigate();
+  const acknowledgeEnrollment = useDemoStore((s) => s.acknowledgeEnrollment);
 
   return (
     <main className="flex-grow flex items-center justify-center px-6 py-12 bg-arx-primary">
@@ -47,7 +49,7 @@ export default function EnrollmentComplete() {
           </p>
 
           <button
-            onClick={() => navigate("/pa-status")}
+            onClick={() => { acknowledgeEnrollment(); navigate("/"); }}
             className="w-full bg-white text-arx-primary font-semibold py-4 rounded-lg hover:bg-arx-sky transition-colors"
           >
             Got it

@@ -764,7 +764,7 @@ export default function Index() {
                 <Zap size={12} className="text-white" fill="white" />
               </div>
               <span className="text-[13px] font-semibold text-[#3e3e3c]">
-                {activeStage.name} \u2013 {activeStage.id}
+                {activeStage.name} {activeStage.id}
               </span>
             </div>
             <div className="grid grid-cols-2 gap-x-6 px-4 pt-1 pb-2">
