@@ -19,6 +19,7 @@ import {
   createContext,
   useContext,
   useState,
+  useCallback,
   Children,
   isValidElement,
   type ReactNode,
@@ -51,7 +52,8 @@ export function PortalRouter({
   initialPath?: string;
 }) {
   const [path, setPath] = useState(initialPath);
-  return <Ctx.Provider value={{ path, navigate: (to) => setPath(to) }}>{children}</Ctx.Provider>;
+  const navigate = useCallback((to: string) => setPath(to), []);
+  return <Ctx.Provider value={{ path, navigate }}>{children}</Ctx.Provider>;
 }
 
 // ── Routing ───────────────────────────────────────────────────────────────────
