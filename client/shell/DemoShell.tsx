@@ -191,16 +191,35 @@ function Panel({ portal, onChangePortal, showSelector, headerHeight }: PanelProp
        * is painted relative to this box, not the viewport.
        * This keeps the shell chrome always visible at the top.
        */}
-      <div
-        className="flex-1 overflow-y-auto overflow-x-hidden bg-white"
-        style={{
-          height: `calc(100vh - ${headerHeight}px)`,
-          transform: "translateZ(0)",
-          willChange: "transform",
-        }}
-      >
-        <PortalComponent id={portal} />
-      </div>
+      {portal === "patient" ? (
+        <div
+          className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-100 flex items-start justify-center py-6"
+          style={{ height: `calc(100vh - ${headerHeight}px)` }}
+        >
+          <div className="phone-frame">
+            <div className="phone-frame__shell">
+              <div className="phone-frame__notch" />
+              <div
+                className="phone-frame__screen"
+                style={{ transform: "translateZ(0)", willChange: "transform" }}
+              >
+                <PortalComponent id={portal} />
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div
+          className="flex-1 overflow-y-auto overflow-x-hidden bg-white"
+          style={{
+            height: `calc(100vh - ${headerHeight}px)`,
+            transform: "translateZ(0)",
+            willChange: "transform",
+          }}
+        >
+          <PortalComponent id={portal} />
+        </div>
+      )}
     </div>
   );
 }

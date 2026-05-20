@@ -113,6 +113,48 @@
   }
 }
 
+/* ── Phone frame (patient portal mobile mockup) ──────────────────────────── */
+.phone-frame {
+  flex-shrink: 0;
+}
+
+.phone-frame__shell {
+  width: 375px;
+  height: 780px;
+  background: #1a1a1a;
+  border-radius: 52px;
+  padding: 14px;
+  box-shadow:
+    0 0 0 2px #3a3a3a,
+    0 0 0 4px #111,
+    0 32px 80px rgba(0,0,0,0.45),
+    0 8px 24px rgba(0,0,0,0.3);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.phone-frame__notch {
+  width: 126px;
+  height: 34px;
+  background: #1a1a1a;
+  border-radius: 0 0 20px 20px;
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.phone-frame__screen {
+  flex: 1;
+  background: #fff;
+  border-radius: 40px;
+  overflow: hidden;
+  overflow-y: auto;
+  position: relative;
+}
+
 /* ── Provider portal (iAssist Prior Authorization) ───────────────────────── */
 .provider-portal {
   --pa-teal: #007178;
