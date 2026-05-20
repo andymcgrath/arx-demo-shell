@@ -532,7 +532,7 @@ export default function Index() {
                   <span className="ml-auto text-[11px] px-2 py-0.5 rounded font-medium" style={{ background: "#e8f4ef", color: "#2e844a" }}>Signed</span>
                 </div>
                 <div className="grid grid-cols-2 gap-x-4 px-4 pt-1 pb-2">
-                  <FieldRow label="Patient Signature" value={<Signature name="Keanu Dixon" />} />
+                  <FieldRow label="Patient Signature" value="Keanu Dixon" />
                   <FieldRow label="Relationship to Patient" value="Self" />
                   <FieldRow label="Date Signed" value="05/20/2026" />
                 </div>
@@ -652,7 +652,7 @@ export default function Index() {
                   <span className="ml-auto text-[11px] px-2 py-0.5 rounded font-medium" style={{ background: "#e8f4ef", color: "#2e844a" }}>Signed</span>
                 </div>
                 <div className="grid grid-cols-2 gap-x-4 px-4 pt-1 pb-2">
-                  <FieldRow label="Prescriber Signature" value={<Signature name="Sarah Chen, MD" width={180} />} />
+                  <FieldRow label="Prescriber Signature" value="Sarah Chen, MD" />
                   <FieldRow label="Dispense As Written" value="Yes" />
                   <FieldRow label="Date" value="05/20/2026" />
                 </div>
