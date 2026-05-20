@@ -335,8 +335,12 @@ export default function Index() {
   const enrollmentFormTabOpen = useDemoStore((s) => s.enrollmentFormTabOpen);
   const closeEnrollmentFormTab = useDemoStore((s) => s.closeEnrollmentFormTab);
   const openEnrollmentFormTab = useDemoStore((s) => s.openEnrollmentFormTab);
+  const consentStatus = useDemoStore((s) => s.consentStatus);
+  const biStatus = useDemoStore((s) => s.biStatus);
+  const runBI = useDemoStore((s) => s.runBI);
+  const completeBI = useDemoStore((s) => s.completeBI);
   const [activeCaseTab, setActiveCaseTab] = useState("summary");
-  const [activeRightTab, setActiveRightTab] = useState("quick-answers");
+  const [activeRightTab, setActiveRightTab] = useState(isFaxFlow ? "missing-info" : "quick-answers");
   const [caseSummaryCollapsed, setCaseSummaryCollapsed] = useState(false);
   const [stagesCollapsed, setStagesCollapsed] = useState(false);
   const [openStageTabs, setOpenStageTabs] = useState<Stage[]>([]);
@@ -351,6 +355,23 @@ export default function Index() {
       setActivePatientSubTab("onboarding");
     }
   }, [enrollmentFormTabOpen]);
+
+  useEffect(() => {
+    if (consentStatus === "confirmed" && biStatus === "none") {
+      runBI();
+      const t = setTimeout(() => completeBI("coverage_found"), 3000);
+      return () => clearTimeout(t);
+    }
+  }, [consentStatus, biStatus]);
+
+  const biStage: Stage = biStatus === "none"
+    ? { id: "BI-14273", name: "Benefits Investigation", statusLabel: "Not Started", statusDetail: "Waiting for patient consent", isComplete: false, isNotStarted: true, fields: [], lastUpdated: null, lastUpdatedAgo: null }
+    : biStatus === "running"
+    ? { id: "BI-14273", name: "Benefits Investigation", statusLabel: "Running", statusDetail: "Investigating patient benefits...", isComplete: false, isNotStarted: false, fields: [], lastUpdated: null, lastUpdatedAgo: null }
+    : { id: "BI-14273", name: "Benefits Investigation", statusLabel: "Complete", statusDetail: "Patient Has Coverage; Prior Authorization Required", isComplete: true, isNotStarted: false, fields: [], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" };
+
+  const STAGES_LIVE: Stage[] = STAGES.map((s) => s.id === "BI-14273" ? biStage : s);
+
   const [patientAccountCollapsed, setPatientAccountCollapsed] = useState(false);
   const [patientContactCollapsed, setPatientContactCollapsed] = useState(false);
 
@@ -367,7 +388,7 @@ export default function Index() {
     if (activeTopTab === stageId) setActiveTopTab("keanu");
   };
 
-  const activeStage = STAGES.find((s) => s.id === activeTopTab);
+  const activeStage = STAGES_LIVE.find((s) => s.id === activeTopTab);
 
   return (
     <div
@@ -935,7 +956,7 @@ export default function Index() {
                           </tr>
                         </thead>
                         <tbody>
-                          {STAGES.map((stage, i) => {
+                          {STAGES_LIVE.map((stage, i) => {
                             const stageState = stage.isComplete
                               ? "Closed"
                               : stage.isNotStarted
@@ -1039,7 +1060,7 @@ export default function Index() {
                       </span>
                     </div>
                     <div className="px-3">
-                      {STAGES.map((stage) => (
+                      {STAGES_LIVE.map((stage) => (
                         <StageCard key={stage.id} stage={stage} onHeaderClick={handleOpenStage} />
                       ))}
                     </div>
@@ -1048,8 +1069,29 @@ export default function Index() {
               )}
 
               {activeRightTab === "missing-info" && (
-                <div className="p-4 text-[13px] text-[#706e6b] text-center py-8">
-                  No missing information items.
+                <div>
+                  {consentStatus === "pending" ? (
+                    <table className="w-full text-[12px] border-collapse">
+                      <thead>
+                        <tr style={{ background: "#f3f3f3" }}>
+                          <th className="px-3 py-2 text-left font-semibold text-[#3e3e3c] border-b border-[#dddbda]">Missing Item</th>
+                          <th className="px-3 py-2 text-left font-semibold text-[#3e3e3c] border-b border-[#dddbda]">Status</th>
+                          <th className="px-3 py-2 text-left font-semibold text-[#3e3e3c] border-b border-[#dddbda]">Impact</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="hover:bg-[#f9f9f9]">
+                          <td className="px-3 py-2.5 border-b border-[#dddbda] font-medium text-[#3e3e3c]">Patient Consent</td>
+                          <td className="px-3 py-2.5 border-b border-[#dddbda]">
+                            <span className="px-2 py-0.5 rounded text-[11px] font-medium" style={{ background: "#fff3cd", color: "#856404" }}>Pending</span>
+                          </td>
+                          <td className="px-3 py-2.5 border-b border-[#dddbda] text-[#706e6b]">Benefits Investigation has not yet run</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  ) : (
+                    <div className="p-4 text-[13px] text-[#706e6b] text-center py-8">No missing information items.</div>
+                  )}
                 </div>
               )}
             </div>
