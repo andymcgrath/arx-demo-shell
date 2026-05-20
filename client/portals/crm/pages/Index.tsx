@@ -449,6 +449,7 @@ export default function Index() {
   const completeBI = useDemoStore((s) => s.completeBI);
   const fillRx = useDemoStore((s) => s.fillRx);
   const startShippingSequence = useDemoStore((s) => s.startShippingSequence);
+  const deliverRx = useDemoStore((s) => s.deliverRx);
   const approvePA = useDemoStore((s) => s.approvePA);
   const isPapFlow = flowType === "Fax_PAP_Audit";
   const [selectedPharmacy, setSelectedPharmacy] = useState("Biologics");
