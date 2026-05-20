@@ -389,6 +389,36 @@ export default function Index() {
           </button>
         </div>
 
+        {/* Enrollment Form tab */}
+        <div
+          className="flex items-center gap-2 px-3 py-2 border border-[#dddbda] cursor-pointer select-none shrink-0 transition-colors"
+          style={{
+            borderRadius: "4px 4px 0 0",
+            marginBottom: -1,
+            background: activeTopTab === "enrollment-form" ? "#fff" : "#ebe9e9",
+            borderBottomColor: activeTopTab === "enrollment-form" ? "#fff" : "#dddbda",
+            boxShadow: activeTopTab === "enrollment-form" ? "0 -1px 3px rgba(0,0,0,0.08)" : "none",
+          }}
+          onClick={() => setActiveTopTab("enrollment-form")}
+        >
+          <div
+            className="flex items-center justify-center rounded shrink-0"
+            style={{ width: 18, height: 18, background: "#6b5ecd", borderRadius: 4 }}
+          >
+            <FileText size={10} className="text-white" />
+          </div>
+          <div className="flex flex-col leading-tight">
+            <span className="text-[12px] font-semibold text-[#3e3e3c] whitespace-nowrap">FAX-2026-00431</span>
+            <span className="text-[10px] text-[#706e6b]">Enrollment Form</span>
+          </div>
+          <button
+            className="ml-1 p-0.5 rounded hover:bg-[#e5e5e5] transition-colors"
+            onClick={(e) => { e.stopPropagation(); setActiveTopTab("onboarding"); }}
+          >
+            <X size={11} className="text-[#706e6b]" />
+          </button>
+        </div>
+
         {/* Dynamic stage tabs */}
         {openStageTabs.map((stage) => {
           const isActive = activeTopTab === stage.id;
@@ -427,7 +457,171 @@ export default function Index() {
       </div>
 
       {/* ── Content area (conditional on active Row 1 tab) ──────────────────── */}
-      {activeTopTab === "keanu" ? (
+      {activeTopTab === "enrollment-form" ? (
+        /* ── Enrollment Form View ──────────────────────────────────────────── */
+        <div className="bg-white">
+          {/* Doc header */}
+          <div className="border-b border-[#dddbda] px-6 py-3 flex items-center justify-between" style={{ background: "#f9f9f9" }}>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center rounded" style={{ width: 36, height: 36, background: "#6b5ecd" }}>
+                <FileText size={18} className="text-white" />
+              </div>
+              <div>
+                <div className="text-[11px] text-[#706e6b]">Related Document</div>
+                <div className="text-[16px] font-bold text-[#3e3e3c]">FAX-2026-00431</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-[12px] text-[#706e6b]">
+              <span>Enrollment_Form_KDixon_051526.pdf</span>
+              <span>·</span>
+              <span>5 pages</span>
+              <span>·</span>
+              <span>Received May 15, 2026</span>
+              <span>·</span>
+              <span>Fax: 866-725-7218</span>
+            </div>
+          </div>
+
+          {/* Form body */}
+          <div className="max-w-4xl mx-auto p-6 space-y-5">
+
+            {/* Section 1 — Patient Authorization */}
+            <div className="border border-[#dddbda] rounded overflow-hidden">
+              <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
+                <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>1</span>
+                <span className="text-[13px] font-semibold text-[#3e3e3c]">Patient Authorization</span>
+                <span className="ml-auto text-[11px] px-2 py-0.5 rounded font-medium" style={{ background: "#e8f4ef", color: "#2e844a" }}>Signed</span>
+              </div>
+              <div className="grid grid-cols-3 gap-x-6 px-4 pt-1 pb-2">
+                <FieldRow label="Patient Signature" value="Keanu Dixon" />
+                <FieldRow label="Relationship to Patient" value="Self" />
+                <FieldRow label="Date Signed" value="05/20/2026" />
+              </div>
+            </div>
+
+            {/* Section 2 — Patient Information */}
+            <div className="border border-[#dddbda] rounded overflow-hidden">
+              <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
+                <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>2</span>
+                <span className="text-[13px] font-semibold text-[#3e3e3c]">Patient Information</span>
+              </div>
+              <div className="grid grid-cols-3 gap-x-6 px-4 pt-1 pb-2">
+                <FieldRow label="First Name" value="Keanu" />
+                <FieldRow label="Last Name" value="Dixon" />
+                <FieldRow label="Date of Birth" value="09/19/1981" />
+                <FieldRow label="Sex" value="M" />
+                <FieldRow label="Mobile Phone" value="(555) 867-5309" />
+                <FieldRow label="Preferred Contact" value="Mobile" />
+                <FieldRow label="Shipping Address" value="742 Lakewood Drive" />
+                <FieldRow label="City, State, ZIP" value="Orlando, FL 32801" />
+                <FieldRow label="Email" value="keanu.dixon@gmail.com" isLink />
+                <FieldRow label="OK to Leave Voicemail" value="Yes" />
+                <FieldRow label="Best Time" value="Morning" />
+                <FieldRow label="Preferred Language" value="English" />
+              </div>
+              <div className="px-4 pb-2">
+                <div className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium mb-1 mt-1">Alternate Contact</div>
+                <div className="grid grid-cols-3 gap-x-6">
+                  <FieldRow label="Name" value="Maria Dixon" />
+                  <FieldRow label="Relationship" value="Spouse" />
+                  <FieldRow label="Phone" value="(555) 867-5310" />
+                  <FieldRow label="Email" value="maria.dixon@gmail.com" isLink />
+                  <FieldRow label="OK to Discuss" value="Yes" />
+                </div>
+              </div>
+            </div>
+
+            {/* Section 3 — Insurance Information */}
+            <div className="border border-[#dddbda] rounded overflow-hidden">
+              <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
+                <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>3</span>
+                <span className="text-[13px] font-semibold text-[#3e3e3c]">Insurance Information</span>
+              </div>
+              <div className="px-4 pb-2">
+                <div className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium mb-1 mt-1">Prescription Drug Insurance</div>
+                <div className="grid grid-cols-3 gap-x-6">
+                  <FieldRow label="Payer" value="BlueCross BlueShield of Florida" />
+                  <FieldRow label="Phone" value="(800) 477-3736" />
+                  <FieldRow label="Policy / Member ID" value="BCB-KD-298341" />
+                  <FieldRow label="Rx BIN" value="610415" />
+                  <FieldRow label="Rx PCN" value="ADV" />
+                </div>
+                <div className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium mb-1 mt-2">Medical Insurance</div>
+                <div className="grid grid-cols-3 gap-x-6">
+                  <FieldRow label="Payer" value="BlueCross BlueShield of Florida" />
+                  <FieldRow label="Phone" value="(800) 477-3736" />
+                  <FieldRow label="Policy / Member ID" value="BCB-KD-298341" />
+                </div>
+              </div>
+            </div>
+
+            {/* Section 4 — Prescription */}
+            <div className="border border-[#dddbda] rounded overflow-hidden">
+              <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
+                <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>4</span>
+                <span className="text-[13px] font-semibold text-[#3e3e3c]">Prescription for Jascayd® (nerandomilast) tablets</span>
+              </div>
+              <div className="grid grid-cols-3 gap-x-6 px-4 pt-1 pb-2">
+                <FieldRow label="Drug" value="Jascayd® (nerandomilast)" />
+                <FieldRow label="Strength" value="18 mg" />
+                <FieldRow label="Sig" value="Take one tablet by mouth twice per day" />
+                <FieldRow label="Quantity" value="30-day supply" />
+                <FieldRow label="Refills" value="0" />
+                <FieldRow label="Preferred Pharmacy" value="Accredo Health Group Inc." />
+              </div>
+            </div>
+
+            {/* Section 5 — Clinical Information */}
+            <div className="border border-[#dddbda] rounded overflow-hidden">
+              <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
+                <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>5</span>
+                <span className="text-[13px] font-semibold text-[#3e3e3c]">Clinical Information</span>
+              </div>
+              <div className="grid grid-cols-3 gap-x-6 px-4 pt-1 pb-2">
+                <FieldRow label="Diagnosis (ICD-10)" value="J84.112" />
+                <FieldRow label="Diagnosis Description" value="Idiopathic Pulmonary Fibrosis (IPF)" />
+                <FieldRow label="Allergies" value="Penicillin" />
+                <FieldRow label="Prior Therapies" value="Ofev (nintedanib) — discontinued 02/15/20" />
+                <FieldRow label="Concurrent Therapies" value="None" />
+              </div>
+            </div>
+
+            {/* Section 6 — Prescriber Information */}
+            <div className="border border-[#dddbda] rounded overflow-hidden">
+              <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
+                <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>6</span>
+                <span className="text-[13px] font-semibold text-[#3e3e3c]">Prescriber Information</span>
+              </div>
+              <div className="grid grid-cols-3 gap-x-6 px-4 pt-1 pb-2">
+                <FieldRow label="Prescriber Name" value="Sarah Chen, MD" />
+                <FieldRow label="Facility" value="Orlando Pulmonology Associates" />
+                <FieldRow label="Address" value="1800 Medical Park Dr, Orlando, FL 32803" />
+                <FieldRow label="Phone" value="(407) 885-9999" />
+                <FieldRow label="Fax" value="(407) 885-9998" />
+                <FieldRow label="NPI" value="1245378901" />
+                <FieldRow label="State License #" value="ME78901" />
+                <FieldRow label="Office Contact" value="Jennifer Torres" />
+                <FieldRow label="Email" value="scheduling@orlandopulm.com" isLink />
+              </div>
+            </div>
+
+            {/* Section 7 — Prescriber Certification */}
+            <div className="border border-[#dddbda] rounded overflow-hidden">
+              <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
+                <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>7</span>
+                <span className="text-[13px] font-semibold text-[#3e3e3c]">Prescriber Certification</span>
+                <span className="ml-auto text-[11px] px-2 py-0.5 rounded font-medium" style={{ background: "#e8f4ef", color: "#2e844a" }}>Signed</span>
+              </div>
+              <div className="grid grid-cols-3 gap-x-6 px-4 pt-1 pb-2">
+                <FieldRow label="Prescriber Signature" value="Sarah Chen, MD" />
+                <FieldRow label="Dispense As Written" value="Yes" />
+                <FieldRow label="Date" value="05/20/2026" />
+              </div>
+            </div>
+
+          </div>
+        </div>
+      ) : activeTopTab === "keanu" ? (
         /* ── Patient Record View ──────────────────────────────────────────── */
         <>
           <div className="border-b border-[#dddbda] bg-white">
@@ -921,6 +1115,7 @@ export default function Index() {
                             <span
                               className="cursor-pointer hover:underline font-medium"
                               style={{ color: SF_BLUE }}
+                              onClick={() => setActiveTopTab("enrollment-form")}
                             >
                               {doc.fileId}
                             </span>
@@ -930,6 +1125,7 @@ export default function Index() {
                           <span
                             className="cursor-pointer hover:underline"
                             style={{ color: SF_BLUE }}
+                            onClick={() => setActiveTopTab("enrollment-form")}
                           >
                             {doc.fileName}
                           </span>
