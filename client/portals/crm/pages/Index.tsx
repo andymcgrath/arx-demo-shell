@@ -336,24 +336,25 @@ const STAGES: Stage[] = [
 // ─── Stage Card ──────────────────────────────────────────────────────────────
 
 function StageCard({ stage, onHeaderClick }: { stage: Stage; onHeaderClick?: (stage: Stage) => void }) {
-  const isRunning = stage.statusLabel === "Running" || stage.statusLabel === "In Progress";
+  const isRunning = stage.statusLabel === "Running";
+  const isInProgress = stage.statusLabel === "In Progress";
   const iconBg = stage.isNotStarted ? "#9a9a9a" : FC_BLUE;
   const statusColor = stage.isComplete
     ? "#2e844a"
     : stage.isNotStarted
     ? "#706e6b"
-    : isRunning
+    : (isRunning || isInProgress)
     ? "#0176d3"
     : "#3e3e3c";
 
   return (
     <div
       className="py-3 border-b border-[#dddbda] last:border-b-0"
-      style={isRunning ? { background: "linear-gradient(90deg, #f0f7ff 0%, #fff 100%)" } : undefined}
+      style={(isRunning || isInProgress) ? { background: "linear-gradient(90deg, #f0f7ff 0%, #fff 100%)" } : undefined}
     >
       <div className="flex items-start gap-2.5">
         <div
-          className={`flex items-center justify-center shrink-0${isRunning ? " animate-pulse" : ""}`}
+          className="flex items-center justify-center shrink-0"
           style={{ width: 28, height: 28, background: iconBg, borderRadius: 6 }}
         >
           {isRunning
