@@ -25,7 +25,7 @@ export function useEnrollPatient() {
         options?.onSuccess?.();
       }, 600);
     },
-    [enrollPatient]
+    [sendEnrollmentInvite]
   );
 
   return {
