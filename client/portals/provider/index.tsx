@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { useDemoStore } from "@/store/demoStore";
 
-type Step = "login" | "pa-review" | "pa-questions" | "pa-submitted";
+type Step = "login" | "pa-questions" | "pa-submitted";
 
 // ── SVG icons ─────────────────────────────────────────────────────────────────
 
@@ -341,11 +341,10 @@ export default function ProviderPortal() {
   return (
     <div className="provider-portal">
       <BrandSidebar />
-      {step === "login" && <LoginStep onSubmit={() => setStep("pa-review")} />}
-      {step === "pa-review" && <PaReviewStep onNext={() => setStep("pa-questions")} />}
+      {step === "login" && <LoginStep onSubmit={() => setStep("pa-questions")} />}
       {step === "pa-questions" && (
         <PaQuestionsStep
-          onBack={() => setStep("pa-review")}
+          onBack={() => setStep("login")}
           onCancel={() => setStep("login")}
           onNext={() => setStep("pa-submitted")}
         />
