@@ -67,6 +67,13 @@ export default function UploadInsurance() {
               <Check className="w-5 h-5" />
             </button>
           </div>
+
+          <button
+            onClick={() => navigate("/enrollment-complete")}
+            className="w-full mt-3 text-sm text-arx-body-copy hover:text-arx-slate transition-colors text-center"
+          >
+            Skip for now
+          </button>
         </EnrollmentShell>
     </main>
   );
