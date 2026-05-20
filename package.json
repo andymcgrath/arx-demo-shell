@@ -19,16 +19,22 @@
     "electron:build": "pnpm run build:client && electron-builder"
   },
   "build": {
-    "appId": "com.yourname.yourapp",
-    "productName": "Your App Name",
-    "files": ["dist/spa/**/*", "public/electron.js"],
-    "directories": { "output": "dist" },
-    "publish": {
-      "provider": "github",
-      "releaseType": "release"
-    },
-    "mac": { "target": "dmg" }
+  "appId": "com.yourname.yourapp",
+  "productName": "Your App Name",
+  "main": "public/electron.js",
+  "files": [
+    "dist/**/*",
+    "public/electron.js"
+  ],
+  "directories": {
+    "output": "dist/release"
   },
+  "publish": {
+    "provider": "github",
+    "releaseType": "release"
+  },
+  "mac": { "target": "dmg" }
+},
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
     "@radix-ui/react-accordion": "^1.2.11",
