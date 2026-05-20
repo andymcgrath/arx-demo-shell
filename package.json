@@ -1,11 +1,13 @@
 {
   "name": "arx-demo-shell",
   "private": true,
+
   "type": "module",
   "packageManager": "pnpm@11.1.2",
   "version": "1.0.0",
   "description": "Arx Demo Shell",
   "author": "Andy McGrath <andy.mn@gmail.com>",
+  "main": "public/electron.js",
   "scripts": {
     "dev": "vite --port 8080",
     "build:client": "vite build",
