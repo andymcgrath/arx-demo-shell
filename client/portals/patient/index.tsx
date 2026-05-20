@@ -44,12 +44,22 @@ import DeliveryConfirmation from "./pages/DeliveryConfirmation";
 import OrderTracker from "./pages/OrderTracker";
 import OrderShipped from "./pages/OrderShipped";
 import MedicationDelivered from "./pages/MedicationDelivered";
+import IncomeQualification from "./pages/IncomeQualification";
 
 /** Maps current demo state to the patient-facing route */
 function derivePatientRoute(state: ReturnType<typeof useDemoStore.getState>): string {
   if (state.pharmacyStatus === "delivered") return "/medication-delivered";
   if (state.pharmacyStatus === "shipped")   return "/order-shipped";
   if (state.pharmacyStatus !== "none")      return "/order-tracker";
+
+  if (state.flowType === "CoA_DTP") {
+    if (state.paStatus === "approved")  return "/pa-approved";
+    if (state.paStatus === "submitted") return "/pa-status";
+    if (state.incomeStatus === "verified") return "/pa-status";
+    if (state.consentStatus === "confirmed") return "/income-qualification";
+    return "/";
+  }
+
   if (state.paStatus === "denied")          return "/pa-denied";
   if (state.paStatus === "approved")        return "/pa-approved";
   if (state.paStatus === "submitted")       return "/pa-status";
@@ -64,11 +74,13 @@ function StateDrivenNav() {
   const paStatus         = useDemoStore((s) => s.paStatus);
   const consentStatus    = useDemoStore((s) => s.consentStatus);
   const enrollmentStatus = useDemoStore((s) => s.enrollmentStatus);
+  const incomeStatus     = useDemoStore((s) => s.incomeStatus);
+  const flowType         = useDemoStore((s) => s.flowType);
 
   useEffect(() => {
     const target = derivePatientRoute(useDemoStore.getState());
     navigate(target, { replace: true });
-  }, [pharmacyStatus, paStatus, consentStatus, enrollmentStatus, navigate]);
+  }, [pharmacyStatus, paStatus, consentStatus, enrollmentStatus, incomeStatus, flowType, navigate]);
 
   return null;
 }
@@ -98,6 +110,7 @@ function PatientRoutes() {
           <Route path="/order-tracker"         element={<OrderTracker />} />
           <Route path="/order-shipped"         element={<OrderShipped />} />
           <Route path="/medication-delivered"  element={<MedicationDelivered />} />
+          <Route path="/income-qualification"  element={<IncomeQualification />} />
         </Routes>
         <Footer />
         {ctx?.chatOpen && <ChatModal onClose={ctx.closeChat} />}

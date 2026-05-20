@@ -28,6 +28,12 @@ const NAV_LINKS = [
     ],
   },
   {
+    group: "CoA Flow",
+    items: [
+      { label: "Income Qualification", path: "/income-qualification" },
+    ],
+  },
+  {
     group: "Order Flow",
     items: [
       { label: "Delivery Address", path: "/delivery-address" },

@@ -38,6 +38,7 @@ export interface DemoState {
   paStatus: "none" | "submitted" | "approved" | "denied";
   qsStatus: "none" | "active" | "discontinued";
   papStatus: "none" | "active" | "audit_pending" | "discontinued";
+  incomeStatus: "none" | "verified" | "ineligible";
   pharmacyStatus: "none" | "processing" | "shipped" | "delivered";
 
   // timestamps
@@ -77,6 +78,8 @@ export interface DemoActions {
   // quick start
   activateQS: () => void;
   discontinueQS: () => void;
+  // income qualification
+  verifyIncome: () => void;
   // PAP
   enrollPAP: () => void;
   auditPAP: () => void;
@@ -123,6 +126,7 @@ export const SEED: DemoState = {
   paStatus: "none",
   qsStatus: "none",
   papStatus: "none",
+  incomeStatus: "none",
   pharmacyStatus: "none",
 
   paSubmittedAt: null,
@@ -259,6 +263,14 @@ export const useDemoStore = create<DemoStore>()(
         get()._logEvent("qs_discontinued", "Provider");
       },
 
+      verifyIncome(): void {
+        get()._snapshot();
+        const now = new Date().toISOString();
+        set({ incomeStatus: "verified", papStatus: "active", updatedAt: now, updatedBy: "Patient" });
+        set({ workflowStep: get()._deriveStep() });
+        get()._logEvent("income_verified", "Patient", { threshold: 38000, result: "Eligible" });
+      },
+
       enrollPAP(): void {
         get()._snapshot();
         const now = new Date().toISOString();
@@ -322,6 +334,7 @@ export const useDemoStore = create<DemoStore>()(
           ...SEED,
           flowType: flow ?? current.flowType,
           workflowStep: 1,
+          incomeStatus: "none",
           updatedAt: new Date().toISOString(),
           events: [],
         });
