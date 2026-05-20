@@ -6,8 +6,8 @@ import {
   Loader2,
   Database,
 } from "lucide-react";
-import { usePatientCase } from "@crm/hooks/usePatientCase";
-import { useRunEBenefits } from "@crm/hooks/useRunEBenefits";
+import { usePatientCase } from "@/hooks/usePatientCase";
+import { useRunEBenefits } from "@/hooks/useRunEBenefits";
 
 const CASE_ID = "demo";
 const SF_BORDER = "#dddbda";

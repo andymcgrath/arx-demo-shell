@@ -1,4 +1,4 @@
-import { cn } from "@crm/lib/utils";
+import { cn } from "@/lib/utils";
 
 function Skeleton({
   className,
