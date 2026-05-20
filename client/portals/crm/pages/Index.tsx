@@ -1114,7 +1114,7 @@ export default function Index() {
                 <Zap size={12} className="text-white" fill="white" />
               </div>
               <span className="text-[13px] font-semibold text-[#3e3e3c]">
-                {activeStage.name} – {activeStage.id}
+                {activeStage.name} {activeStage.id}
               </span>
               {activeStage.id === "PA-14274" && paStatus !== "approved" && paStatus !== "denied" && (
                 <button

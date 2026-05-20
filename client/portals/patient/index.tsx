@@ -71,25 +71,26 @@ function derivePatientRoute(state: ReturnType<typeof useDemoStore.getState>): st
   if (state.paStatus === "denied")          return "/pa-denied";
   if (state.paStatus === "approved")        return "/pa-approved";
   if (state.paStatus === "submitted")       return "/pa-status";
-  if (state.consentStatus === "confirmed")  return state.welcomeDismissed ? "/" : "/enrollment-complete";
+  if (state.enrollmentAcknowledged)         return "/";
+  if (state.consentStatus === "confirmed")  return "/enrollment-complete";
   return "/";
 }
 
 /** Watches Zustand state and navigates the patient portal accordingly */
 function StateDrivenNav() {
   const navigate = useNavigate();
-  const pharmacyStatus   = useDemoStore((s) => s.pharmacyStatus);
-  const paStatus         = useDemoStore((s) => s.paStatus);
-  const consentStatus    = useDemoStore((s) => s.consentStatus);
-  const enrollmentStatus = useDemoStore((s) => s.enrollmentStatus);
-  const incomeStatus     = useDemoStore((s) => s.incomeStatus);
-  const flowType         = useDemoStore((s) => s.flowType);
-  const welcomeDismissed = useDemoStore((s) => s.welcomeDismissed);
+  const pharmacyStatus        = useDemoStore((s) => s.pharmacyStatus);
+  const paStatus              = useDemoStore((s) => s.paStatus);
+  const consentStatus         = useDemoStore((s) => s.consentStatus);
+  const enrollmentStatus      = useDemoStore((s) => s.enrollmentStatus);
+  const incomeStatus          = useDemoStore((s) => s.incomeStatus);
+  const flowType              = useDemoStore((s) => s.flowType);
+  const enrollmentAcknowledged = useDemoStore((s) => s.enrollmentAcknowledged);
 
   useEffect(() => {
     const target = derivePatientRoute(useDemoStore.getState());
     navigate(target, { replace: true });
-  }, [pharmacyStatus, paStatus, consentStatus, enrollmentStatus, incomeStatus, flowType, welcomeDismissed, navigate]);
+  }, [pharmacyStatus, paStatus, consentStatus, enrollmentStatus, incomeStatus, flowType, enrollmentAcknowledged, navigate]);
 
   return null;
 }
