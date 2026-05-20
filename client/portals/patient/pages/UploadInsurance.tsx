@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "@/lib/portalRouter";
+import { useNavigate } from "react-router-dom";
 import { ClipboardList, Camera, Check } from "lucide-react";
 import Header from "@patient/components/Header";
 import Footer from "@patient/components/Footer";

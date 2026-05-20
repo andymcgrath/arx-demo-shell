@@ -1,4 +1,4 @@
-import { useNavigate } from "@/lib/portalRouter";
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, ChevronRight, Phone, DollarSign } from "lucide-react";
 import Header from "@patient/components/Header";
 import Footer from "@patient/components/Footer";
