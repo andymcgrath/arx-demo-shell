@@ -548,7 +548,11 @@ export default function Index() {
         : s
       )
     : STAGES.map((s) =>
-        s.id === "EA-14272" ? eaStage : s.id === "BI-14273" ? biStage : s.id === "PA-14274" ? paStage : s
+        s.id === "EA-14272" ? eaStage
+        : s.id === "BI-14273" ? biStage
+        : s.id === "PA-14274" ? paStage
+        : s.id === "TP-14277" ? tpStage
+        : s
       );
 
   const [patientAccountCollapsed, setPatientAccountCollapsed] = useState(false);
