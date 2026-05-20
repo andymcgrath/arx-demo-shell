@@ -336,7 +336,6 @@ export const useDemoStore = create<DemoStore>()(
       startShippingSequence(): void {
         get().readyRx();
         setTimeout(() => get().shipRx(), 10000);
-        setTimeout(() => get().deliverRx(), 20000);
       },
 
       closeEnrollmentFormTab(): void {

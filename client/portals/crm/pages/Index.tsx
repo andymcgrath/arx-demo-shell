@@ -1166,6 +1166,21 @@ export default function Index() {
                   Dispatched
                 </span>
               )}
+              {activeStage.id === "PS-14278" && pharmacyStatus === "shipped" && (
+                <button
+                  onClick={deliverRx}
+                  className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded text-[12px] font-semibold text-white transition-opacity hover:opacity-90"
+                  style={{ background: "#2e844a" }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Mark Delivered
+                </button>
+              )}
+              {activeStage.id === "PS-14278" && pharmacyStatus === "delivered" && (
+                <span className="ml-auto text-[12px] font-semibold px-2.5 py-0.5 rounded" style={{ background: "#e8f4ef", color: "#2e844a" }}>
+                  Delivered
+                </span>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-x-6 px-4 pt-1 pb-2">
               <div>
