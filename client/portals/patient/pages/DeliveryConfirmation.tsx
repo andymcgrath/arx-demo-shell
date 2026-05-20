@@ -1,6 +1,8 @@
 import { useNavigate } from "@/lib/portalRouter";
+import { useDemoStore } from "@/store/demoStore";
 export default function DeliveryConfirmation() {
   const navigate = useNavigate();
+  const fillRx = useDemoStore((s) => s.fillRx);
 
   return (
     <main className="flex-grow flex items-center justify-center px-6 py-12 bg-arx-primary">
@@ -32,7 +34,7 @@ export default function DeliveryConfirmation() {
           </p>
 
           <button
-            onClick={() => navigate("/order-tracker")}
+            onClick={() => { fillRx(); navigate("/order-tracker"); }}
             className="w-full bg-white text-arx-primary font-semibold py-4 rounded-lg hover:bg-arx-sky transition-colors"
           >
             Got it
