@@ -39,7 +39,7 @@ export interface DemoState {
   qsStatus: "none" | "active" | "discontinued";
   papStatus: "none" | "active" | "audit_pending" | "discontinued";
   incomeStatus: "none" | "verified" | "ineligible";
-  pharmacyStatus: "none" | "processing" | "shipped" | "delivered";
+  pharmacyStatus: "none" | "processing" | "ready" | "shipped" | "delivered";
 
   // timestamps
   paSubmittedAt: string | null;
@@ -90,8 +90,10 @@ export interface DemoActions {
   discontinuePAP: () => void;
   // pharmacy
   fillRx: () => void;
+  readyRx: () => void;
   shipRx: () => void;
   deliverRx: () => void;
+  startShippingSequence: () => void;
   // flow
   changeFlow: (flow: FlowType) => void;
   resetDemo: (flow?: FlowType) => void;
@@ -150,8 +152,8 @@ export const SEED: DemoState = {
 // ── Step derivation ───────────────────────────────────────────────────────────
 
 export function deriveStep(s: Partial<DemoState>): number {
-  if (s.pharmacyStatus === "delivered") return 6;
-  if (s.pharmacyStatus === "processing" || s.pharmacyStatus === "shipped") return 5;
+  if (s.pharmacyStatus === "delivered") return 7;
+  if (s.pharmacyStatus === "processing" || s.pharmacyStatus === "ready" || s.pharmacyStatus === "shipped") return 5;
   if (s.paStatus === "approved" || s.paStatus === "denied") return 4;
   if (
     s.paStatus === "submitted" ||
@@ -299,6 +301,14 @@ export const useDemoStore = create<DemoStore>()(
         get()._logEvent("pap_discontinued", "HUB");
       },
 
+      readyRx(): void {
+        get()._snapshot();
+        const now = new Date().toISOString();
+        set({ pharmacyStatus: "ready", updatedAt: now, updatedBy: "HUB" });
+        set({ workflowStep: get()._deriveStep() });
+        get()._logEvent("rx_ready", "HUB");
+      },
+
       fillRx(): void {
         get()._snapshot();
         const now = new Date().toISOString();
@@ -323,6 +333,11 @@ export const useDemoStore = create<DemoStore>()(
         get()._logEvent("rx_delivered", "HUB");
       },
 
+      startShippingSequence(): void {
+        get().readyRx();
+        setTimeout(() => get().shipRx(), 10000);
+      },
+
       closeEnrollmentFormTab(): void {
         set({ enrollmentFormTabOpen: false });
       },
@@ -333,6 +348,8 @@ export const useDemoStore = create<DemoStore>()(
 
       dismissWelcome(): void {
         set({ welcomeDismissed: true });
+      },
+
       acknowledgeEnrollment(): void {
         set({ enrollmentAcknowledged: true });
       },
