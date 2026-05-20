@@ -1130,8 +1130,18 @@ export default function Index() {
                 <Zap size={12} className="text-white" fill="white" />
               </div>
               <span className="text-[13px] font-semibold text-[#3e3e3c]">
-                {activeStage.name} {activeStage.id}
+                {activeStage.id === "BI-14273" ? "Benefit Investigation Result" : activeStage.name} {activeStage.id}
               </span>
+              {activeStage.id === "BI-14273" && biStatus === "running" && (
+                <button
+                  onClick={() => completeBI(isPapFlow ? "no_insurance" : "coverage_found")}
+                  className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded text-[12px] font-semibold text-white transition-opacity hover:opacity-90"
+                  style={{ background: FC_BLUE }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Update Status
+                </button>
+              )}
               {activeStage.id === "PA-14274" && paStatus !== "approved" && paStatus !== "denied" && (
                 <button
                   onClick={approvePA}
