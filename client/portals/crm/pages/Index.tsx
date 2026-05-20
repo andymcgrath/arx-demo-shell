@@ -91,7 +91,7 @@ function SfLink({ children, className = "" }: { children: React.ReactNode; class
   );
 }
 
-function FieldRow({ label, value, isLink }: { label: string; value?: React.ReactNode; isLink?: boolean }) {
+function FieldRow({ label, value, isLink, onEdit }: { label: string; value?: React.ReactNode; isLink?: boolean; onEdit?: () => void }) {
   return (
     <div className="group relative flex flex-col py-2 border-b border-[#dddbda] pr-6 min-h-[44px]">
       <span className="text-[11px] text-[#706e6b] mb-0.5 uppercase tracking-wide font-medium leading-tight">{label}</span>
@@ -100,7 +100,10 @@ function FieldRow({ label, value, isLink }: { label: string; value?: React.React
       ) : (
         <span className="text-[13px] text-[#3e3e3c]">{value || "\u00a0"}</span>
       )}
-      <button className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity p-1">
+      <button
+        className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity p-1"
+        onClick={onEdit}
+      >
         <Pencil size={12} className="text-[#706e6b]" />
       </button>
     </div>
@@ -416,6 +419,17 @@ const FAX_DOCUMENTS = [
   },
 ];
 
+const SPECIALTY_PHARMACIES = [
+  "Biologics",
+  "Accredo Health Group Inc.",
+  "CVS Specialty",
+  "Walgreens Specialty",
+  "AllianceRx Walgreens Prime",
+  "Optum Specialty Pharmacy",
+  "Shields Health Solutions",
+  "PharMerica Specialty",
+];
+
 export default function Index() {
   const navigate = useNavigate();
   const flowType = useDemoStore((s) => s.flowType);
@@ -433,6 +447,8 @@ export default function Index() {
   const runBI = useDemoStore((s) => s.runBI);
   const completeBI = useDemoStore((s) => s.completeBI);
   const isPapFlow = flowType === "Fax_PAP_Audit";
+  const [selectedPharmacy, setSelectedPharmacy] = useState("Biologics");
+  const [pharmacyPickerOpen, setPharmacyPickerOpen] = useState(false);
   const [activeCaseTab, setActiveCaseTab] = useState("summary");
   const [activeRightTab, setActiveRightTab] = useState(isFaxFlow ? "missing-info" : "quick-answers");
   const [caseSummaryCollapsed, setCaseSummaryCollapsed] = useState(false);
@@ -508,10 +524,10 @@ export default function Index() {
     : { id: "PAP-14279", name: "PAP Enrollment", statusLabel: "Discontinued", statusDetail: "Patient has insurance — PAP discontinued", isComplete: false, isNotStarted: false, fields: [{ label: "Program", value: "Free Goods" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" };
 
   const tpStage: Stage = pharmacyStatus === "none"
-    ? { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "Pending", statusDetail: "Awaiting PAP enrollment", isComplete: false, isNotStarted: true, fields: [{ label: "Pharmacy", value: "Biologics" }], lastUpdated: null, lastUpdatedAgo: null }
+    ? { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "Pending", statusDetail: "Awaiting PAP enrollment", isComplete: false, isNotStarted: true, fields: [{ label: "Pharmacy", value: selectedPharmacy }], lastUpdated: null, lastUpdatedAgo: null }
     : pharmacyStatus === "processing"
-    ? { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "In Progress", statusDetail: "First dispense processing", isComplete: false, isNotStarted: false, fields: [{ label: "Pharmacy", value: "Biologics" }, { label: "First Dispense", value: "Initiated" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" }
-    : { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "Complete", statusDetail: "First dispense shipped", isComplete: true, isNotStarted: false, fields: [{ label: "Pharmacy", value: "Biologics" }, { label: "First Dispense", value: "Shipped" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" };
+    ? { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "In Progress", statusDetail: "First dispense processing", isComplete: false, isNotStarted: false, fields: [{ label: "Pharmacy", value: selectedPharmacy }, { label: "First Dispense", value: "Initiated" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" }
+    : { id: "TP-14277", name: "Triage to Pharmacy", statusLabel: "Complete", statusDetail: "First dispense shipped", isComplete: true, isNotStarted: false, fields: [{ label: "Pharmacy", value: selectedPharmacy }, { label: "First Dispense", value: "Shipped" }], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" };
 
   const auditStage: Stage = papStatus !== "audit_pending" && paStatus === "none"
     ? { id: "AUDIT-14280", name: "PAP Audit", statusLabel: "Scheduled", statusDetail: "ABV audit — 90 days post-enrollment", isComplete: false, isNotStarted: true, fields: [{ label: "Audit Type", value: "ABV Insurance Check" }], lastUpdated: null, lastUpdatedAgo: null }
@@ -1103,7 +1119,43 @@ export default function Index() {
               <div>
                 <FieldRow label="Status" value={`${activeStage.statusLabel} – ${activeStage.statusDetail}`} />
                 {activeStage.fields.map((f) => (
-                  <FieldRow key={f.label} label={f.label} value={f.value ?? "No Data Available"} />
+                  <div key={f.label} className="relative">
+                    <FieldRow
+                      label={f.label}
+                      value={f.value ?? "No Data Available"}
+                      onEdit={f.label === "Pharmacy" ? () => setPharmacyPickerOpen(true) : undefined}
+                    />
+                    {f.label === "Pharmacy" && pharmacyPickerOpen && (
+                      <>
+                        <div className="fixed inset-0 z-40" onClick={() => setPharmacyPickerOpen(false)} />
+                        <div
+                          className="absolute left-0 top-full z-50 bg-white border border-[#dddbda] rounded shadow-lg"
+                          style={{ minWidth: 280 }}
+                        >
+                          <div className="px-3 py-2 border-b border-[#dddbda] flex items-center justify-between">
+                            <span className="text-[12px] font-semibold text-[#3e3e3c]">Select Specialty Pharmacy</span>
+                            <button onClick={() => setPharmacyPickerOpen(false)}>
+                              <X size={12} className="text-[#706e6b]" />
+                            </button>
+                          </div>
+                          <div className="py-1">
+                            {SPECIALTY_PHARMACIES.map((sp) => (
+                              <button
+                                key={sp}
+                                className="w-full text-left px-3 py-2 text-[13px] hover:bg-[#f3f3f3] transition-colors flex items-center justify-between"
+                                onClick={() => { setSelectedPharmacy(sp); setPharmacyPickerOpen(false); }}
+                              >
+                                <span className={selectedPharmacy === sp ? "font-semibold" : ""}>{sp}</span>
+                                {selectedPharmacy === sp && (
+                                  <span className="text-[11px] text-white bg-[#0070d2] px-1.5 py-0.5 rounded">Selected</span>
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 ))}
               </div>
               <div>
