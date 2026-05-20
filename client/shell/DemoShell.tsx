@@ -114,9 +114,11 @@ const STEP_LABELS_PAP_AUDIT = [
 function StepBar() {
   const workflowStep = useDemoStore((s) => s.workflowStep);
   const flowType     = useDemoStore((s) => s.flowType);
-  const biStatus     = useDemoStore((s) => s.biStatus);
-  const STEP_LABELS  = flowType === "Fax_PAP_Audit" ? STEP_LABELS_PAP_AUDIT : STEP_LABELS_DEFAULT;
-  const biRunning    = biStatus === "running" && flowType !== "Fax_PAP_Audit";
+  const biStatus        = useDemoStore((s) => s.biStatus);
+  const pharmacyStatus  = useDemoStore((s) => s.pharmacyStatus);
+  const STEP_LABELS     = flowType === "Fax_PAP_Audit" ? STEP_LABELS_PAP_AUDIT : STEP_LABELS_DEFAULT;
+  const biRunning       = biStatus === "running" && flowType !== "Fax_PAP_Audit";
+  const rxShipping      = pharmacyStatus === "ready" && flowType !== "Fax_PAP_Audit";
 
   return (
     <div className="flex items-center gap-0 px-6 py-2">
@@ -124,13 +126,17 @@ function StepBar() {
         const n      = i + 1;
         const done   = workflowStep > n;
         const active = workflowStep === n;
-        // Connector between step 2→3 pulses while BI is running
-        const connectorRunning = biRunning && n === 2;
+        // Connector between step 2→3 pulses while BI is running; step 5→6 while rx is shipping
+        const connectorRunning = (biRunning && n === 2) || (rxShipping && n === 5);
         return (
           <React.Fragment key={label}>
             <div className="flex flex-col items-center gap-0.5 relative">
               {/* Pulsing ring behind the step-3 dot while BI runs */}
               {biRunning && n === 3 && (
+                <span className="absolute inset-0 rounded-full animate-ping bg-white/25" />
+              )}
+              {/* Pulsing ring behind the step-6 dot while rx is shipping */}
+              {rxShipping && n === 6 && (
                 <span className="absolute inset-0 rounded-full animate-ping bg-white/25" />
               )}
               <div
@@ -139,7 +145,8 @@ function StepBar() {
                   done   && "bg-white text-[#0f172a] border-white",
                   active && "bg-white/30 text-white border-white scale-110",
                   biRunning && n === 3 && "border-white/60 text-white/60",
-                  !done && !active && !(biRunning && n === 3) && "bg-transparent text-white/40 border-white/25"
+                  rxShipping && n === 6 && "border-white/60 text-white/60",
+                  !done && !active && !(biRunning && n === 3) && !(rxShipping && n === 6) && "bg-transparent text-white/40 border-white/25"
                 )}
               >
                 {done ? "✓" : n}
@@ -150,10 +157,11 @@ function StepBar() {
                   active && "text-white font-semibold",
                   done   && "text-white/70",
                   biRunning && n === 3 && "text-white/60 animate-pulse",
-                  !done && !active && !(biRunning && n === 3) && "text-white/30"
+                  rxShipping && n === 6 && "text-white/60 animate-pulse",
+                  !done && !active && !(biRunning && n === 3) && !(rxShipping && n === 6) && "text-white/30"
                 )}
               >
-                {biRunning && n === 3 ? "Running…" : label}
+                {biRunning && n === 3 ? "Running…" : rxShipping && n === 6 ? "Shipping…" : label}
               </span>
             </div>
             {i < STEP_LABELS.length - 1 && (
