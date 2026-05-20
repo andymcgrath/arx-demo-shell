@@ -93,6 +93,7 @@ export interface DemoActions {
   readyRx: () => void;
   shipRx: () => void;
   deliverRx: () => void;
+  startShippingSequence: () => void;
   // flow
   changeFlow: (flow: FlowType) => void;
   resetDemo: (flow?: FlowType) => void;
@@ -330,6 +331,12 @@ export const useDemoStore = create<DemoStore>()(
         set({ pharmacyStatus: "delivered", updatedAt: now, updatedBy: "HUB" });
         set({ workflowStep: get()._deriveStep() });
         get()._logEvent("rx_delivered", "HUB");
+      },
+
+      startShippingSequence(): void {
+        get().readyRx();
+        setTimeout(() => get().shipRx(), 10000);
+        setTimeout(() => get().deliverRx(), 20000);
       },
 
       closeEnrollmentFormTab(): void {

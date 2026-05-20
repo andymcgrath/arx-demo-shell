@@ -448,9 +448,7 @@ export default function Index() {
   const runBI = useDemoStore((s) => s.runBI);
   const completeBI = useDemoStore((s) => s.completeBI);
   const fillRx = useDemoStore((s) => s.fillRx);
-  const readyRx = useDemoStore((s) => s.readyRx);
-  const shipRx = useDemoStore((s) => s.shipRx);
-  const deliverRx = useDemoStore((s) => s.deliverRx);
+  const startShippingSequence = useDemoStore((s) => s.startShippingSequence);
   const approvePA = useDemoStore((s) => s.approvePA);
   const isPapFlow = flowType === "Fax_PAP_Audit";
   const [selectedPharmacy, setSelectedPharmacy] = useState("Biologics");
@@ -1180,9 +1178,7 @@ export default function Index() {
                                 onClick={() => {
                   setSelectedPharmacy(sp);
                   setPharmacyPickerOpen(false);
-                  readyRx();
-                  setTimeout(() => shipRx(), 10000);
-                  setTimeout(() => deliverRx(), 20000);
+                  startShippingSequence();
                 }}
                               >
                                 <span className={selectedPharmacy === sp ? "font-semibold" : ""}>{sp}</span>
