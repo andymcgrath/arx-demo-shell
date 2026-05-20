@@ -1,6 +1,6 @@
-import { useNavigate } from "@/lib/portalRouter";
-import Header from "@patient/components/Header";
-import Footer from "@patient/components/Footer";
+import { useNavigate } from "react-router-dom";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export default function DeliveryConfirmation() {
   const navigate = useNavigate();

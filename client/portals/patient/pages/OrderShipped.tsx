@@ -1,7 +1,7 @@
 import { ChevronRight, Check } from "lucide-react";
-import { useNavigate } from "@/lib/portalRouter";
-import Header from "@patient/components/Header";
-import Footer from "@patient/components/Footer";
+import { useNavigate } from "react-router-dom";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const ORDER_NUMBER = "428046573";
 const SHIP_DATE = "May 26, 2026";

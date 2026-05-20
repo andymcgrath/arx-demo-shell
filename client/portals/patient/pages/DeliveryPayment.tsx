@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "@/lib/portalRouter";
+import { useNavigate } from "react-router-dom";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import Header from "@patient/components/Header";
-import Footer from "@patient/components/Footer";
-import { PROGRAM } from "@patient/config/branding";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { PROGRAM } from "@/config/branding";
 
 const LIST_PRICE = 575;
 const DISCOUNT = 426;

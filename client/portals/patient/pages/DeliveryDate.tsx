@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "@/lib/portalRouter";
+import { useNavigate } from "react-router-dom";
 import { CalendarDays, Check } from "lucide-react";
-import Header from "@patient/components/Header";
-import Footer from "@patient/components/Footer";
-import EnrollmentShell from "@patient/components/enrollment/EnrollmentShell";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import EnrollmentShell from "@/components/enrollment/EnrollmentShell";
 
 function isUnavailable(d: Date): boolean {
   const day = d.getDay();

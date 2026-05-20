@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { X, Send } from "lucide-react";
-import { MANUFACTURER, CHATBOT_ICON } from "@patient/config/branding";
+import { MANUFACTURER, CHATBOT_ICON } from "@/config/branding";
 
 interface Message {
   id: number;

@@ -1,6 +1,6 @@
 import { ChevronRight, ArrowRight } from "lucide-react";
-import ProgramLogo from "@patient/components/brand/ProgramLogo";
-import { PROGRAM } from "@patient/config/branding";
+import ProgramLogo from "@/components/brand/ProgramLogo";
+import { PROGRAM } from "@/config/branding";
 
 interface Prescription {
   name: string;

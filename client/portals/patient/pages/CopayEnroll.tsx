@@ -1,7 +1,7 @@
-import { useNavigate } from "@/lib/portalRouter";
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, CreditCard, ShoppingBag, CheckCircle } from "lucide-react";
-import Header from "@patient/components/Header";
-import Footer from "@patient/components/Footer";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export default function CopayEnroll() {
   const navigate = useNavigate();

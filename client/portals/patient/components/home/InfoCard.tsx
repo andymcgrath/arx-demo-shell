@@ -1,5 +1,5 @@
-import ProgramLogo from "@patient/components/brand/ProgramLogo";
-import { PROGRAM } from "@patient/config/branding";
+import ProgramLogo from "@/components/brand/ProgramLogo";
+import { PROGRAM } from "@/config/branding";
 
 export default function InfoCard() {
   return (

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { X, Upload, ImageIcon } from "lucide-react";
-import { cn } from "@patient/lib/utils";
+import { cn } from "@/lib/utils";
 
 interface Asset {
   url: string;

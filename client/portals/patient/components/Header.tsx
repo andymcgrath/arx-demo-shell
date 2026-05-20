@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useChatContext } from "@patient/components/ChatContext";
-import ManufacturerLogo from "@patient/components/brand/ManufacturerLogo";
-import { MANUFACTURER, CHATBOT_ICON, PROGRAM } from "@patient/config/branding";
-import { hexToColorFilter } from "@patient/lib/brandFilter";
+import { useChatContext } from "@/components/ChatContext";
+import ManufacturerLogo from "@/components/brand/ManufacturerLogo";
+import { MANUFACTURER, CHATBOT_ICON, PROGRAM } from "@/config/branding";
+import { hexToColorFilter } from "@/lib/brandFilter";
 
 const NAV_LINKS = [
   { label: "Home", path: "/" },
