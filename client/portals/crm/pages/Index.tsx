@@ -339,6 +339,7 @@ export default function Index() {
   const [openStageTabs, setOpenStageTabs] = useState<Stage[]>([]);
   const [activeTopTab, setActiveTopTab] = useState<string>("keanu");
   const [activePatientSubTab, setActivePatientSubTab] = useState<"onboarding" | "enrollment-form">("enrollment-form");
+  const [openSubTabs, setOpenSubTabs] = useState<Array<"onboarding" | "enrollment-form">>(["onboarding", "enrollment-form"]);
   const [patientAccountCollapsed, setPatientAccountCollapsed] = useState(false);
   const [patientContactCollapsed, setPatientContactCollapsed] = useState(false);
 
@@ -437,59 +438,73 @@ export default function Index() {
         <>
           {/* Sub-tab strip: Onboarding | FAX-2026-00431 */}
           <div className="border-b border-[#dddbda] flex items-end px-2 gap-0 bg-white">
-            <button
-              onClick={() => setActivePatientSubTab("onboarding")}
-              className={`flex items-center gap-2 px-4 py-3 text-[13px] whitespace-nowrap relative shrink-0 transition-colors ${
-                activePatientSubTab === "onboarding" ? "font-semibold" : "text-[#706e6b] hover:text-[#3e3e3c]"
-              }`}
-              style={{ color: activePatientSubTab === "onboarding" ? SF_BLUE : undefined }}
-            >
-              <div
-                className="flex items-center justify-center rounded text-white font-bold text-[10px] shrink-0"
-                style={{ width: 16, height: 16, background: "linear-gradient(135deg, #0176d3 0%, #014486 100%)", borderRadius: 3 }}
-              >C</div>
-              Onboarding
-              <span
-                role="button"
-                className="ml-1 flex items-center justify-center rounded hover:bg-[#e5e5e5] transition-colors"
-                style={{ width: 16, height: 16 }}
-                onClick={(e) => { e.stopPropagation(); setActivePatientSubTab("enrollment-form"); }}
+            {openSubTabs.includes("onboarding") && (
+              <button
+                onClick={() => setActivePatientSubTab("onboarding")}
+                className={`flex items-center gap-2 px-4 py-3 text-[13px] whitespace-nowrap relative shrink-0 transition-colors ${
+                  activePatientSubTab === "onboarding" ? "font-semibold" : "text-[#706e6b] hover:text-[#3e3e3c]"
+                }`}
+                style={{ color: activePatientSubTab === "onboarding" ? SF_BLUE : undefined }}
               >
-                <X size={10} className="text-[#706e6b]" />
-              </span>
-              {activePatientSubTab === "onboarding" && (
-                <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: SF_BLUE }} />
-              )}
-            </button>
-            <button
-              onClick={() => setActivePatientSubTab("enrollment-form")}
-              className={`flex items-center gap-2 px-4 py-3 text-[13px] whitespace-nowrap relative shrink-0 transition-colors ${
-                activePatientSubTab === "enrollment-form" ? "font-semibold" : "text-[#706e6b] hover:text-[#3e3e3c]"
-              }`}
-              style={{ color: activePatientSubTab === "enrollment-form" ? SF_BLUE : undefined }}
-            >
-              <div
-                className="flex items-center justify-center rounded shrink-0"
-                style={{ width: 16, height: 16, background: "#6b5ecd", borderRadius: 3 }}
+                <div
+                  className="flex items-center justify-center rounded text-white font-bold text-[10px] shrink-0"
+                  style={{ width: 16, height: 16, background: "linear-gradient(135deg, #0176d3 0%, #014486 100%)", borderRadius: 3 }}
+                >C</div>
+                Onboarding
+                <span
+                  role="button"
+                  className="ml-1 flex items-center justify-center rounded hover:bg-[#e5e5e5] transition-colors"
+                  style={{ width: 16, height: 16 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const remaining = openSubTabs.filter((t) => t !== "onboarding");
+                    setOpenSubTabs(remaining);
+                    if (activePatientSubTab === "onboarding" && remaining.length > 0) setActivePatientSubTab(remaining[0]);
+                  }}
+                >
+                  <X size={10} className="text-[#706e6b]" />
+                </span>
+                {activePatientSubTab === "onboarding" && (
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: SF_BLUE }} />
+                )}
+              </button>
+            )}
+            {openSubTabs.includes("enrollment-form") && (
+              <button
+                onClick={() => setActivePatientSubTab("enrollment-form")}
+                className={`flex items-center gap-2 px-4 py-3 text-[13px] whitespace-nowrap relative shrink-0 transition-colors ${
+                  activePatientSubTab === "enrollment-form" ? "font-semibold" : "text-[#706e6b] hover:text-[#3e3e3c]"
+                }`}
+                style={{ color: activePatientSubTab === "enrollment-form" ? SF_BLUE : undefined }}
               >
-                <FileText size={9} className="text-white" />
-              </div>
-              <span className="flex flex-col leading-none text-left gap-0">
-                <span>FAX-2026-00431</span>
-                <span className="text-[10px] text-[#706e6b] font-normal">Enrollment Form</span>
-              </span>
-              <span
-                role="button"
-                className="ml-1 flex items-center justify-center rounded hover:bg-[#e5e5e5] transition-colors"
-                style={{ width: 16, height: 16 }}
-                onClick={(e) => { e.stopPropagation(); setActivePatientSubTab("onboarding"); }}
-              >
-                <X size={10} className="text-[#706e6b]" />
-              </span>
-              {activePatientSubTab === "enrollment-form" && (
-                <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: SF_BLUE }} />
-              )}
-            </button>
+                <div
+                  className="flex items-center justify-center rounded shrink-0"
+                  style={{ width: 16, height: 16, background: "#6b5ecd", borderRadius: 3 }}
+                >
+                  <FileText size={9} className="text-white" />
+                </div>
+                <span className="flex flex-col leading-none text-left gap-0">
+                  <span>FAX-2026-00431</span>
+                  <span className="text-[10px] text-[#706e6b] font-normal">Enrollment Form</span>
+                </span>
+                <span
+                  role="button"
+                  className="ml-1 flex items-center justify-center rounded hover:bg-[#e5e5e5] transition-colors"
+                  style={{ width: 16, height: 16 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const remaining = openSubTabs.filter((t) => t !== "enrollment-form");
+                    setOpenSubTabs(remaining);
+                    if (activePatientSubTab === "enrollment-form" && remaining.length > 0) setActivePatientSubTab(remaining[0]);
+                  }}
+                >
+                  <X size={10} className="text-[#706e6b]" />
+                </span>
+                {activePatientSubTab === "enrollment-form" && (
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: SF_BLUE }} />
+                )}
+              </button>
+            )}
           </div>
 
           {/* Sub-tab content */}
