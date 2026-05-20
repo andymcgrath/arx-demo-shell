@@ -114,22 +114,32 @@ const STEP_LABELS_PAP_AUDIT = [
 function StepBar() {
   const workflowStep = useDemoStore((s) => s.workflowStep);
   const flowType     = useDemoStore((s) => s.flowType);
+  const biStatus     = useDemoStore((s) => s.biStatus);
   const STEP_LABELS  = flowType === "Fax_PAP_Audit" ? STEP_LABELS_PAP_AUDIT : STEP_LABELS_DEFAULT;
+  const biRunning    = biStatus === "running";
+
   return (
     <div className="flex items-center gap-0 px-6 py-2">
       {STEP_LABELS.map((label, i) => {
         const n      = i + 1;
         const done   = workflowStep > n;
         const active = workflowStep === n;
+        // Connector between step 2→3 pulses while BI is running
+        const connectorRunning = biRunning && n === 2;
         return (
           <React.Fragment key={label}>
-            <div className="flex flex-col items-center gap-0.5">
+            <div className="flex flex-col items-center gap-0.5 relative">
+              {/* Pulsing ring behind the step-3 dot while BI runs */}
+              {biRunning && n === 3 && (
+                <span className="absolute inset-0 rounded-full animate-ping bg-white/25" />
+              )}
               <div
                 className={cn(
-                  "w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center border transition-all",
+                  "relative w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center border transition-all",
                   done   && "bg-white text-[#0f172a] border-white",
                   active && "bg-white/30 text-white border-white scale-110",
-                  !done && !active && "bg-transparent text-white/40 border-white/25"
+                  biRunning && n === 3 && "border-white/60 text-white/60",
+                  !done && !active && !(biRunning && n === 3) && "bg-transparent text-white/40 border-white/25"
                 )}
               >
                 {done ? "✓" : n}
@@ -139,19 +149,31 @@ function StepBar() {
                   "text-[9px] whitespace-nowrap hidden md:block",
                   active && "text-white font-semibold",
                   done   && "text-white/70",
-                  !done && !active && "text-white/30"
+                  biRunning && n === 3 && "text-white/60 animate-pulse",
+                  !done && !active && !(biRunning && n === 3) && "text-white/30"
                 )}
               >
-                {label}
+                {biRunning && n === 3 ? "Running…" : label}
               </span>
             </div>
             {i < STEP_LABELS.length - 1 && (
               <div
                 className={cn(
-                  "h-px flex-1 mx-1 mb-3 transition-all",
+                  "h-px flex-1 mx-1 mb-3 transition-all overflow-hidden relative",
                   workflowStep > n ? "bg-white/60" : "bg-white/15"
                 )}
-              />
+              >
+                {connectorRunning && (
+                  <span
+                    className="absolute inset-0 animate-[shimmer_1.5s_ease-in-out_infinite]"
+                    style={{
+                      background:
+                        "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.7) 50%, transparent 100%)",
+                      animation: "shimmer 1.5s ease-in-out infinite",
+                    }}
+                  />
+                )}
+              </div>
             )}
           </React.Fragment>
         );
