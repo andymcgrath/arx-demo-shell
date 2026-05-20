@@ -152,7 +152,13 @@ export default function PapIncomeVerification() {
             <button
               type="button"
               disabled={calculating}
-              onClick={handleSubmit}
+              onClick={() => {
+                setErrors({});
+                setCalculating(true);
+                setTimeout(() => {
+                  verifyIncome();
+                }, 1800);
+              }}
               className="text-sm underline underline-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-arx-primary hover:text-arx-primary-dark"
             >
               {calculating ? (
