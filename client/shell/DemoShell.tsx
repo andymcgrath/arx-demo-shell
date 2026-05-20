@@ -193,30 +193,47 @@ function Panel({ portal, onChangePortal, showSelector, headerHeight }: PanelProp
        */}
       {portal === "patient" ? (
         <div
-          className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-200 flex items-center justify-center py-8"
+          className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-200 flex items-start justify-center py-8"
           style={{ height: `calc(100vh - ${headerHeight}px)` }}
         >
-          <div className="marvel-device iphone-x silver phone-portal-device">
-            <div className="notch">
-              <div className="camera" />
-              <div className="speaker" />
-            </div>
-            <div className="top-bar" />
-            <div className="sleep" />
-            <div className="bottom-bar" />
-            <div className="volume" />
-            <div className="overflow">
-              <div className="shadow shadow--tr" />
-              <div className="shadow shadow--tl" />
-              <div className="shadow shadow--br" />
-              <div className="shadow shadow--bl" />
-            </div>
-            <div className="inner-shadow" />
-            <div
-              className="screen phone-portal-screen"
-              style={{ transform: "translateZ(0)", willChange: "transform" }}
-            >
-              <PortalComponent id={portal} />
+          <div className="i17pro">
+            {/* Physical buttons */}
+            <div className="i17pro__btn i17pro__btn--action" />
+            <div className="i17pro__btn i17pro__btn--vol-up" />
+            <div className="i17pro__btn i17pro__btn--vol-down" />
+            <div className="i17pro__btn i17pro__btn--power" />
+            <div className="i17pro__btn i17pro__btn--camera-ctrl" />
+
+            {/* Screen */}
+            <div className="i17pro__screen" style={{ transform: "translateZ(0)", willChange: "transform" }}>
+              {/* Status bar + Dynamic Island */}
+              <div className="i17pro__statusbar" aria-hidden="true">
+                <span className="i17pro__time">9:41</span>
+                <div className="i17pro__island" />
+                <div className="i17pro__icons">
+                  <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor">
+                    <rect x="0" y="4" width="3" height="8" rx="1" opacity="0.4"/>
+                    <rect x="4.5" y="2.5" width="3" height="9.5" rx="1" opacity="0.6"/>
+                    <rect x="9" y="1" width="3" height="11" rx="1" opacity="0.8"/>
+                    <rect x="13.5" y="0" width="3" height="12" rx="1"/>
+                  </svg>
+                  <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor">
+                    <path d="M8 9a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/>
+                    <path d="M8 5.5a5.5 5.5 0 0 1 3.9 1.6l1.1-1.1A7 7 0 0 0 8 4a7 7 0 0 0-5 2l1.1 1.1A5.5 5.5 0 0 1 8 5.5z"/>
+                    <path d="M8 2A9 9 0 0 1 14.4 4.4L15.5 3.3A10.5 10.5 0 0 0 8 1 10.5 10.5 0 0 0 .5 3.3l1.1 1.1A9 9 0 0 1 8 2z" opacity="0.5"/>
+                  </svg>
+                  <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+                    <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" strokeOpacity="0.35"/>
+                    <rect x="1.5" y="1.5" width="18" height="9" rx="2.5" fill="currentColor"/>
+                    <path d="M23 4v4a2 2 0 0 0 0-4z" fill="currentColor" fillOpacity="0.4"/>
+                  </svg>
+                </div>
+              </div>
+
+              {/* Portal content */}
+              <div className="i17pro__content">
+                <PortalComponent id={portal} />
+              </div>
             </div>
           </div>
         </div>
