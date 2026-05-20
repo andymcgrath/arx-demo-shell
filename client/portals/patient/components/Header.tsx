@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "@/lib/portalRouter";
 import { useChatContext } from "@/components/ChatContext";
 import ManufacturerLogo from "@/components/brand/ManufacturerLogo";
 import { MANUFACTURER, CHATBOT_ICON, PROGRAM } from "@/config/branding";

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/portalRouter";
 import { useDemoStore } from "@/store/demoStore";
 import { FileText } from "lucide-react";
 import {

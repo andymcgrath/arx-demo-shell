@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/portalRouter";
 import { Check } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";

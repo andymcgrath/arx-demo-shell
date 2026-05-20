@@ -1,5 +1,5 @@
 import { ChevronRight, Check } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/portalRouter";
 import Header from "@patient/components/Header";
 import Footer from "@patient/components/Footer";
 
