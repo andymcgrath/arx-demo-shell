@@ -1,0 +1,155 @@
+/**
+ * arx-demo-shell — global styles
+ *
+ * CSS variables are scoped per-portal so each tab can have its own design
+ * system without conflicting. The shell + CRM use :root defaults.
+ * Patient portal variables live in .portal-patient.
+ * Analytics portal variables live in .portal-analytics.
+ */
+
+/* ── Fonts ───────────────────────────────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Open+Sans:wght@400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Shell + CRM defaults (shadcn/ui + Salesforce-ish) ───────────────────── */
+@layer base {
+  :root {
+    --radius: 0.5rem;
+
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+
+    /* Sidebar (CRM uses this) */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Inter", -apple-system, sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* ── Patient portal design system (AssistRx / iAssist brand) ─────────────── */
+@layer base {
+  .portal-patient {
+    /* Brand Colors */
+    --arx-primary: 170 42% 22%;
+    --arx-primary-dark: 170 72% 11%;
+    --arx-primary-80: 148 78% 51%;
+    --arx-primary-30: 184 33% 77%;
+    --arx-secondary: 197 51% 38%;
+    --arx-sky: 181 57% 87%;
+
+    /* Neutrals */
+    --arx-slate: 300 1% 25%;
+    --arx-body-copy: 214 4% 37%;
+    --arx-neutral-800: 0 0% 11%;
+    --arx-neutral-100: 0 0% 97%;
+    --arx-neutral-000: 0 0% 100%;
+
+    /* Functional */
+    --arx-errors: 0 79% 47%;
+    --arx-orange: 33 87% 51%;
+    --arx-links: 209 70% 43%;
+    --arx-optional: 257 32% 43%;
+    --arx-inactive: 0 0% 67%;
+    --arx-borders: 0 0% 88%;
+    --arx-background: 0 0% 95%;
+
+    /* Override shadcn tokens to match patient brand */
+    --background: 0 0% 100%;
+    --foreground: 300 1% 25%;
+    --card: 0 0% 100%;
+    --card-foreground: 300 1% 25%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 300 1% 25%;
+    --primary: 170 42% 22%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 197 51% 38%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 97%;
+    --muted-foreground: 210 2% 45%;
+    --accent: 181 57% 87%;
+    --accent-foreground: 300 1% 25%;
+    --destructive: 0 79% 47%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 183 100% 22%;
+
+    font-family: "Open Sans", -apple-system, Roboto, Helvetica, sans-serif;
+  }
+}
+
+/* ── Analytics portal design system (dark navy + teal) ───────────────────── */
+@layer base {
+  .portal-analytics {
+    --navy: 220 55% 10%;
+    --navy-mid: 220 45% 15%;
+    --navy-light: 220 35% 22%;
+    --teal: 172 70% 45%;
+    --teal-dark: 172 70% 35%;
+
+    /* Override shadcn tokens to match dark theme */
+    --background: 220 55% 10%;
+    --foreground: 0 0% 100%;
+    --card: 220 45% 15%;
+    --card-foreground: 0 0% 100%;
+    --popover: 220 45% 15%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 172 70% 45%;
+    --primary-foreground: 220 55% 10%;
+    --secondary: 220 35% 22%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 35% 22%;
+    --muted-foreground: 220 20% 65%;
+    --accent: 172 70% 45%;
+    --accent-foreground: 220 55% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 35% 22%;
+    --input: 220 35% 22%;
+    --ring: 172 70% 45%;
+
+    --sidebar-background: 220 55% 8%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 172 70% 45%;
+    --sidebar-primary-foreground: 220 55% 10%;
+    --sidebar-accent: 220 35% 22%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 35% 22%;
+    --sidebar-ring: 172 70% 45%;
+  }
+}
