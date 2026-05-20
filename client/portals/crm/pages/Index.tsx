@@ -462,9 +462,6 @@ export default function Index() {
             ]
       );
       setActiveTopTab("BI-14273");
-      const result = isPapFlow ? "no_insurance" : "coverage_found";
-      const t = setTimeout(() => completeBI(result), 15000);
-      return () => clearTimeout(t);
     }
   }, [consentStatus, biStatus]);
 
@@ -533,6 +530,11 @@ export default function Index() {
       prev.some((s) => s.id === stage.id) ? prev : [...prev, stage]
     );
     setActiveTopTab(stage.id);
+    // Clicking the BI link while running kicks off the 10-second completion
+    if (stage.id === "BI-14273" && biStatus === "running") {
+      const result = isPapFlow ? "no_insurance" : "coverage_found";
+      setTimeout(() => completeBI(result), 10000);
+    }
   };
 
   const handleCloseStageTab = (stageId: string, e: React.MouseEvent) => {
