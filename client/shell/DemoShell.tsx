@@ -105,7 +105,7 @@ const STEP_LABELS = [
 function StepBar() {
   const workflowStep = useDemoStore((s) => s.workflowStep);
   return (
-    <div className="flex items-center gap-0 px-4 pb-0 pt-1">
+    <div className="flex items-center gap-0 px-6 py-2">
       {STEP_LABELS.map((label, i) => {
         const n      = i + 1;
         const done   = workflowStep > n;
@@ -365,7 +365,7 @@ export default function DemoShell() {
         </div>
 
         {/* Step progress bar */}
-        <div className="px-2 pb-2">
+        <div className="px-2 pb-1">
           <StepBar />
         </div>
       </header>
