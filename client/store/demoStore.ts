@@ -333,6 +333,8 @@ export const useDemoStore = create<DemoStore>()(
 
       dismissWelcome(): void {
         set({ welcomeDismissed: true });
+      },
+
       acknowledgeEnrollment(): void {
         set({ enrollmentAcknowledged: true });
       },
