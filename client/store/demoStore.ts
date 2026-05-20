@@ -52,6 +52,9 @@ export interface DemoState {
 
   // UI tab state
   enrollmentFormTabOpen: boolean;
+
+  // patient has dismissed the enrollment-complete screen
+  enrollmentAcknowledged: boolean;
 }
 
 export interface DemoEvent {
@@ -94,6 +97,7 @@ export interface DemoActions {
   undoLast: () => void;
   closeEnrollmentFormTab: () => void;
   openEnrollmentFormTab: () => void;
+  acknowledgeEnrollment: () => void;
   // internal
   _snapshot: () => void;
   _logEvent: (type: string, portal: Portal, meta?: Record<string, unknown>) => void;
@@ -137,6 +141,7 @@ export const SEED: DemoState = {
   events: [],
 
   enrollmentFormTabOpen: false,
+  enrollmentAcknowledged: false,
 };
 
 // ── Step derivation ───────────────────────────────────────────────────────────
@@ -321,6 +326,10 @@ export const useDemoStore = create<DemoStore>()(
 
       openEnrollmentFormTab(): void {
         set({ enrollmentFormTabOpen: true });
+      },
+
+      acknowledgeEnrollment(): void {
+        set({ enrollmentAcknowledged: true });
       },
 
       changeFlow(flow): void {
