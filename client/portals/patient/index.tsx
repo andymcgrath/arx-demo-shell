@@ -82,27 +82,27 @@ function PatientRoutes() {
       <div className="flex-1 overflow-y-auto overflow-x-hidden">
         <StateDrivenNav />
         <Routes>
-        <Route path="/"                      element={<Index />} />
-        <Route path="/confirm-details"       element={<ConfirmDetails />} />
-        <Route path="/consent"               element={<Consent />} />
-        <Route path="/signature"             element={<Signature />} />
-        <Route path="/upload-insurance"      element={<UploadInsurance />} />
-        <Route path="/enrollment-complete"   element={<EnrollmentComplete />} />
-        <Route path="/pa-status"             element={<PAStatus />} />
-        <Route path="/pa-denied"             element={<PADenied />} />
-        <Route path="/pa-approved"           element={<PAApproved />} />
-        <Route path="/copay-enroll"          element={<CopayEnroll />} />
-        <Route path="/delivery-address"      element={<DeliveryAddress />} />
-        <Route path="/delivery-date"         element={<DeliveryDate />} />
-        <Route path="/delivery-payment"      element={<DeliveryPayment />} />
-        <Route path="/delivery-confirmation" element={<DeliveryConfirmation />} />
-        <Route path="/order-tracker"         element={<OrderTracker />} />
-        <Route path="/order-shipped"         element={<OrderShipped />} />
-        <Route path="/medication-delivered"  element={<MedicationDelivered />} />
+          <Route path="/"                      element={<Index />} />
+          <Route path="/confirm-details"       element={<ConfirmDetails />} />
+          <Route path="/consent"               element={<Consent />} />
+          <Route path="/signature"             element={<Signature />} />
+          <Route path="/upload-insurance"      element={<UploadInsurance />} />
+          <Route path="/enrollment-complete"   element={<EnrollmentComplete />} />
+          <Route path="/pa-status"             element={<PAStatus />} />
+          <Route path="/pa-denied"             element={<PADenied />} />
+          <Route path="/pa-approved"           element={<PAApproved />} />
+          <Route path="/copay-enroll"          element={<CopayEnroll />} />
+          <Route path="/delivery-address"      element={<DeliveryAddress />} />
+          <Route path="/delivery-date"         element={<DeliveryDate />} />
+          <Route path="/delivery-payment"      element={<DeliveryPayment />} />
+          <Route path="/delivery-confirmation" element={<DeliveryConfirmation />} />
+          <Route path="/order-tracker"         element={<OrderTracker />} />
+          <Route path="/order-shipped"         element={<OrderShipped />} />
+          <Route path="/medication-delivered"  element={<MedicationDelivered />} />
         </Routes>
+        <Footer />
         {ctx?.chatOpen && <ChatModal onClose={ctx.closeChat} />}
       </div>
-      <Footer />
     </div>
   );
 }
