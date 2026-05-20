@@ -244,12 +244,7 @@ function PaQuestionsStep({ onBack, onCancel, onNext }: { onBack: () => void; onC
   const [q2, setQ2] = useState<string | null>(null);
   const [q3, setQ3] = useState<string | null>(null);
   const [comments, setComments] = useState("");
-  const [saved, setSaved] = useState(false);
   const submitPA = useDemoStore((s) => s.submitPA);
-
-  function handleSave() {
-    setSaved(true);
-  }
 
   function handleNext() {
     submitPA({ source: "provider_portal", comments });
@@ -289,15 +284,6 @@ function PaQuestionsStep({ onBack, onCancel, onNext }: { onBack: () => void; onC
           <div className="pa-field__underline" />
         </div>
 
-        <div className="pa-save-row">
-          <button onClick={handleSave} className={`pa-btn-save ${saved ? "pa-btn-save--saved" : ""}`}>
-            {saved ? (
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M4.75502 12.2376L0.205017 7.68643C-0.0683389 7.41301 -0.0683389 6.96967 0.205017 6.69622L1.19494 5.706C1.4683 5.43255 1.91154 5.43255 2.1849 5.706L5.25 8.77189L11.8151 2.20507C12.0885 1.93164 12.5317 1.93164 12.8051 2.20507L13.795 3.19529C14.0683 3.46872 14.0683 3.91205 13.795 4.1855L5.74498 12.2377C5.47159 12.5111 5.02838 12.5111 4.75502 12.2376Z" fill="#007178" />
-              </svg>
-            ) : null}
-          </button>
-        </div>
       </div>
 
       <div className="pa-nav-row">
