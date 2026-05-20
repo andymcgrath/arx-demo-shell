@@ -1146,6 +1146,26 @@ export default function Index() {
                   Approved
                 </span>
               )}
+              {activeStage.id === "TP-14277" && pharmacyStatus === "processing" && (
+                <button
+                  onClick={startShippingSequence}
+                  className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded text-[12px] font-semibold text-white transition-opacity hover:opacity-90"
+                  style={{ background: FC_BLUE }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                  Dispatch to Pharmacy
+                </button>
+              )}
+              {activeStage.id === "TP-14277" && pharmacyStatus === "ready" && (
+                <span className="ml-auto text-[12px] font-semibold px-2.5 py-0.5 rounded animate-pulse" style={{ background: "#e8f0fa", color: FC_BLUE }}>
+                  Shipping…
+                </span>
+              )}
+              {activeStage.id === "TP-14277" && (pharmacyStatus === "shipped" || pharmacyStatus === "delivered") && (
+                <span className="ml-auto text-[12px] font-semibold px-2.5 py-0.5 rounded" style={{ background: "#e8f4ef", color: "#2e844a" }}>
+                  Dispatched
+                </span>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-x-6 px-4 pt-1 pb-2">
               <div>
