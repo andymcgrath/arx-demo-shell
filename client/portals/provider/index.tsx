@@ -73,12 +73,12 @@ function BrandSidebar() {
 // ── PA info summary (shared between step 2 and 3) ─────────────────────────────
 
 const PA_INFO_ITEMS = [
-  { label: "MEDICATION",          value: "Dupixent (Dupilumab) Injection • NDC: 000245918", done: true },
-  { label: "MEDICATION DETAILS",  value: "100mg pre filled Pen",                             done: true },
+  { label: "MEDICATION",          value: "Jascayd® (nerandomilast) • NDC: 72266-0180-30",   done: true },
+  { label: "MEDICATION DETAILS",  value: "18 mg · 30-day supply",                            done: true },
   { label: "PATIENT",             value: "Keanu Dixon • 09/19/1981",                         done: true },
-  { label: "PRESCRIBER",         value: "LESLIE PATTERSON, PTA",                            done: true },
-  { label: "INSURANCE",          value: "CERT PBM-B",                                       done: true },
-  { label: "PHARMACY",           value: "CoAssist Pharmacy • 2400 SAND LAKE RD STE 200 ORLANDO, FL 32809\nPhone (855) 382-2533 • Fax: (833) 596-2174", done: true },
+  { label: "PRESCRIBER",          value: "Sarah Chen, MD",                                   done: true },
+  { label: "INSURANCE",           value: "BlueCross BlueShield of Florida",                  done: true },
+  { label: "PHARMACY",            value: "Accredo Health Group Inc.",                        done: true },
   { label: "PRIOR AUTHORIZATION", value: "Electronic Questions Found",                       done: false },
 ];
 
@@ -211,7 +211,7 @@ function PaReviewStep({ onNext }: { onNext: () => void }) {
 
       <div className="pa-questions-section">
         <RadioQuestion
-          question="Does the patient have the diagnosis of Keratosis Follicularis?"
+          question="Does the patient have a confirmed diagnosis of Idiopathic Pulmonary Fibrosis (IPF)?"
           value={q1}
           onChange={setQ1}
         />
@@ -257,17 +257,17 @@ function PaQuestionsStep({ onBack, onCancel }: { onBack: () => void; onCancel: (
 
       <div className="pa-questions-section">
         <RadioQuestion
-          question="Does the patient have the diagnosis of Keratosis Follicularis?"
+          question="Does the patient have a confirmed diagnosis of Idiopathic Pulmonary Fibrosis (IPF)?"
           value={q1}
           onChange={setQ1}
         />
         <RadioQuestion
-          question="Does the patient have the diagnosis of Acne Vulgaris?"
+          question="Has the patient tried and failed therapy with other approved IPF treatments (e.g., pirfenidone, nintedanib)?"
           value={q2}
           onChange={setQ2}
         />
         <RadioQuestion
-          question="Has the physician considered using therapies of Salicylic Acid Products (e.g, Clearasil, Stri-Dex) Benzoyl Peroxide products (e.g, Oxy-10, Benzac AC, Triaz) but deemed all of them inappropriate for the patient?"
+          question="Is the patient's Forced Vital Capacity (FVC) ≥ 45% of predicted at baseline?"
           value={q3}
           onChange={setQ3}
         />
