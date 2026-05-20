@@ -120,7 +120,7 @@
 
 .phone-frame__shell {
   width: 375px;
-  height: 780px;
+  height: 700px;
   background: #1a1a1a;
   border-radius: 52px;
   padding: 14px;
@@ -132,18 +132,46 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  gap: 0;
+}
+
+.phone-frame__statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 20px 4px;
+  position: relative;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.phone-frame__time {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: -0.3px;
+  flex: 1;
 }
 
 .phone-frame__notch {
-  width: 126px;
+  width: 120px;
   height: 34px;
   background: #1a1a1a;
   border-radius: 0 0 20px 20px;
   position: absolute;
-  top: 14px;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
+}
+
+.phone-frame__icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  justify-content: flex-end;
 }
 
 .phone-frame__screen {
@@ -153,6 +181,7 @@
   overflow: hidden;
   overflow-y: auto;
   position: relative;
+  min-height: 0;
 }
 
 /* ── Provider portal (iAssist Prior Authorization) ───────────────────────── */
