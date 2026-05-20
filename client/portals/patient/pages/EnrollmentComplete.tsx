@@ -1,11 +1,6 @@
 import { useNavigate } from "react-router-dom";
-<<<<<<< HEAD
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-=======
 import Header from "@patient/components/Header";
 import Footer from "@patient/components/Footer";
->>>>>>> e4d3eb50d00f51b9afbe732322e8a2888a46beef
 
 export default function EnrollmentComplete() {
   const navigate = useNavigate();

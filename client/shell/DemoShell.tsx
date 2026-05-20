@@ -192,8 +192,9 @@ function Panel({ portal, onChangePortal, showSelector, headerHeight }: PanelProp
 // ── DemoShell ─────────────────────────────────────────────────────────────────
 
 export default function DemoShell() {
-  const { flowType, resetDemo, events } = useDemoStore();
-  const canUndo = events.length > 0;
+  const { flowType, resetDemo, undoLast } = useDemoStore();
+  const _snapshots = useDemoStore((s) => (s as Record<string, unknown>)._snapshots as unknown[]);
+  const canUndo = Array.isArray(_snapshots) && _snapshots.length > 0;
 
   // Layout state
   const [layout, setLayout] = useState<LayoutMode>("1up");
@@ -225,7 +226,7 @@ export default function DemoShell() {
   }
 
   const handleUndo = () => {
-    console.warn("Undo: wire to store.undoLast if needed");
+    undoLast();
   };
 
   const showSelector = layout !== "1up";

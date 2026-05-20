@@ -1,11 +1,7 @@
-import { useState } from "react";
-<<<<<<< HEAD
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-=======
-import { useNavigate } from "@/lib/portalRouter";
 import { useDemoStore } from "@/store/demoStore";
 import { FileText } from "lucide-react";
->>>>>>> e4d3eb50d00f51b9afbe732322e8a2888a46beef
 import {
   ChevronDown,
   ChevronRight,
@@ -55,6 +51,34 @@ function SfButton({
         </button>
       )}
     </div>
+  );
+}
+
+function Signature({ name, width = 160 }: { name: string; width?: number }) {
+  return (
+    <span className="flex flex-col gap-0.5" style={{ display: "inline-flex", flexDirection: "column" }}>
+      <span
+        style={{
+          fontFamily: "Brush Script MT, Segoe Script, cursive",
+          fontSize: 22,
+          color: "#1a3560",
+          letterSpacing: "-0.5px",
+          lineHeight: 1.1,
+          display: "block",
+        }}
+      >
+        {name}
+      </span>
+      <span
+        style={{
+          display: "block",
+          width,
+          height: 1,
+          background: "linear-gradient(to right, #1a3560aa, transparent)",
+          marginTop: 2,
+        }}
+      />
+    </span>
   );
 }
 
@@ -293,11 +317,6 @@ const RIGHT_TABS = [
   { id: "quick-answers", label: "Quick Answers" },
   { id: "missing-info", label: "Missing Information" },
 ];
-<<<<<<< HEAD
-
-export default function Index() {
-  const navigate = useNavigate();
-=======
 
 const FAX_DOCUMENTS = [
   {
@@ -313,18 +332,52 @@ export default function Index() {
   const navigate = useNavigate();
   const flowType = useDemoStore((s) => s.flowType);
   const isFaxFlow = flowType === "Fax_QS_PA_Approved" || flowType === "Fax_PAP_Audit";
->>>>>>> e4d3eb50d00f51b9afbe732322e8a2888a46beef
+  const enrollmentFormTabOpen = useDemoStore((s) => s.enrollmentFormTabOpen);
+  const closeEnrollmentFormTab = useDemoStore((s) => s.closeEnrollmentFormTab);
+  const openEnrollmentFormTab = useDemoStore((s) => s.openEnrollmentFormTab);
+  const consentStatus = useDemoStore((s) => s.consentStatus);
+  const biStatus = useDemoStore((s) => s.biStatus);
+  const runBI = useDemoStore((s) => s.runBI);
+  const completeBI = useDemoStore((s) => s.completeBI);
   const [activeCaseTab, setActiveCaseTab] = useState("summary");
-  const [activeRightTab, setActiveRightTab] = useState("quick-answers");
+  const [activeRightTab, setActiveRightTab] = useState(isFaxFlow ? "missing-info" : "quick-answers");
   const [caseSummaryCollapsed, setCaseSummaryCollapsed] = useState(false);
   const [stagesCollapsed, setStagesCollapsed] = useState(false);
   const [openStageTabs, setOpenStageTabs] = useState<Stage[]>([]);
-<<<<<<< HEAD
-  const [activeTopTab, setActiveTopTab] = useState<string>("onboarding");
-=======
   const [activeTopTab, setActiveTopTab] = useState<string>("keanu");
-  const [activePatientSubTab, setActivePatientSubTab] = useState<"onboarding" | "enrollment-form">("onboarding");
->>>>>>> e4d3eb50d00f51b9afbe732322e8a2888a46beef
+  const [activePatientSubTab, setActivePatientSubTab] = useState<"onboarding" | "enrollment-form">(
+    () => enrollmentFormTabOpen ? "enrollment-form" : "onboarding"
+  );
+  const openSubTabs: Array<"onboarding" | "enrollment-form"> = ["onboarding", ...(enrollmentFormTabOpen ? ["enrollment-form" as const] : [])];
+
+  useEffect(() => {
+    if (!enrollmentFormTabOpen && activePatientSubTab === "enrollment-form") {
+      setActivePatientSubTab("onboarding");
+    }
+  }, [enrollmentFormTabOpen]);
+
+  useEffect(() => {
+    if (consentStatus === "confirmed" && biStatus === "none") {
+      runBI();
+      const t = setTimeout(() => completeBI("coverage_found"), 3000);
+      return () => clearTimeout(t);
+    }
+  }, [consentStatus, biStatus]);
+
+  const eaStage: Stage = consentStatus !== "confirmed"
+    ? { id: "EA-14272", name: "Enrollment Assistance", statusLabel: "Pending", statusDetail: "Awaiting patient consent", isComplete: false, isNotStarted: false, fields: [], lastUpdated: "5/15/2026", lastUpdatedAgo: "4 days ago" }
+    : { id: "EA-14272", name: "Enrollment Assistance", statusLabel: "Complete", statusDetail: "Enrollment Completed", isComplete: true, isNotStarted: false, fields: [], lastUpdated: "5/15/2026", lastUpdatedAgo: "4 days ago" };
+
+  const biStage: Stage = biStatus === "none"
+    ? { id: "BI-14273", name: "Benefits Investigation", statusLabel: "Not Started", statusDetail: "Waiting for patient consent", isComplete: false, isNotStarted: true, fields: [], lastUpdated: null, lastUpdatedAgo: null }
+    : biStatus === "running"
+    ? { id: "BI-14273", name: "Benefits Investigation", statusLabel: "Running", statusDetail: "Investigating patient benefits...", isComplete: false, isNotStarted: false, fields: [], lastUpdated: null, lastUpdatedAgo: null }
+    : { id: "BI-14273", name: "Benefits Investigation", statusLabel: "Complete", statusDetail: "Patient Has Coverage; Prior Authorization Required", isComplete: true, isNotStarted: false, fields: [], lastUpdated: "5/19/2026", lastUpdatedAgo: "today" };
+
+  const STAGES_LIVE: Stage[] = STAGES.map((s) =>
+    s.id === "EA-14272" ? eaStage : s.id === "BI-14273" ? biStage : s
+  );
+
   const [patientAccountCollapsed, setPatientAccountCollapsed] = useState(false);
   const [patientContactCollapsed, setPatientContactCollapsed] = useState(false);
 
@@ -338,14 +391,10 @@ export default function Index() {
   const handleCloseStageTab = (stageId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setOpenStageTabs((prev) => prev.filter((s) => s.id !== stageId));
-<<<<<<< HEAD
-    if (activeTopTab === stageId) setActiveTopTab("onboarding");
-=======
     if (activeTopTab === stageId) setActiveTopTab("keanu");
->>>>>>> e4d3eb50d00f51b9afbe732322e8a2888a46beef
   };
 
-  const activeStage = STAGES.find((s) => s.id === activeTopTab);
+  const activeStage = STAGES_LIVE.find((s) => s.id === activeTopTab);
 
   return (
     <div
@@ -384,33 +433,6 @@ export default function Index() {
           </button>
         </div>
 
-<<<<<<< HEAD
-        {/* Onboarding case tab */}
-        <div
-          className="flex items-center gap-2 px-3 py-2 border border-[#dddbda] cursor-pointer select-none shrink-0 transition-colors"
-          style={{
-            borderRadius: "4px 4px 0 0",
-            marginBottom: -1,
-            background: activeTopTab === "onboarding" ? "#fff" : "#ebe9e9",
-            borderBottomColor: activeTopTab === "onboarding" ? "#fff" : "#dddbda",
-            boxShadow: activeTopTab === "onboarding" ? "0 -1px 3px rgba(0,0,0,0.08)" : "none",
-          }}
-          onClick={() => setActiveTopTab("onboarding")}
-        >
-          <div
-            className="flex items-center justify-center rounded text-white font-bold text-[10px] shrink-0"
-            style={{ width: 18, height: 18, background: "linear-gradient(135deg, #0176d3 0%, #014486 100%)", borderRadius: 4 }}
-          >
-            C
-          </div>
-          <span className="text-[12px] font-semibold text-[#3e3e3c] whitespace-nowrap">Onboarding</span>
-          <button className="ml-1 p-0.5 rounded hover:bg-[#e5e5e5] transition-colors">
-            <X size={11} className="text-[#706e6b]" />
-          </button>
-        </div>
-
-=======
->>>>>>> e4d3eb50d00f51b9afbe732322e8a2888a46beef
         {/* Dynamic stage tabs */}
         {openStageTabs.map((stage) => {
           const isActive = activeTopTab === stage.id;
@@ -450,156 +472,74 @@ export default function Index() {
 
       {/* ── Content area (conditional on active Row 1 tab) ──────────────────── */}
       {activeTopTab === "keanu" ? (
-<<<<<<< HEAD
-        /* ── Patient Record View ──────────────────────────────────────────── */
-        <>
-          <div className="border-b border-[#dddbda] bg-white">
-            <div className="px-4 pt-2 pb-0">
-              <span className="text-[11px] text-[#706e6b]">Person Account</span>
-            </div>
-            <div className="flex items-center justify-between px-4 py-2 gap-4">
-              <div className="flex items-center gap-3 min-w-0">
-                <div
-                  className="flex items-center justify-center rounded text-white font-bold text-[11px] shrink-0"
-                  style={{ width: 36, height: 36, background: "linear-gradient(135deg, #2dbcbb 0%, #16818a 100%)" }}
-                >
-                  Acco
-                </div>
-                <h1 className="text-[20px] font-bold text-[#3e3e3c] truncate">Keanu Dixon</h1>
-              </div>
-              <div className="flex items-center gap-2 shrink-0 flex-wrap justify-end">
-                <SfButton>+ Follow</SfButton>
-                <SfButton>New Task</SfButton>
-                <SfButton>Create Case</SfButton>
-                <SfButton split>Create Affiliation</SfButton>
-              </div>
-            </div>
-          </div>
-          <div className="border-b border-[#dddbda] bg-white px-4 py-3 flex flex-wrap gap-x-8 gap-y-2">
-            <div className="flex flex-col min-w-[80px]">
-              <span className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium">ARx ID</span>
-              <span className="text-[13px] text-[#3e3e3c]">&nbsp;</span>
-            </div>
-            <div className="flex flex-col min-w-[110px]">
-              <span className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium">Phone</span>
-              <SfLink className="text-[13px]">(555) 867-5309</SfLink>
-            </div>
-            <div className="flex flex-col min-w-[80px]">
-              <span className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium">Birthdate</span>
-              <span className="text-[13px] text-[#3e3e3c]">09/19/1981</span>
-            </div>
-            <div className="flex flex-col min-w-[160px]">
-              <span className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium">Mailing Address</span>
-              <SfLink className="text-[13px]">United States</SfLink>
-            </div>
-            <div className="flex flex-col min-w-[100px]">
-              <span className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium">Account Source</span>
-              <span className="text-[13px] text-[#3e3e3c]">&nbsp;</span>
-            </div>
-          </div>
-          <div className="p-4">
-            <div className="border border-[#dddbda] rounded mb-4">
-              <SectionHeader
-                title="Account Information"
-                collapsed={patientAccountCollapsed}
-                onToggle={() => setPatientAccountCollapsed(!patientAccountCollapsed)}
-              />
-              {!patientAccountCollapsed && (
-                <div className="grid grid-cols-2 gap-x-6 px-4 pt-1 pb-2">
-                  <div>
-                    <FieldRow label="Account Name" value="Keanu Dixon" />
-                    <FieldRow label="ARx ID" />
-                    <FieldRow label="Birthdate" value="09/19/1981" />
-                    <FieldRow label="Preferred Name" />
-                    <FieldRow label="Gender" />
-                    <FieldRow label="Age" value="44" />
-                  </div>
-                  <div>
-                    <div className="group relative flex flex-col py-2 border-b border-[#dddbda] pr-6 min-h-[44px]">
-                      <span className="text-[11px] text-[#706e6b] mb-0.5 uppercase tracking-wide font-medium leading-tight">Account Owner</span>
-                      <div className="flex items-center gap-1.5">
-                        <div className="flex items-center justify-center rounded-full bg-[#ecebea] shrink-0" style={{ width: 18, height: 18 }}>
-                          <User size={10} className="text-[#706e6b]" />
-                        </div>
-                        <SfLink className="text-[13px]">AssistRx QA</SfLink>
-                      </div>
-                      <button className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity p-1">
-                        <Pencil size={12} className="text-[#706e6b]" />
-                      </button>
-                    </div>
-                    <FieldRow label="Account Record Type" value="Patient" />
-                    <FieldRow label="Status" value="Active" />
-                    <FieldRow label="Territory" />
-                    <FieldRow label="External Patient Id" />
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="border border-[#dddbda] rounded">
-              <SectionHeader
-                title="Contact Information"
-                collapsed={patientContactCollapsed}
-                onToggle={() => setPatientContactCollapsed(!patientContactCollapsed)}
-              />
-              {!patientContactCollapsed && (
-                <div className="grid grid-cols-2 gap-x-6 px-4 pt-1 pb-2">
-                  <div>
-                    <FieldRow label="Email" />
-                    <FieldRow label="Mobile" value="(555) 867-5309" isLink />
-                    <FieldRow label="Home Phone" />
-                    <FieldRow label="Other Phone" />
-                  </div>
-                  <div>
-                    <FieldRow label="Fax" />
-                    <FieldRow label="Mailing City" />
-                    <FieldRow label="Mailing State/Province" />
-                    <FieldRow label="Mailing Zip/Postal Code" />
-                    <FieldRow label="Mailing Country" />
-                  </div>
-                </div>
-=======
         /* ── Patient view with sub-tabs */
         <>
           {/* Sub-tab strip: Onboarding | FAX-2026-00431 */}
           <div className="border-b border-[#dddbda] flex items-end px-2 gap-0 bg-white">
-            <button
-              onClick={() => setActivePatientSubTab("onboarding")}
-              className={`flex items-center gap-2 px-4 py-3 text-[13px] whitespace-nowrap relative shrink-0 transition-colors ${
-                activePatientSubTab === "onboarding" ? "font-semibold" : "text-[#706e6b] hover:text-[#3e3e3c]"
-              }`}
-              style={{ color: activePatientSubTab === "onboarding" ? SF_BLUE : undefined }}
-            >
-              <div
-                className="flex items-center justify-center rounded text-white font-bold text-[10px] shrink-0"
-                style={{ width: 16, height: 16, background: "linear-gradient(135deg, #0176d3 0%, #014486 100%)", borderRadius: 3 }}
-              >C</div>
-              Onboarding
-              {activePatientSubTab === "onboarding" && (
-                <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: SF_BLUE }} />
-              )}
-            </button>
-            <button
-              onClick={() => setActivePatientSubTab("enrollment-form")}
-              className={`flex items-center gap-2 px-4 py-3 text-[13px] whitespace-nowrap relative shrink-0 transition-colors ${
-                activePatientSubTab === "enrollment-form" ? "font-semibold" : "text-[#706e6b] hover:text-[#3e3e3c]"
-              }`}
-              style={{ color: activePatientSubTab === "enrollment-form" ? SF_BLUE : undefined }}
-            >
-              <div
-                className="flex items-center justify-center rounded shrink-0"
-                style={{ width: 16, height: 16, background: "#6b5ecd", borderRadius: 3 }}
+            {openSubTabs.includes("onboarding") && (
+              <button
+                onClick={() => setActivePatientSubTab("onboarding")}
+                className={`flex items-center gap-2 px-4 py-3 text-[13px] whitespace-nowrap relative shrink-0 transition-colors ${
+                  activePatientSubTab === "onboarding" ? "font-semibold" : "text-[#706e6b] hover:text-[#3e3e3c]"
+                }`}
+                style={{ color: activePatientSubTab === "onboarding" ? SF_BLUE : undefined }}
               >
-                <FileText size={9} className="text-white" />
-              </div>
-              <span className="flex flex-col leading-none text-left gap-0">
-                <span>FAX-2026-00431</span>
-                <span className="text-[10px] text-[#706e6b] font-normal">Enrollment Form</span>
-              </span>
-              {activePatientSubTab === "enrollment-form" && (
-                <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: SF_BLUE }} />
->>>>>>> e4d3eb50d00f51b9afbe732322e8a2888a46beef
-              )}
-            </button>
+                <div
+                  className="flex items-center justify-center rounded text-white font-bold text-[10px] shrink-0"
+                  style={{ width: 16, height: 16, background: "linear-gradient(135deg, #0176d3 0%, #014486 100%)", borderRadius: 3 }}
+                >C</div>
+                Onboarding
+                <span
+                  role="button"
+                  className="ml-1 flex items-center justify-center rounded hover:bg-[#e5e5e5] transition-colors"
+                  style={{ width: 16, height: 16 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (activePatientSubTab === "onboarding") setActivePatientSubTab("enrollment-form");
+                  }}
+                >
+                  <X size={10} className="text-[#706e6b]" />
+                </span>
+                {activePatientSubTab === "onboarding" && (
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: SF_BLUE }} />
+                )}
+              </button>
+            )}
+            {openSubTabs.includes("enrollment-form") && (
+              <button
+                onClick={() => setActivePatientSubTab("enrollment-form")}
+                className={`flex items-center gap-2 px-4 py-3 text-[13px] whitespace-nowrap relative shrink-0 transition-colors ${
+                  activePatientSubTab === "enrollment-form" ? "font-semibold" : "text-[#706e6b] hover:text-[#3e3e3c]"
+                }`}
+                style={{ color: activePatientSubTab === "enrollment-form" ? SF_BLUE : undefined }}
+              >
+                <div
+                  className="flex items-center justify-center rounded shrink-0"
+                  style={{ width: 16, height: 16, background: "#6b5ecd", borderRadius: 3 }}
+                >
+                  <FileText size={9} className="text-white" />
+                </div>
+                <span className="flex flex-col leading-none text-left gap-0">
+                  <span>FAX-2026-00431</span>
+                  <span className="text-[10px] text-[#706e6b] font-normal">Enrollment Form</span>
+                </span>
+                <span
+                  role="button"
+                  className="ml-1 flex items-center justify-center rounded hover:bg-[#e5e5e5] transition-colors"
+                  style={{ width: 16, height: 16 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    closeEnrollmentFormTab();
+                    if (activePatientSubTab === "enrollment-form") setActivePatientSubTab("onboarding");
+                  }}
+                >
+                  <X size={10} className="text-[#706e6b]" />
+                </span>
+                {activePatientSubTab === "enrollment-form" && (
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: SF_BLUE }} />
+                )}
+              </button>
+            )}
           </div>
 
           {/* Sub-tab content */}
@@ -627,310 +567,172 @@ export default function Index() {
               <span>Fax: 866-725-7218</span>
             </div>
           </div>
-        </>
-      ) : activeStage ? (
-        /* ── Stage Detail View ───────────────────────────────────────────── */
-        <div className="p-4 max-w-3xl">
-          <div className="border border-[#dddbda] rounded">
-            <div
-              className="flex items-center gap-3 px-3 border-b border-[#dddbda]"
-              style={{ background: SF_SECTION_BG, minHeight: 36 }}
-            >
-              <div
-                className="flex items-center justify-center shrink-0"
-                style={{ width: 24, height: 24, background: activeStage.isNotStarted ? "#9a9a9a" : FC_BLUE, borderRadius: 5 }}
-              >
-                <Zap size={12} className="text-white" fill="white" />
-              </div>
-              <span className="text-[13px] font-semibold text-[#3e3e3c]">
-                {activeStage.name} \u2013 {activeStage.id}
-              </span>
-            </div>
-            <div className="grid grid-cols-2 gap-x-6 px-4 pt-1 pb-2">
-              <div>
-                <FieldRow label="Status" value={`${activeStage.statusLabel} \u2013 ${activeStage.statusDetail}`} />
-                {activeStage.fields.map((f) => (
-                  <FieldRow key={f.label} label={f.label} value={f.value ?? "No Data Available"} />
-                ))}
-              </div>
-              <div>
-                <FieldRow label="Stage Type" value={activeStage.name} />
-                <FieldRow label="Stage ID" value={activeStage.id} />
-                <FieldRow label="Service Type" value="Onboarding" />
-                <FieldRow label="Sequence" value="1" />
-                <FieldRow
-                  label="Last Updated"
-                  value={
-                    activeStage.lastUpdated
-                      ? `${activeStage.lastUpdated} ${activeStage.lastUpdatedAgo}`
-                      : "No Data Available"
-                  }
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <>
-          {/* Case Record Header */}
-          <div className="border-b border-[#dddbda] bg-white">
-            <div className="px-4 pt-2 pb-0">
-              <span className="text-[11px] text-[#706e6b]">Case</span>
-            </div>
-            <div className="flex items-center justify-between px-4 py-2 gap-4">
-              <div className="flex items-center gap-3 min-w-0">
-                <div
-                  className="flex items-center justify-center rounded text-white font-bold text-[10px] shrink-0"
-                  style={{ width: 36, height: 36, background: "linear-gradient(135deg, #0176d3 0%, #014486 100%)" }}
-                >
-                  Case
+
+          {/* Side-by-side body: parsed data left, PDF right */}
+          <div className="flex overflow-hidden" style={{ height: "calc(100vh - 220px)" }}>
+
+            {/* Left panel — extracted form data */}
+            <div className="overflow-y-auto p-5 space-y-4 border-r border-[#dddbda]" style={{ width: "45%", minWidth: 320, background: "#fafafa" }}>
+
+              {/* Section 1 — Patient Authorization */}
+              <div className="border border-[#dddbda] rounded overflow-hidden bg-white">
+                <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>1</span>
+                  <span className="text-[13px] font-semibold text-[#3e3e3c]">Patient Authorization</span>
+                  <span className="ml-auto text-[11px] px-2 py-0.5 rounded font-medium" style={{ background: "#e8f4ef", color: "#2e844a" }}>Signed</span>
                 </div>
-                <h1 className="text-[20px] font-bold text-[#3e3e3c] truncate">Onboarding</h1>
+                <div className="grid grid-cols-2 gap-x-4 px-4 pt-1 pb-2">
+                  <FieldRow label="Patient Signature" value="Keanu Dixon" />
+                  <FieldRow label="Relationship to Patient" value="Self" />
+                  <FieldRow label="Date Signed" value="05/20/2026" />
+                </div>
               </div>
-              <div className="flex items-center gap-2 shrink-0 flex-wrap justify-end">
-                <SfButton>Edit</SfButton>
-                <SfButton>Delete</SfButton>
-                <SfButton split>Change Owner</SfButton>
-              </div>
-            </div>
-          </div>
-          {/* Case Quick-Info Bar */}
-          <div className="border-b border-[#dddbda] bg-white px-4 py-3 flex flex-wrap gap-x-8 gap-y-2">
-            <div className="flex flex-col min-w-[70px]">
-              <span className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium">Case Status</span>
-              <span className="text-[13px] text-[#3e3e3c]">Open</span>
-            </div>
-            <div className="flex flex-col min-w-[90px]">
-              <span className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium">Case Number</span>
-              <span className="text-[13px] text-[#3e3e3c]">0000000</span>
-            </div>
-            <div className="flex flex-col min-w-[150px]">
-              <span className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium">Date/Time Opened</span>
-              <span className="text-[13px] text-[#3e3e3c]">5/15/2026 2:31 PM</span>
-            </div>
-            <div className="flex flex-col min-w-[150px]">
-              <span className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium">Date/Time Closed</span>
-              <span className="text-[13px] text-[#3e3e3c]">&nbsp;</span>
-            </div>
-            <div className="flex flex-col min-w-[80px]">
-              <span className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium">Case Origin</span>
-              <span className="text-[13px] text-[#3e3e3c]">Fax</span>
-            </div>
-            <div className="flex flex-col min-w-[100px]">
-              <span className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium">Referral Source</span>
-              <span className="text-[13px] text-[#3e3e3c]">HCP</span>
-            </div>
-          </div>
-          {/* Row 2: Case Navigation Tabs */}
-          <div className="border-b border-[#dddbda] flex bg-white overflow-x-auto">
-            {CASE_TABS.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveCaseTab(tab.id)}
-                className={`px-4 py-3 text-[13px] whitespace-nowrap transition-colors relative shrink-0 ${
-                  activeCaseTab === tab.id ? "font-semibold" : "text-[#706e6b] hover:text-[#3e3e3c]"
-                }`}
-                style={{ color: activeCaseTab === tab.id ? SF_BLUE : undefined }}
-              >
-                {tab.label}
-                {activeCaseTab === tab.id && (
-                  <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: SF_BLUE }} />
-                )}
-              </button>
-            ))}
-          </div>
-          {activeCaseTab === "summary" ? (
-        <div className="flex" style={{ minHeight: "calc(100vh - 210px)" }}>
-          {/* ── Left Panel (68%) ───────────────────────────────────────────── */}
-          <div
-            className="min-w-0 border-r border-[#dddbda]"
-            style={{ flexBasis: "68%" }}
-          >
-            <div className="p-4">
-              {/* Case Summary accordion */}
-              <div className="border border-[#dddbda] rounded mb-4">
-                <SectionHeader
-                  title="Case Summary"
-                  collapsed={caseSummaryCollapsed}
-                  onToggle={() => setCaseSummaryCollapsed(!caseSummaryCollapsed)}
-                />
-                {!caseSummaryCollapsed && (
-                  <div className="grid grid-cols-2 gap-x-6 px-4 pt-1 pb-2">
-                    <div>
-                      <FieldRow label="Account Name" value="Keanu Dixon" isLink />
-                      <FieldRow label="Service Type" value="Patient Solutions" isLink />
-                      <FieldRow label="Case Type" value="Onboarding" />
-                      <FieldRow label="Live Status" />
-                      <FieldRow label="Referral Source" value="HCP" />
-                      <FieldRow label="Interaction" value="HCP241205" />
-                      <FieldRow label="Product" value="PP-27305" isLink />
-                      <FieldRow label="Transaction Expense Type" />
-                    </div>
-                    <div>
-                      <FieldRow label="Case Date" value="Not Started" />
-                      <FieldRow label="Case Record Type" value="Patient Solutions" />
-                      <FieldRow label="Program Type" />
-                      <div className="group relative flex flex-col py-2 border-b border-[#dddbda] pr-6 min-h-[44px]">
-                        <span className="text-[11px] text-[#706e6b] mb-0.5 uppercase tracking-wide font-medium leading-tight">
-                          Case Owner
-                        </span>
-                        <div className="flex items-center gap-1.5">
-                          <div
-                            className="flex items-center justify-center rounded-full bg-[#ecebea] shrink-0"
-                            style={{ width: 18, height: 18 }}
-                          >
-                            <User size={10} className="text-[#706e6b]" />
-                          </div>
-                          <SfLink className="text-[13px]">AssistRx Clin/Fulfillment</SfLink>
-                        </div>
-                        <button className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity p-1">
-                          <Pencil size={12} className="text-[#706e6b]" />
-                        </button>
-                      </div>
-                      <FieldRow label="Enrollment Date" value="5/15/2026" />
-                      <FieldRow label="Enrollment Registration Date" />
-                    </div>
+
+              {/* Section 2 — Patient Information */}
+              <div className="border border-[#dddbda] rounded overflow-hidden bg-white">
+                <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>2</span>
+                  <span className="text-[13px] font-semibold text-[#3e3e3c]">Patient Information</span>
+                </div>
+                <div className="grid grid-cols-2 gap-x-4 px-4 pt-1 pb-2">
+                  <FieldRow label="First Name" value="Keanu" />
+                  <FieldRow label="Last Name" value="Dixon" />
+                  <FieldRow label="Date of Birth" value="09/19/1981" />
+                  <FieldRow label="Sex" value="M" />
+                  <FieldRow label="Mobile Phone" value="(555) 867-5309" />
+                  <FieldRow label="Preferred Contact" value="Mobile" />
+                  <FieldRow label="Shipping Address" value="742 Lakewood Drive" />
+                  <FieldRow label="City, State, ZIP" value="Orlando, FL 32801" />
+                  <FieldRow label="Email" value="keanu.dixon@gmail.com" isLink />
+                  <FieldRow label="OK to Leave Voicemail" value="Yes" />
+                  <FieldRow label="Best Time" value="Morning" />
+                  <FieldRow label="Preferred Language" value="English" />
+                </div>
+                <div className="px-4 pb-2">
+                  <div className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium mb-1 mt-1">Alternate Contact</div>
+                  <div className="grid grid-cols-2 gap-x-4">
+                    <FieldRow label="Name" value="Maria Dixon" />
+                    <FieldRow label="Relationship" value="Spouse" />
+                    <FieldRow label="Phone" value="(555) 867-5310" />
+                    <FieldRow label="Email" value="maria.dixon@gmail.com" isLink />
+                    <FieldRow label="OK to Discuss" value="Yes" />
                   </div>
-                )}
-              </div>
-
-<<<<<<< HEAD
-=======
-          {/* Form body */}
-          <div className="max-w-4xl mx-auto p-6 space-y-5">
-
-            {/* Section 1 — Patient Authorization */}
-            <div className="border border-[#dddbda] rounded overflow-hidden">
-              <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
-                <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>1</span>
-                <span className="text-[13px] font-semibold text-[#3e3e3c]">Patient Authorization</span>
-                <span className="ml-auto text-[11px] px-2 py-0.5 rounded font-medium" style={{ background: "#e8f4ef", color: "#2e844a" }}>Signed</span>
-              </div>
-              <div className="grid grid-cols-3 gap-x-6 px-4 pt-1 pb-2">
-                <FieldRow label="Patient Signature" value="Keanu Dixon" />
-                <FieldRow label="Relationship to Patient" value="Self" />
-                <FieldRow label="Date Signed" value="05/20/2026" />
-              </div>
-            </div>
-
-            {/* Section 2 — Patient Information */}
-            <div className="border border-[#dddbda] rounded overflow-hidden">
-              <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
-                <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>2</span>
-                <span className="text-[13px] font-semibold text-[#3e3e3c]">Patient Information</span>
-              </div>
-              <div className="grid grid-cols-3 gap-x-6 px-4 pt-1 pb-2">
-                <FieldRow label="First Name" value="Keanu" />
-                <FieldRow label="Last Name" value="Dixon" />
-                <FieldRow label="Date of Birth" value="09/19/1981" />
-                <FieldRow label="Sex" value="M" />
-                <FieldRow label="Mobile Phone" value="(555) 867-5309" />
-                <FieldRow label="Preferred Contact" value="Mobile" />
-                <FieldRow label="Shipping Address" value="742 Lakewood Drive" />
-                <FieldRow label="City, State, ZIP" value="Orlando, FL 32801" />
-                <FieldRow label="Email" value="keanu.dixon@gmail.com" isLink />
-                <FieldRow label="OK to Leave Voicemail" value="Yes" />
-                <FieldRow label="Best Time" value="Morning" />
-                <FieldRow label="Preferred Language" value="English" />
-              </div>
-              <div className="px-4 pb-2">
-                <div className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium mb-1 mt-1">Alternate Contact</div>
-                <div className="grid grid-cols-3 gap-x-6">
-                  <FieldRow label="Name" value="Maria Dixon" />
-                  <FieldRow label="Relationship" value="Spouse" />
-                  <FieldRow label="Phone" value="(555) 867-5310" />
-                  <FieldRow label="Email" value="maria.dixon@gmail.com" isLink />
-                  <FieldRow label="OK to Discuss" value="Yes" />
                 </div>
               </div>
-            </div>
 
-            {/* Section 3 — Insurance Information */}
-            <div className="border border-[#dddbda] rounded overflow-hidden">
-              <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
-                <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>3</span>
-                <span className="text-[13px] font-semibold text-[#3e3e3c]">Insurance Information</span>
-              </div>
-              <div className="px-4 pb-2">
-                <div className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium mb-1 mt-1">Prescription Drug Insurance</div>
-                <div className="grid grid-cols-3 gap-x-6">
-                  <FieldRow label="Payer" value="BlueCross BlueShield of Florida" />
-                  <FieldRow label="Phone" value="(800) 477-3736" />
-                  <FieldRow label="Policy / Member ID" value="BCB-KD-298341" />
-                  <FieldRow label="Rx BIN" value="610415" />
-                  <FieldRow label="Rx PCN" value="ADV" />
+              {/* Section 3 — Insurance Information */}
+              <div className="border border-[#dddbda] rounded overflow-hidden bg-white">
+                <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>3</span>
+                  <span className="text-[13px] font-semibold text-[#3e3e3c]">Insurance Information</span>
                 </div>
-                <div className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium mb-1 mt-2">Medical Insurance</div>
-                <div className="grid grid-cols-3 gap-x-6">
-                  <FieldRow label="Payer" value="BlueCross BlueShield of Florida" />
-                  <FieldRow label="Phone" value="(800) 477-3736" />
-                  <FieldRow label="Policy / Member ID" value="BCB-KD-298341" />
+                <div className="px-4 pb-2">
+                  <div className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium mb-1 mt-1">Prescription Drug Insurance</div>
+                  <div className="grid grid-cols-2 gap-x-4">
+                    <FieldRow label="Payer" value="BlueCross BlueShield of Florida" />
+                    <FieldRow label="Phone" value="(800) 477-3736" />
+                    <FieldRow label="Policy / Member ID" value="BCB-KD-298341" />
+                    <FieldRow label="Rx BIN" value="610415" />
+                    <FieldRow label="Rx PCN" value="ADV" />
+                  </div>
+                  <div className="text-[11px] text-[#706e6b] uppercase tracking-wide font-medium mb-1 mt-2">Medical Insurance</div>
+                  <div className="grid grid-cols-2 gap-x-4">
+                    <FieldRow label="Payer" value="BlueCross BlueShield of Florida" />
+                    <FieldRow label="Phone" value="(800) 477-3736" />
+                    <FieldRow label="Policy / Member ID" value="BCB-KD-298341" />
+                  </div>
                 </div>
               </div>
+
+              {/* Section 4 — Prescription */}
+              <div className="border border-[#dddbda] rounded overflow-hidden bg-white">
+                <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>4</span>
+                  <span className="text-[13px] font-semibold text-[#3e3e3c]">Prescription for Jascayd® (nerandomilast) tablets</span>
+                </div>
+                <div className="grid grid-cols-2 gap-x-4 px-4 pt-1 pb-2">
+                  <FieldRow label="Drug" value="Jascayd® (nerandomilast)" />
+                  <FieldRow label="Strength" value="18 mg" />
+                  <FieldRow label="Sig" value="Take one tablet by mouth twice per day" />
+                  <FieldRow label="Quantity" value="30-day supply" />
+                  <FieldRow label="Refills" value="0" />
+                  <FieldRow label="Preferred Pharmacy" value="Accredo Health Group Inc." />
+                </div>
+              </div>
+
+              {/* Section 5 — Clinical Information */}
+              <div className="border border-[#dddbda] rounded overflow-hidden bg-white">
+                <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>5</span>
+                  <span className="text-[13px] font-semibold text-[#3e3e3c]">Clinical Information</span>
+                </div>
+                <div className="grid grid-cols-2 gap-x-4 px-4 pt-1 pb-2">
+                  <FieldRow label="Diagnosis (ICD-10)" value="J84.112" />
+                  <FieldRow label="Diagnosis Description" value="Idiopathic Pulmonary Fibrosis (IPF)" />
+                  <FieldRow label="Allergies" value="Penicillin" />
+                  <FieldRow label="Prior Therapies" value="Ofev (nintedanib) — discontinued 02/15/20" />
+                  <FieldRow label="Concurrent Therapies" value="None" />
+                </div>
+              </div>
+
+              {/* Section 6 — Prescriber Information */}
+              <div className="border border-[#dddbda] rounded overflow-hidden bg-white">
+                <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>6</span>
+                  <span className="text-[13px] font-semibold text-[#3e3e3c]">Prescriber Information</span>
+                </div>
+                <div className="grid grid-cols-2 gap-x-4 px-4 pt-1 pb-2">
+                  <FieldRow label="Prescriber Name" value="Sarah Chen, MD" />
+                  <FieldRow label="Facility" value="Orlando Pulmonology Associates" />
+                  <FieldRow label="Address" value="1800 Medical Park Dr, Orlando, FL 32803" />
+                  <FieldRow label="Phone" value="(407) 885-9999" />
+                  <FieldRow label="Fax" value="(407) 885-9998" />
+                  <FieldRow label="NPI" value="1245378901" />
+                  <FieldRow label="State License #" value="ME78901" />
+                  <FieldRow label="Office Contact" value="Jennifer Torres" />
+                  <FieldRow label="Email" value="scheduling@orlandopulm.com" isLink />
+                </div>
+              </div>
+
+              {/* Section 7 — Prescriber Certification */}
+              <div className="border border-[#dddbda] rounded overflow-hidden bg-white">
+                <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>7</span>
+                  <span className="text-[13px] font-semibold text-[#3e3e3c]">Prescriber Certification</span>
+                  <span className="ml-auto text-[11px] px-2 py-0.5 rounded font-medium" style={{ background: "#e8f4ef", color: "#2e844a" }}>Signed</span>
+                </div>
+                <div className="grid grid-cols-2 gap-x-4 px-4 pt-1 pb-2">
+                  <FieldRow label="Prescriber Signature" value="Sarah Chen, MD" />
+                  <FieldRow label="Dispense As Written" value="Yes" />
+                  <FieldRow label="Date" value="05/20/2026" />
+                </div>
+              </div>
+
             </div>
 
-            {/* Section 4 — Prescription */}
-            <div className="border border-[#dddbda] rounded overflow-hidden">
-              <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
-                <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>4</span>
-                <span className="text-[13px] font-semibold text-[#3e3e3c]">Prescription for Jascayd® (nerandomilast) tablets</span>
+            {/* Right panel — original PDF */}
+            <div className="flex flex-col" style={{ flex: 1 }}>
+              <div className="flex items-center justify-between px-4 py-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
+                <span className="text-[12px] font-semibold text-[#3e3e3c]">Original Fax — Enrollment_Form_KDixon_051526.pdf</span>
+                <a
+                  href="/enrollment-form.pdf"
+                  download="Enrollment_Form_KDixon_051526.pdf"
+                  className="text-[11px] px-2 py-1 rounded border border-[#dddbda] bg-white text-[#0176d3] hover:bg-[#f0f7ff] transition-colors"
+                >
+                  Download
+                </a>
               </div>
-              <div className="grid grid-cols-3 gap-x-6 px-4 pt-1 pb-2">
-                <FieldRow label="Drug" value="Jascayd® (nerandomilast)" />
-                <FieldRow label="Strength" value="18 mg" />
-                <FieldRow label="Sig" value="Take one tablet by mouth twice per day" />
-                <FieldRow label="Quantity" value="30-day supply" />
-                <FieldRow label="Refills" value="0" />
-                <FieldRow label="Preferred Pharmacy" value="Accredo Health Group Inc." />
-              </div>
-            </div>
-
-            {/* Section 5 — Clinical Information */}
-            <div className="border border-[#dddbda] rounded overflow-hidden">
-              <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
-                <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>5</span>
-                <span className="text-[13px] font-semibold text-[#3e3e3c]">Clinical Information</span>
-              </div>
-              <div className="grid grid-cols-3 gap-x-6 px-4 pt-1 pb-2">
-                <FieldRow label="Diagnosis (ICD-10)" value="J84.112" />
-                <FieldRow label="Diagnosis Description" value="Idiopathic Pulmonary Fibrosis (IPF)" />
-                <FieldRow label="Allergies" value="Penicillin" />
-                <FieldRow label="Prior Therapies" value="Ofev (nintedanib) — discontinued 02/15/20" />
-                <FieldRow label="Concurrent Therapies" value="None" />
-              </div>
-            </div>
-
-            {/* Section 6 — Prescriber Information */}
-            <div className="border border-[#dddbda] rounded overflow-hidden">
-              <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
-                <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>6</span>
-                <span className="text-[13px] font-semibold text-[#3e3e3c]">Prescriber Information</span>
-              </div>
-              <div className="grid grid-cols-3 gap-x-6 px-4 pt-1 pb-2">
-                <FieldRow label="Prescriber Name" value="Sarah Chen, MD" />
-                <FieldRow label="Facility" value="Orlando Pulmonology Associates" />
-                <FieldRow label="Address" value="1800 Medical Park Dr, Orlando, FL 32803" />
-                <FieldRow label="Phone" value="(407) 885-9999" />
-                <FieldRow label="Fax" value="(407) 885-9998" />
-                <FieldRow label="NPI" value="1245378901" />
-                <FieldRow label="State License #" value="ME78901" />
-                <FieldRow label="Office Contact" value="Jennifer Torres" />
-                <FieldRow label="Email" value="scheduling@orlandopulm.com" isLink />
-              </div>
-            </div>
-
-            {/* Section 7 — Prescriber Certification */}
-            <div className="border border-[#dddbda] rounded overflow-hidden">
-              <div className="px-4 py-2 flex items-center gap-2 border-b border-[#dddbda]" style={{ background: "#f3f3f3" }}>
-                <span className="flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold" style={{ background: "#6b5ecd" }}>7</span>
-                <span className="text-[13px] font-semibold text-[#3e3e3c]">Prescriber Certification</span>
-                <span className="ml-auto text-[11px] px-2 py-0.5 rounded font-medium" style={{ background: "#e8f4ef", color: "#2e844a" }}>Signed</span>
-              </div>
-              <div className="grid grid-cols-3 gap-x-6 px-4 pt-1 pb-2">
-                <FieldRow label="Prescriber Signature" value="Sarah Chen, MD" />
-                <FieldRow label="Dispense As Written" value="Yes" />
-                <FieldRow label="Date" value="05/20/2026" />
-              </div>
+              <object
+                data="/enrollment-form.pdf"
+                type="application/pdf"
+                className="flex-1 w-full"
+              >
+                <div className="flex flex-col items-center justify-center h-full gap-3 text-[#706e6b]" style={{ background: "#f9f9f9" }}>
+                  <FileText size={40} className="opacity-30" />
+                  <div className="text-[13px] font-medium">PDF preview not available</div>
+                  <div className="text-[11px]">Place <code className="bg-[#f0f0f0] px-1 rounded">enrollment-form.pdf</code> in the <code className="bg-[#f0f0f0] px-1 rounded">public/</code> folder to enable preview</div>
+                </div>
+              </object>
             </div>
 
           </div>
@@ -1105,7 +907,6 @@ export default function Index() {
                 )}
               </div>
 
->>>>>>> e4d3eb50d00f51b9afbe732322e8a2888a46beef
               {/* Stages accordion */}
               <div className="border border-[#dddbda] rounded">
                 <SectionHeader
@@ -1161,7 +962,7 @@ export default function Index() {
                           </tr>
                         </thead>
                         <tbody>
-                          {STAGES.map((stage, i) => {
+                          {STAGES_LIVE.map((stage, i) => {
                             const stageState = stage.isComplete
                               ? "Closed"
                               : stage.isNotStarted
@@ -1265,7 +1066,7 @@ export default function Index() {
                       </span>
                     </div>
                     <div className="px-3">
-                      {STAGES.map((stage) => (
+                      {STAGES_LIVE.map((stage) => (
                         <StageCard key={stage.id} stage={stage} onHeaderClick={handleOpenStage} />
                       ))}
                     </div>
@@ -1274,15 +1075,34 @@ export default function Index() {
               )}
 
               {activeRightTab === "missing-info" && (
-                <div className="p-4 text-[13px] text-[#706e6b] text-center py-8">
-                  No missing information items.
+                <div>
+                  {consentStatus === "pending" ? (
+                    <table className="w-full text-[12px] border-collapse">
+                      <thead>
+                        <tr style={{ background: "#f3f3f3" }}>
+                          <th className="px-3 py-2 text-left font-semibold text-[#3e3e3c] border-b border-[#dddbda]">Missing Item</th>
+                          <th className="px-3 py-2 text-left font-semibold text-[#3e3e3c] border-b border-[#dddbda]">Status</th>
+                          <th className="px-3 py-2 text-left font-semibold text-[#3e3e3c] border-b border-[#dddbda]">Impact</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="hover:bg-[#f9f9f9]">
+                          <td className="px-3 py-2.5 border-b border-[#dddbda] font-medium text-[#3e3e3c]">Patient Consent</td>
+                          <td className="px-3 py-2.5 border-b border-[#dddbda]">
+                            <span className="px-2 py-0.5 rounded text-[11px] font-medium" style={{ background: "#fff3cd", color: "#856404" }}>Pending</span>
+                          </td>
+                          <td className="px-3 py-2.5 border-b border-[#dddbda] text-[#706e6b]">Benefits Investigation has not yet run</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  ) : (
+                    <div className="p-4 text-[13px] text-[#706e6b] text-center py-8">No missing information items.</div>
+                  )}
                 </div>
               )}
             </div>
           </div>
         </div>
-<<<<<<< HEAD
-=======
           ) : activeCaseTab === "documents" && isFaxFlow ? (
             <div className="p-4">
               <div className="border border-[#dddbda] rounded overflow-hidden">
@@ -1325,7 +1145,7 @@ export default function Index() {
                             <span
                               className="cursor-pointer hover:underline font-medium"
                               style={{ color: SF_BLUE }}
-                              onClick={() => setActivePatientSubTab("enrollment-form")}
+                              onClick={() => { openEnrollmentFormTab(); setActivePatientSubTab("enrollment-form"); }}
                             >
                               {doc.fileId}
                             </span>
@@ -1335,7 +1155,7 @@ export default function Index() {
                           <span
                             className="cursor-pointer hover:underline"
                             style={{ color: SF_BLUE }}
-                            onClick={() => setActivePatientSubTab("enrollment-form")}
+                            onClick={() => { openEnrollmentFormTab(); setActivePatientSubTab("enrollment-form"); }}
                           >
                             {doc.fileName}
                           </span>
@@ -1355,7 +1175,6 @@ export default function Index() {
                 </table>
               </div>
             </div>
->>>>>>> e4d3eb50d00f51b9afbe732322e8a2888a46beef
           ) : (
             <div className="p-8 text-[13px] text-[#706e6b] text-center">
               No {CASE_TABS.find((t) => t.id === activeCaseTab)?.label} records found.

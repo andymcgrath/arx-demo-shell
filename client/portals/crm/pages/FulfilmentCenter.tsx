@@ -1,11 +1,6 @@
 import { useState } from "react";
-<<<<<<< HEAD
 import { Link } from "react-router-dom";
-import { ChevronRight, ChevronDown, CheckCircle2, ArrowLeft, Loader2 } from "lucide-react";
-=======
-import { Link } from "@/lib/portalRouter";
 import { ChevronRight, ChevronDown, CheckCircle2, ArrowLeft, Loader2, MessageSquare, Send } from "lucide-react";
->>>>>>> e4d3eb50d00f51b9afbe732322e8a2888a46beef
 import { usePatientCase } from "../hooks/usePatientCase";
 import { useEnrollPatient } from "../hooks/useEnrollPatient";
 
