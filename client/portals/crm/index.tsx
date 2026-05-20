@@ -1,23 +1,20 @@
 /**
- * CRM Portal — Shell wrapper with state-based internal navigation
+ * CRM Portal — Shell wrapper
  *
- * Uses PortalRouter instead of MemoryRouter to avoid the React Router v6
- * "cannot render a Router inside another Router" constraint.
+ * MemoryRouter provides the Router context that useNavigate() / useLocation()
+ * need inside the CRM pages, isolated from the shell (no BrowserRouter needed).
  */
-import { PortalRouter, usePortalPath } from "@/lib/portalRouter";
+import { MemoryRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import FulfilmentCenter from "./pages/FulfilmentCenter";
 
-function CrmRoutes() {
-  const path = usePortalPath();
-  if (path === "/fulfilment-center") return <FulfilmentCenter />;
-  return <Index />;
-}
-
 export default function CrmPortal() {
   return (
-    <PortalRouter>
-      <CrmRoutes />
-    </PortalRouter>
+    <MemoryRouter>
+      <Routes>
+        <Route path="/"                  element={<Index />} />
+        <Route path="/fulfilment-center" element={<FulfilmentCenter />} />
+      </Routes>
+    </MemoryRouter>
   );
 }

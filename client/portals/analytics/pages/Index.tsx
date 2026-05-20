@@ -1,6 +1,117 @@
 import { useState } from "react";
+import ExplorePerformance from "./ExplorePerformance";
+import DiscoverTrends from "./DiscoverTrends";
+import GenieAI from "./GenieAI";
+
+// ─── Constants ────────────────────────────────────────────────────────────────
+const TEAL = "#00a5b4";
+const SIDEBAR_BG = "#2d3748";
+const PAGE_BG = "#f4f6f9";
+const CARD_BG = "#ffffff";
+const HEADER_H = 48;
+const SIDEBAR_W = 48;
+// 6-level performance palette (shared with Explore Performance)
+const C_GREAT  = "#42C442";
+const C_GOOD   = "#BCD631";
+const C_AVG    = "#FCBF3D";
+const C_BELOW  = "#FA8B3D";
+const C_POOR   = "#FF6262";
+const C_NODATA = "#CCCCCC";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
+
+function IconBell() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+      <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+    </svg>
+  );
+}
+
+function IconHelpCircle() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  );
+}
+
+function IconSearch() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  );
+}
+
+function IconChevronDown() {
+  return (
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  );
+}
+
+function IconFilter() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+    </svg>
+  );
+}
+
+function IconPlus() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+      <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+  );
+}
+
+function IconTag() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+      <line x1="7" y1="7" x2="7.01" y2="7" />
+    </svg>
+  );
+}
+
+function IconCopy() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </svg>
+  );
+}
+
+function IconShare() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+    </svg>
+  );
+}
+
+function IconMoreHorizontal() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" />
+    </svg>
+  );
+}
+
+function IconHome() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" />
+    </svg>
+  );
+}
 
 function IconBarChart() {
   return (
@@ -22,7 +133,8 @@ function IconUsers() {
 function IconCalendar() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" />
+      <line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
     </svg>
   );
 }
@@ -35,19 +147,20 @@ function IconZap() {
   );
 }
 
-function IconShield() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-    </svg>
-  );
-}
-
 function IconFileText() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" />
       <line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
+    </svg>
+  );
+}
+
+function IconTrendingUp() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+      <polyline points="17 6 23 6 23 12" />
     </svg>
   );
 }
@@ -78,7 +191,677 @@ function IconX() {
   );
 }
 
-// ─── SectionTitle with tooltip ───────────────────────────────────────────────
+// ─── Nav tabs config ──────────────────────────────────────────────────────────
+
+const NAV_TABS = [
+  { label: "Quality Dashboard", icon: <IconHome /> },
+  { label: "Explore Performance", icon: <IconBarChart /> },
+  { label: "Sentiment Analysis", icon: <IconZap /> },
+  { label: "Trends", icon: <IconTrendingUp /> },
+  { label: "Genie AI", icon: <IconSparkles /> },
+];
+
+// ─── SVG Bar Chart ────────────────────────────────────────────────────────────
+
+interface BarDatum {
+  label: string;
+  value: number;
+}
+
+function BarChart({
+  data,
+  barColor,
+  useScoreColor = false,
+  yMax = 100,
+  yLabel,
+  xLabel,
+  avgValue,
+}: {
+  data: BarDatum[];
+  barColor?: string;
+  useScoreColor?: boolean;
+  yMax?: number;
+  yLabel?: string;
+  xLabel?: string;
+  avgValue?: number;
+}) {
+  const VW = 380;
+  const VH = 230;
+  const M = { top: 24, right: 72, bottom: 54, left: 46 };
+  const pw = VW - M.left - M.right;
+  const ph = VH - M.top - M.bottom;
+
+  const yScale = (v: number) => ph - (v / yMax) * ph;
+  const slotW = pw / data.length;
+  const barW = Math.min(slotW * 0.52, 58);
+  const tickStep = yMax <= 50 ? 10 : 20;
+  const yTicks = Array.from({ length: Math.floor(yMax / tickStep) + 1 }, (_, i) => i * tickStep);
+
+  const splitLabel = (lbl: string, max = 13): string[] => {
+    if (lbl.length <= max) return [lbl];
+    const words = lbl.split(" ");
+    const lines: string[] = [];
+    let cur = "";
+    for (const w of words) {
+      if ((cur ? cur + " " + w : w).length > max) {
+        if (cur) lines.push(cur);
+        cur = w;
+      } else {
+        cur = cur ? cur + " " + w : w;
+      }
+    }
+    if (cur) lines.push(cur);
+    return lines;
+  };
+
+  return (
+    <svg viewBox={`0 0 ${VW} ${VH}`} className="w-full h-full">
+      <g transform={`translate(${M.left},${M.top})`}>
+        {yTicks.map(tick => (
+          <g key={tick}>
+            <line x1={0} y1={yScale(tick)} x2={pw} y2={yScale(tick)} stroke="#e5e7eb" strokeWidth="1" />
+            <text x={-6} y={yScale(tick) + 4} textAnchor="end" fontSize="10" fill="#9ca3af">{tick}</text>
+          </g>
+        ))}
+
+        {data.map((d, i) => {
+          const cx = slotW * i + slotW / 2;
+          const x = cx - barW / 2;
+          const y = yScale(d.value);
+          const h = ph - y;
+          const lines = splitLabel(d.label);
+          return (
+            <g key={d.label}>
+              <rect x={x} y={y} width={barW} height={h} fill={useScoreColor ? scoreToColor(d.value).bg : (barColor ?? "#4a90d9")} rx="3" />
+              <text x={cx} y={y - 5} textAnchor="middle" fontSize="10" fill="#374151" fontWeight="600">
+                {d.value}
+              </text>
+              {lines.map((line, li) => (
+                <text key={li} x={cx} y={ph + 15 + li * 13} textAnchor="middle" fontSize="10" fill="#6b7280">
+                  {line}
+                </text>
+              ))}
+            </g>
+          );
+        })}
+
+        {avgValue !== undefined && (
+          <g>
+            <line x1={0} y1={yScale(avgValue)} x2={pw} y2={yScale(avgValue)}
+              stroke="#9ca3af" strokeWidth="1.5" strokeDasharray="5,4" />
+            <text x={pw + 5} y={yScale(avgValue) - 2} fontSize="9" fill="#6b7280" fontWeight="600">Average</text>
+            <text x={pw + 5} y={yScale(avgValue) + 10} fontSize="9" fill="#9ca3af">{avgValue}</text>
+          </g>
+        )}
+
+        <line x1={0} y1={0} x2={0} y2={ph} stroke="#d1d5db" strokeWidth="1" />
+        <line x1={0} y1={ph} x2={pw} y2={ph} stroke="#d1d5db" strokeWidth="1" />
+
+        {yLabel && (
+          <text transform={`translate(-34,${ph / 2}) rotate(-90)`} textAnchor="middle" fontSize="10" fill="#6b7280">
+            {yLabel}
+          </text>
+        )}
+        {xLabel && (
+          <text x={pw / 2} y={ph + 48} textAnchor="middle" fontSize="10" fill="#6b7280">
+            {xLabel}
+          </text>
+        )}
+      </g>
+    </svg>
+  );
+}
+
+// ─── Verint Header ────────────────────────────────────────────────────────────
+
+function VerintHeader({ onMenuClick }: { onMenuClick: () => void }) {
+  return (
+    <header
+      className="fixed top-0 left-0 right-0 z-50 flex items-center"
+      style={{ height: HEADER_H, background: CARD_BG, borderBottom: "1px solid #e2e8f0" }}
+    >
+      <div
+        className="flex-shrink-0 flex flex-col justify-center px-4"
+        style={{ width: 168, height: "100%", background: TEAL }}
+      >
+        <span className="text-white font-bold text-sm tracking-wider leading-tight">VERINT</span>
+        <span className="text-white/80 text-[10px] leading-tight">Data Insights Bot</span>
+      </div>
+
+      <button
+        className="ml-3 lg:hidden text-gray-500 hover:text-gray-700 transition-colors"
+        onClick={onMenuClick}
+      >
+        <IconMenu />
+      </button>
+
+      <div className="flex-1" />
+
+      <div className="flex items-center gap-3 pr-4">
+        <button className="text-gray-400 hover:text-gray-600 transition-colors"><IconBell /></button>
+        <button className="text-gray-400 hover:text-gray-600 transition-colors"><IconHelpCircle /></button>
+        <div
+          className="w-7 h-7 rounded-full flex items-center justify-center font-semibold text-xs"
+          style={{ border: "2px solid #cbd5e0", color: "#718096" }}
+        >
+          PT
+        </div>
+      </div>
+    </header>
+  );
+}
+
+// ─── Narrow Sidebar ───────────────────────────────────────────────────────────
+
+function NarrowSidebar({ activeTab, setActiveTab }: { activeTab: number; setActiveTab: (i: number) => void }) {
+  return (
+    <aside
+      className="hidden lg:flex fixed left-0 flex-col items-center py-2 z-40"
+      style={{ top: HEADER_H, bottom: 0, width: SIDEBAR_W, background: SIDEBAR_BG }}
+    >
+      {NAV_TABS.map((tab, i) => (
+        <button
+          key={tab.label}
+          onClick={() => setActiveTab(i)}
+          title={tab.label}
+          className="w-10 h-10 flex items-center justify-center rounded-lg my-0.5 transition-colors"
+          style={{
+            color: activeTab === i ? TEAL : "#a0aec0",
+            background: activeTab === i ? "rgba(0,165,180,0.18)" : "transparent",
+          }}
+        >
+          {tab.icon}
+        </button>
+      ))}
+    </aside>
+  );
+}
+
+// ─── Mobile Drawer ────────────────────────────────────────────────────────────
+
+function MobileDrawer({
+  open,
+  activeTab,
+  setActiveTab,
+  onClose,
+}: {
+  open: boolean;
+  activeTab: number;
+  setActiveTab: (i: number) => void;
+  onClose: () => void;
+}) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 lg:hidden">
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div
+        className="absolute left-0 top-0 bottom-0 flex flex-col py-4 px-2"
+        style={{ width: 220, background: SIDEBAR_BG, paddingTop: HEADER_H + 8 }}
+      >
+        {NAV_TABS.map((tab, i) => (
+          <button
+            key={tab.label}
+            onClick={() => { setActiveTab(i); onClose(); }}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-left mb-0.5 transition-colors"
+            style={{
+              color: activeTab === i ? TEAL : "#a0aec0",
+              background: activeTab === i ? "rgba(0,165,180,0.18)" : "transparent",
+            }}
+          >
+            {tab.icon}
+            <span>{tab.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Page Title Area ─────────────────────────────────────────────────────────
+
+function PageTitleArea({ activeTab }: { activeTab: number }) {
+  const title = activeTab === 0 ? "Quality Dashboard" : NAV_TABS[activeTab].label;
+  return (
+    <div className="px-5 pt-4 pb-3" style={{ background: PAGE_BG, borderBottom: "1px solid #e2e8f0" }}>
+      <div className="flex items-start justify-between flex-wrap gap-3">
+        <div>
+          <div className="text-[10px] font-semibold tracking-widest uppercase" style={{ color: "#9ca3af" }}>
+            All Dashboards
+          </div>
+          <div className="flex items-center gap-2 mt-0.5">
+            <h1 className="text-xl font-bold" style={{ color: "#1a202c" }}>{title}</h1>
+            <button className="text-gray-400 hover:text-gray-600 transition-colors"><IconCopy /></button>
+            <button className="text-gray-400 hover:text-gray-600 transition-colors"><IconShare /></button>
+            <button className="text-gray-400 hover:text-gray-600 transition-colors"><IconMoreHorizontal /></button>
+          </div>
+          <div className="flex items-center gap-3 mt-1">
+            <button className="flex items-center gap-1 text-xs font-medium hover:opacity-80 transition-opacity" style={{ color: TEAL }}>
+              <IconTag />
+              Add Tag
+            </button>
+            <span className="text-xs" style={{ color: "#9ca3af" }}>Refreshed 33 minutes ago</span>
+          </div>
+        </div>
+
+        <div
+          className="flex items-center gap-2 px-3 py-1.5 rounded-md border"
+          style={{ background: CARD_BG, borderColor: "#d1d5db", minWidth: 250 }}
+        >
+          <div
+            className="w-5 h-5 rounded flex items-center justify-center text-white font-bold text-xs flex-shrink-0"
+            style={{ background: TEAL }}
+          >
+            V
+          </div>
+          <input
+            type="text"
+            placeholder="Search in AOS Workspace"
+            className="flex-1 text-sm outline-none bg-transparent"
+            style={{ color: "#374151" }}
+          />
+          <span style={{ color: "#9ca3af" }}><IconSearch /></span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Filter Bar ──────────────────────────────────────────────────────────────
+
+const INITIAL_FILTERS = [
+  { label: "Date Last week", active: true },
+  { label: "Organization Name (All)", active: false },
+  { label: "Employee Name (All)", active: false },
+  { label: "Interaction Channel (All)", active: false },
+  { label: "Locations (All)", active: false },
+  { label: "Evaluation Type (All)", active: false },
+  { label: "Form Titles (All)", active: false },
+];
+
+function FilterBar() {
+  const [filters, setFilters] = useState(INITIAL_FILTERS);
+  const toggle = (i: number) =>
+    setFilters(prev => prev.map((f, pi) => pi === i ? { ...f, active: !f.active } : f));
+
+  return (
+    <div
+      className="flex items-center gap-2 px-5 py-2.5 flex-wrap"
+      style={{ background: "#edf2f7", borderBottom: "1px solid #e2e8f0" }}
+    >
+      <span style={{ color: "#718096" }}><IconFilter /></span>
+      {filters.map((f, i) => (
+        <button
+          key={f.label}
+          onClick={() => toggle(i)}
+          className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition-colors whitespace-nowrap"
+          style={
+            f.active
+              ? { background: TEAL, color: "#fff", border: `1px solid ${TEAL}` }
+              : { background: CARD_BG, color: TEAL, border: `1px solid ${TEAL}` }
+          }
+        >
+          {f.label}
+          <IconChevronDown />
+        </button>
+      ))}
+      <button
+        className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold text-white hover:opacity-90 transition-opacity whitespace-nowrap"
+        style={{ background: TEAL }}
+      >
+        <IconPlus />
+        Add Filter
+      </button>
+    </div>
+  );
+}
+
+// ─── KPI Cards Row ───────────────────────────────────────────────────────────
+
+function KpiCardsRow() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="rounded-lg p-4 shadow-sm" style={{ background: CARD_BG, border: "1px solid #e2e8f0" }}>
+        <div className="text-xs font-medium mb-3" style={{ color: "#718096" }}>Total Number of Employees</div>
+        <div className="text-4xl font-bold text-center my-4" style={{ color: "#1a202c" }}>1,739</div>
+        <div className="text-xs text-center" style={{ color: "#718096" }}>
+          Number of Unique <span className="font-bold" style={{ color: "#4a5568" }}>Employees</span>
+        </div>
+      </div>
+
+      <div className="rounded-lg p-4 shadow-sm" style={{ background: CARD_BG, border: "1px solid #e2e8f0" }}>
+        <div className="text-xs font-medium mb-3" style={{ color: "#718096" }}>Total Average Score Employees</div>
+        <div className="text-4xl font-bold text-center my-4" style={{ color: "#1a202c" }}>58.89</div>
+        <div className="text-xs text-center" style={{ color: "#718096" }}>
+          Average of <span className="font-bold" style={{ color: "#4a5568" }}>Evaluation Score</span>, in Last Week
+        </div>
+      </div>
+
+      <div className="rounded-lg p-4 shadow-sm" style={{ background: CARD_BG, border: "1px solid #e2e8f0" }}>
+        <div className="text-xs font-medium mb-3" style={{ color: "#718096" }}>Completed Coaching Sessions</div>
+        <div className="text-4xl font-bold text-center my-4" style={{ color: "#1a202c" }}>0</div>
+        <div className="text-xs text-center" style={{ color: "#718096" }}>
+          Number of <span className="font-bold" style={{ color: "#4a5568" }}>Coaching Sessions</span> for{" "}
+          <span className="font-bold" style={{ color: "#4a5568" }}>Completed</span> in Last Week
+        </div>
+      </div>
+
+      <div className="rounded-lg p-4 shadow-sm" style={{ background: CARD_BG, border: "1px solid #e2e8f0" }}>
+        <div className="text-xs font-medium mb-3" style={{ color: "#718096" }}>Number of Evaluations by Type</div>
+        <table className="w-full mt-1">
+          <thead>
+            <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+              <th className="text-left pb-2 font-semibold uppercase tracking-wide" style={{ color: "#a0aec0", fontSize: 10 }}>
+                Evaluation Type ↑
+              </th>
+              <th className="text-right pb-2 font-semibold uppercase tracking-wide" style={{ color: "#a0aec0", fontSize: 9 }}>
+                # of Evaluations (Count)
+              </th>
+            </tr>
+          </thead>
+          <tbody className="text-xs">
+            <tr>
+              <td className="py-2" style={{ color: "#4a5568" }}>Automated Evaluation</td>
+              <td className="py-2 text-right" style={{ color: "#4a5568" }}>94,323.00</td>
+            </tr>
+            <tr>
+              <td className="py-1" style={{ color: "#4a5568" }}>Evaluation</td>
+              <td className="py-1 text-right" style={{ color: "#4a5568" }}>3.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+// ─── Charts Row ──────────────────────────────────────────────────────────────
+
+function ChartsRow() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="rounded-lg p-4 shadow-sm" style={{ background: CARD_BG, border: "1px solid #e2e8f0" }}>
+        <div className="text-xs font-semibold mb-2" style={{ color: "#4a5568" }}>Average Score by Location</div>
+        <div style={{ height: 250 }}>
+          <BarChart
+            data={[
+              { label: "OFFICE", value: 63.2 },
+              { label: "HOME", value: 57.4 },
+              { label: "NONE", value: 51.8 },
+            ]}
+            barColor="#4a90d9"
+            yMax={100}
+            yLabel="Average Score"
+            xLabel="Location"
+            avgValue={58.9}
+          />
+        </div>
+      </div>
+
+      <div className="rounded-lg p-4 shadow-sm" style={{ background: CARD_BG, border: "1px solid #e2e8f0" }}>
+        <div className="text-xs font-semibold mb-2" style={{ color: "#4a5568" }}>Average Score by Channel</div>
+        <div style={{ height: 250 }}>
+          <BarChart
+            data={[
+              { label: "Phone", value: 60.3 },
+              { label: "WebChat", value: 54.7 },
+            ]}
+            barColor="#27ae60"
+            yMax={100}
+            yLabel="Average Evaluation Score"
+            xLabel="Interaction Channel"
+            avgValue={58.9}
+          />
+        </div>
+      </div>
+
+      <div className="rounded-lg p-4 shadow-sm" style={{ background: CARD_BG, border: "1px solid #e2e8f0" }}>
+        <div className="text-xs font-semibold mb-2" style={{ color: "#4a5568" }}>Average Score by Evaluation Type</div>
+        <div style={{ height: 250 }}>
+          <BarChart
+            data={[
+              { label: "Automated Evaluation", value: 59.1 },
+              { label: "Evaluation", value: 55.8 },
+            ]}
+            useScoreColor
+            yMax={100}
+            yLabel="Average Score"
+            xLabel="Evaluation Type"
+            avgValue={58.9}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Grouped Bar Chart ───────────────────────────────────────────────────────
+
+// ─── Agent Score Heatmap ──────────────────────────────────────────────────────
+
+const HEATMAP_FOLDERS = [
+  "All Evals",
+  "Appeal",
+  "Appeal Accepted",
+  "Disputed",
+  "Inbox",
+  "Forwarded",
+];
+
+const HEATMAP_DATA: { agent: string; scores: (number | null)[] }[] = [
+  { agent: "Cage, Luke",        scores: [72.3, 75.1, null,  69.8, 72.3, 68.5] },
+  { agent: "Fisher, Olivia",    scores: [62.4, 58.9, 65.2, null,  62.4, 60.1] },
+  { agent: "Hodges, Lily",      scores: [35.5, 32.8, null,  38.1, 35.5, null]  },
+  { agent: "Johnson, Liz",      scores: [81.2, 83.5, 79.4, 82.1, 81.2, 80.8] },
+  { agent: "Jones, Jessica",    scores: [68.7, 71.2, 65.9, null,  68.7, 66.4] },
+  { agent: "King, Amelia",      scores: [45.1, null,  47.8, 43.2, 45.1, null]  },
+  { agent: "Mathis, Jake",      scores: [78.4, 76.9, 80.1, null,  78.4, 77.2] },
+  { agent: "Murdock, Matt",     scores: [48.3, 45.7, 51.2, 47.9, 48.3, 46.5] },
+  { agent: "Murray, Adrian",    scores: [55.9, 58.4, null,  53.1, 55.9, 54.2] },
+  { agent: "Patel, Rajesh",     scores: [87.6, 89.2, 85.4, 88.1, 87.6, null]  },
+  { agent: "Rand, Danny",       scores: [29.8, 27.5, null,  31.4, 29.8, null]  },
+  { agent: "Rutherford, Adam",  scores: [41.5, 43.9, 39.2, null,  41.5, 40.8] },
+];
+
+function scoreToColor(score: number): { bg: string; text: string } {
+  if (score >= 80) return { bg: C_GREAT, text: "#fff" };
+  if (score >= 60) return { bg: C_GOOD,  text: "#3a3800" };
+  if (score >= 40) return { bg: C_AVG,   text: "#3d2a00" };
+  if (score >= 20) return { bg: C_BELOW, text: "#fff" };
+  return { bg: C_POOR, text: "#fff" };
+}
+
+function AgentScoreHeatmap() {
+  const minScore = Math.min(...HEATMAP_DATA.flatMap(r => r.scores.filter((s): s is number => s !== null)));
+  const maxScore = Math.max(...HEATMAP_DATA.flatMap(r => r.scores.filter((s): s is number => s !== null)));
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="text-xs font-semibold mb-3" style={{ color: "#4a5568" }}>Agent Score Heatmap by Evaluation Folder</div>
+
+      <div className="overflow-auto flex-1">
+        <table className="w-full text-xs" style={{ borderCollapse: "collapse" }}>
+          <thead>
+            <tr>
+              <th
+                className="text-left pb-2 pt-1 pr-3 font-semibold uppercase tracking-wide whitespace-nowrap"
+                style={{ color: "#718096", fontSize: 10, borderBottom: "1px solid #e2e8f0", minWidth: 130 }}
+              >
+                Agent
+              </th>
+              {HEATMAP_FOLDERS.map(folder => (
+                <th
+                  key={folder}
+                  className="text-center pb-2 pt-1 px-1 font-semibold uppercase tracking-wide"
+                  style={{ color: "#718096", fontSize: 9, borderBottom: "1px solid #e2e8f0", minWidth: 72 }}
+                >
+                  {folder}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {HEATMAP_DATA.map((row, ri) => (
+              <tr key={ri} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                <td
+                  className="pr-3 font-medium"
+                  style={{ color: "#374151", height: 40, verticalAlign: "middle" }}
+                >
+                  {row.agent}
+                </td>
+                {row.scores.map((score, ci) => {
+                  if (score === null) {
+                    return (
+                      <td key={ci} className="px-1 text-center" style={{ height: 40, verticalAlign: "middle" }}>
+                        <div
+                          className="flex items-center justify-center rounded font-medium"
+                          style={{ height: 32, background: C_NODATA, color: "#888", fontSize: 10 }}
+                        >
+                          —
+                        </div>
+                      </td>
+                    );
+                  }
+                  const { bg, text } = scoreToColor(score);
+                  return (
+                    <td key={ci} className="px-1 text-center" style={{ height: 40, verticalAlign: "middle" }}>
+                      <div
+                        className="flex flex-col items-center justify-center rounded font-bold"
+                        style={{ height: 32, background: bg, color: text, fontSize: 11 }}
+                      >
+                        {score.toFixed(2)}
+                      </div>
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Legend */}
+      <div className="flex items-center gap-3 mt-3 pt-3 flex-wrap" style={{ borderTop: "1px solid #f1f5f9" }}>
+        <span className="text-xs font-semibold" style={{ color: "#9ca3af" }}>Score range: {minScore.toFixed(1)} – {maxScore.toFixed(1)}</span>
+        <div className="flex items-center gap-2">
+          {[
+            { bg: C_POOR,   label: "< 20  Needs Improvement" },
+            { bg: C_BELOW,  label: "20–40  Below Avg" },
+            { bg: C_AVG,    label: "40–60  Average" },
+            { bg: C_GOOD,   label: "60–80  Good" },
+            { bg: C_GREAT,  label: "80–100  Great" },
+            { bg: C_NODATA, label: "No Data" },
+          ].map(({ bg, label }) => (
+            <div key={label} className="flex items-center gap-1">
+              <div className="w-4 h-4 rounded" style={{ background: bg, border: "1px solid #e5e7eb" }} />
+              <span className="text-[10px]" style={{ color: "#6b7280" }}>{label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Employee Table ───────────────────────────────────────────────────────────
+
+const EMPLOYEE_ROWS = [
+  { name: "Cage, Luke",       score: 72.3, count: 148 },
+  { name: "Fisher, Olivia",   score: 62.4, count: 212 },
+  { name: "Hodges, Lily",     score: 35.5, count: 95  },
+  { name: "Johnson, Liz",     score: 81.2, count: 324 },
+  { name: "Jones, Jessica",   score: 68.7, count: 178 },
+  { name: "King, Amelia",     score: 45.1, count: 134 },
+  { name: "Mathis, Jake",     score: 78.4, count: 267 },
+  { name: "Murdock, Matt",    score: 48.3, count: 89  },
+  { name: "Murray, Adrian",   score: 55.9, count: 156 },
+  { name: "Patel, Rajesh",    score: 87.6, count: 441 },
+  { name: "Rand, Danny",      score: 29.8, count: 62  },
+  { name: "Rutherford, Adam", score: 41.5, count: 118 },
+];
+
+function EmployeeTable() {
+  return (
+    <div className="flex flex-col h-full">
+      <div className="text-xs font-semibold mb-3" style={{ color: "#4a5568" }}>Evaluations by Employee</div>
+      <div className="overflow-y-auto flex-1">
+        <table className="w-full" style={{ borderCollapse: "collapse" }}>
+          <thead style={{ position: "sticky", top: 0, background: CARD_BG, zIndex: 1 }}>
+            <tr>
+              <th
+                className="text-left pb-2 pt-1 font-semibold uppercase tracking-wide whitespace-nowrap"
+                style={{ color: "#718096", fontSize: 10, borderBottom: "1px solid #e2e8f0" }}
+              >
+                Employee Name ▲
+              </th>
+              <th
+                className="text-center pb-2 pt-1 font-semibold uppercase tracking-wide whitespace-nowrap px-2"
+                style={{ color: "#718096", fontSize: 10, borderBottom: "1px solid #e2e8f0" }}
+              >
+                Evaluation Score (Avg)
+              </th>
+              <th
+                className="text-right pb-2 pt-1 font-semibold uppercase tracking-wide whitespace-nowrap"
+                style={{ color: "#718096", fontSize: 10, borderBottom: "1px solid #e2e8f0" }}
+              >
+                Number of Evaluations (Count)
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {EMPLOYEE_ROWS.map((row, i) => (
+              <tr key={i} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                <td className="py-2 pr-2 text-xs" style={{ color: "#374151", height: 36 }}>
+                  {row.name}
+                </td>
+                <td className="py-0 px-1" style={{ height: 36, width: "36%" }}>
+                  <div
+                    className="flex items-center justify-center w-full h-full font-bold text-xs"
+                    style={{ background: scoreToColor(row.score).bg, color: scoreToColor(row.score).text, height: 36, borderRadius: 2 }}
+                  >
+                    {row.score.toFixed(2)}
+                  </div>
+                </td>
+                <td className="py-2 pl-2 text-xs text-right" style={{ color: "#374151" }}>
+                  {row.count.toLocaleString()}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+// ─── Second Row (Grouped Chart + Employee Table) ──────────────────────────────
+
+function SecondRow() {
+  return (
+    <div className="grid gap-4" style={{ gridTemplateColumns: "58fr 42fr" }}>
+      <div className="rounded-lg p-4 shadow-sm" style={{ background: CARD_BG, border: "1px solid #e2e8f0" }}>
+        <AgentScoreHeatmap />
+      </div>
+
+      <div className="rounded-lg p-4 shadow-sm" style={{ background: CARD_BG, border: "1px solid #e2e8f0", minHeight: 380 }}>
+        <EmployeeTable />
+      </div>
+    </div>
+  );
+}
+
+// ─── Tab 0 — Quality Dashboard ────────────────────────────────────────────────
+
+function Tab0QualityDashboard() {
+  return (
+    <div className="space-y-5">
+      <KpiCardsRow />
+      <ChartsRow />
+      <SecondRow />
+    </div>
+  );
+}
+
+// ─── Shared components for existing tabs (dark-panel style) ───────────────────
 
 function SectionTitle({ children, tip }: { children: React.ReactNode; tip: string }) {
   const [show, setShow] = useState(false);
@@ -86,10 +869,8 @@ function SectionTitle({ children, tip }: { children: React.ReactNode; tip: strin
     <div className="relative inline-flex items-center gap-1.5 mb-4 group">
       <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">{children}</div>
       <button
-        onMouseEnter={() => setShow(true)}
-        onMouseLeave={() => setShow(false)}
-        onFocus={() => setShow(true)}
-        onBlur={() => setShow(false)}
+        onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}
+        onFocus={() => setShow(true)} onBlur={() => setShow(false)}
         className="flex-shrink-0 text-muted-foreground/50 hover:text-teal transition-colors focus:outline-none"
         aria-label={`Info: ${children}`}
       >
@@ -110,20 +891,7 @@ function SectionTitle({ children, tip }: { children: React.ReactNode; tip: strin
   );
 }
 
-// ─── Tab config ───────────────────────────────────────────────────────────────
-
-const DASH_TABS = [
-  { label: "Call Reason Intelligence", icon: <IconBarChart /> },
-  { label: "Patient Journey Insights", icon: <IconUsers /> },
-  { label: "Scheduling & Coverage", icon: <IconCalendar /> },
-  { label: "Exact Transcription", icon: <IconZap /> },
-  { label: "Playback & Compliance", icon: <IconFileText /> },
-  { label: "Genie AI", icon: <IconSparkles /> },
-];
-
-// ─── Shared KPI Tile ──────────────────────────────────────────────────────────
-
-function KpiTile({ label, value, goal, status }: { label: string; value: string; goal?: string; status?: string }) {
+function LegacyKpiTile({ label, value, goal, status }: { label: string; value: string; goal?: string; status?: string }) {
   const borderColor = status === "green" ? "border-t-emerald-500" : status === "amber" ? "border-t-amber-400" : status === "blue" ? "border-t-teal" : "border-t-navy-light";
   const valueColor = status === "green" ? "text-emerald-400" : status === "amber" ? "text-amber-400" : "text-teal";
   return (
@@ -173,9 +941,9 @@ function Tab1CallReasons() {
         ))}
       </div>
       <div className="lg:w-80 xl:w-96">
-        <SectionTitle tip="Key performance indicators for the JASCAYD patient support center, each measured against an established program goal. Green = at or above goal.">Performance KPIs</SectionTitle>
+        <SectionTitle tip="Key performance indicators for the JASCAYD patient support center.">Performance KPIs</SectionTitle>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3">
-          {KPI_TILES_1.map(t => <KpiTile key={t.label} {...t} />)}
+          {KPI_TILES_1.map(t => <LegacyKpiTile key={t.label} {...t} />)}
         </div>
       </div>
     </div>
@@ -204,23 +972,17 @@ function Tab2Journey() {
   return (
     <div className="flex flex-col lg:flex-row gap-8">
       <div className="lg:w-56 xl:w-64 flex-shrink-0">
-        <SectionTitle tip="Volume of patients at each stage of the JASCAYD program journey, from initial referral through first fill dispensed. Trend arrows compare to prior month.">Patient Journey Funnel</SectionTitle>
+        <SectionTitle tip="Volume of patients at each stage of the JASCAYD program journey.">Patient Journey Funnel</SectionTitle>
         <div className="relative pl-6">
           <div className="absolute left-[11px] top-6 bottom-6 w-0.5 bg-teal/20" />
           <div className="space-y-6">
             {FUNNEL_STAGES.map(({ stage, count, trend, up }, i) => (
               <div key={stage} className="flex items-start gap-3 relative">
-                <div className="w-5 h-5 rounded-full bg-teal flex items-center justify-center flex-shrink-0 text-navy text-[10px] font-black z-10">
-                  {i + 1}
-                </div>
+                <div className="w-5 h-5 rounded-full bg-teal flex items-center justify-center flex-shrink-0 text-navy text-[10px] font-black z-10">{i + 1}</div>
                 <div>
                   <div className="text-white font-bold text-lg leading-none">{count.toLocaleString()}</div>
                   <div className="text-xs text-muted-foreground mt-0.5">{stage}</div>
-                  <div className={`inline-flex items-center gap-1 text-xs font-semibold mt-1 px-1.5 py-0.5 rounded ${
-                    up === true ? "text-emerald-400 bg-emerald-500/10" : up === false ? "text-red-400 bg-red-500/10" : "text-muted-foreground bg-white/5"
-                  }`}>
-                    {trend}
-                  </div>
+                  <div className={`inline-flex items-center gap-1 text-xs font-semibold mt-1 px-1.5 py-0.5 rounded ${up === true ? "text-emerald-400 bg-emerald-500/10" : up === false ? "text-red-400 bg-red-500/10" : "text-muted-foreground bg-white/5"}`}>{trend}</div>
                 </div>
               </div>
             ))}
@@ -228,9 +990,9 @@ function Tab2Journey() {
         </div>
       </div>
       <div className="flex-1">
-        <SectionTitle tip="Program outcome KPIs measuring efficiency, adherence, and patient satisfaction across the JASCAYD patient population. Amber = below goal but within tolerance.">Outcome Metrics</SectionTitle>
+        <SectionTitle tip="Program outcome KPIs measuring efficiency, adherence, and patient satisfaction.">Outcome Metrics</SectionTitle>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {KPI_TILES_2.map(t => <KpiTile key={t.label} {...t} />)}
+          {KPI_TILES_2.map(t => <LegacyKpiTile key={t.label} {...t} />)}
         </div>
       </div>
     </div>
@@ -241,8 +1003,7 @@ function Tab2Journey() {
 
 const AGENTS = [
   {
-    name: "Martinez, Sofia",
-    shift: "8:00 AM – 5:00 PM",
+    name: "Martinez, Sofia", shift: "8:00 AM – 5:00 PM",
     blocks: [
       { start: 60, end: 135, color: "bg-emerald-500", label: "Patient calls" },
       { start: 135, end: 150, color: "bg-blue-400", label: "Break" },
@@ -252,8 +1013,7 @@ const AGENTS = [
     ],
   },
   {
-    name: "Nguyen, David",
-    shift: "9:00 AM – 6:00 PM",
+    name: "Nguyen, David", shift: "9:00 AM – 6:00 PM",
     blocks: [
       { start: 120, end: 300, color: "bg-emerald-500", label: "Patient calls" },
       { start: 300, end: 330, color: "bg-amber-400", label: "Lunch" },
@@ -261,8 +1021,7 @@ const AGENTS = [
     ],
   },
   {
-    name: "Patel, Priya",
-    shift: "7:00 AM – 4:00 PM",
+    name: "Patel, Priya", shift: "7:00 AM – 4:00 PM",
     blocks: [
       { start: 0, end: 180, color: "bg-emerald-500", label: "Patient calls" },
       { start: 180, end: 195, color: "bg-blue-400", label: "Break" },
@@ -274,7 +1033,7 @@ const AGENTS = [
 ];
 
 const TIMELINE_TOTAL = 720;
-function pct(minutes: number) { return `${(minutes / TIMELINE_TOTAL) * 100}%`; }
+const pct = (m: number) => `${(m / TIMELINE_TOTAL) * 100}%`;
 
 function Tab3Scheduling() {
   const hours = Array.from({ length: 13 }, (_, i) => i + 7);
@@ -309,16 +1068,10 @@ function Tab3Scheduling() {
                 <div className="text-xs text-muted-foreground">{agent.shift}</div>
               </div>
               <div className="flex-1 relative h-14 my-1.5">
-                {hours.map((_, i) => (
-                  <div key={i} className="absolute top-0 bottom-0 w-px bg-navy-light/50" style={{ left: pct(i * 60) }} />
-                ))}
+                {hours.map((_, i) => <div key={i} className="absolute top-0 bottom-0 w-px bg-navy-light/50" style={{ left: pct(i * 60) }} />)}
                 {agent.blocks.map((block, bi) => (
-                  <div
-                    key={bi}
-                    className={`absolute top-1 bottom-1 ${block.color} rounded opacity-80 hover:opacity-100 transition-opacity`}
-                    style={{ left: pct(block.start), width: pct(block.end - block.start) }}
-                    title={block.label}
-                  />
+                  <div key={bi} className={`absolute top-1 bottom-1 ${block.color} rounded opacity-80 hover:opacity-100 transition-opacity`}
+                    style={{ left: pct(block.start), width: pct(block.end - block.start) }} title={block.label} />
                 ))}
               </div>
             </div>
@@ -326,12 +1079,7 @@ function Tab3Scheduling() {
         </div>
       </div>
       <div className="mt-4 flex flex-wrap gap-3 text-sm">
-        {[
-          { label: "Volume", value: "847 calls" },
-          { label: "Service Level", value: "91%" },
-          { label: "Headcount", value: "12 agents" },
-          { label: "Avg Occupancy", value: "84%" },
-        ].map(({ label, value }) => (
+        {[{ label: "Volume", value: "847 calls" }, { label: "Service Level", value: "91%" }, { label: "Headcount", value: "12 agents" }, { label: "Avg Occupancy", value: "84%" }].map(({ label, value }) => (
           <div key={label} className="rounded-lg px-4 py-2 border border-navy-light" style={{ background: "hsl(220 48% 13%)" }}>
             <span className="text-muted-foreground">{label}: </span>
             <span className="text-white font-semibold">{value}</span>
@@ -345,47 +1093,31 @@ function Tab3Scheduling() {
 // ─── Tab 4 — Exact Transcription ─────────────────────────────────────────────
 
 const CONFIDENCE_BRACKETS = [
-  { range: "95–100%", pct: 61 },
-  { range: "90–94%", pct: 24 },
-  { range: "85–89%", pct: 10 },
-  { range: "<85%", pct: 5 },
+  { range: "95–100%", pct: 61 }, { range: "90–94%", pct: 24 },
+  { range: "85–89%", pct: 10 }, { range: "<85%", pct: 5 },
 ];
-
 const LEARNED_TERMS = [
-  { term: "JASCAYD", uses: "4,203" },
-  { term: "Prior Authorization", uses: "3,847" },
-  { term: "Specialty Pharmacy", uses: "2,941" },
-  { term: "Hub Services", uses: "2,105" },
-  { term: "Copay Assistance", uses: "1,892" },
-  { term: "PA Appeal", uses: "1,447" },
-  { term: "Free Drug Program", uses: "1,203" },
-  { term: "Benefits Verification", uses: "984" },
+  { term: "JASCAYD", uses: "4,203" }, { term: "Prior Authorization", uses: "3,847" },
+  { term: "Specialty Pharmacy", uses: "2,941" }, { term: "Hub Services", uses: "2,105" },
+  { term: "Copay Assistance", uses: "1,892" }, { term: "PA Appeal", uses: "1,447" },
+  { term: "Free Drug Program", uses: "1,203" }, { term: "Benefits Verification", uses: "984" },
 ];
-
 const ACCURACY_DAYS = [
-  { day: "Mon", val: "97.1%" },
-  { day: "Tue", val: "97.3%" },
-  { day: "Wed", val: "97.0%" },
-  { day: "Thu", val: "97.6%" },
-  { day: "Fri", val: "97.4%" },
-  { day: "Sat", val: "97.8%" },
-  { day: "Sun", val: "97.2%" },
+  { day: "Mon", val: "97.1%" }, { day: "Tue", val: "97.3%" }, { day: "Wed", val: "97.0%" },
+  { day: "Thu", val: "97.6%" }, { day: "Fri", val: "97.4%" }, { day: "Sat", val: "97.8%" }, { day: "Sun", val: "97.2%" },
 ];
 
 function Tab4Transcription() {
   return (
     <div className="space-y-6">
-      {/* Stat tiles */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <KpiTile label="Transcription Accuracy" value="97.4%" status="blue" />
-        <KpiTile label="Custom Terms Learned" value="1,847" status="blue" />
-        <KpiTile label="Calls Processed (MTD)" value="4,203" status="blue" />
+        <LegacyKpiTile label="Transcription Accuracy" value="97.4%" status="blue" />
+        <LegacyKpiTile label="Custom Terms Learned" value="1,847" status="blue" />
+        <LegacyKpiTile label="Calls Processed (MTD)" value="4,203" status="blue" />
       </div>
-
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Left — Confidence */}
         <div className="flex-1 rounded-xl border border-navy-light p-5" style={{ background: "hsl(220 55% 10%)" }}>
-          <SectionTitle tip="Distribution of AI transcription confidence scores across all calls processed this month. Higher brackets indicate greater word-level accuracy before human review.">Confidence Score Distribution</SectionTitle>
+          <SectionTitle tip="Distribution of AI transcription confidence scores across all calls processed this month.">Confidence Score Distribution</SectionTitle>
           <div className="space-y-3">
             {CONFIDENCE_BRACKETS.map(({ range, pct: p }) => (
               <div key={range}>
@@ -394,22 +1126,14 @@ function Tab4Transcription() {
                   <span className="text-sm font-bold text-teal">{p}%</span>
                 </div>
                 <div className="h-2.5 rounded-full overflow-hidden" style={{ background: "hsl(220 45% 16%)" }}>
-                  <div
-                    className="h-full rounded-full"
-                    style={{
-                      width: `${p}%`,
-                      background: "linear-gradient(90deg, hsl(172 70% 35%), hsl(172 70% 50%))",
-                    }}
-                  />
+                  <div className="h-full rounded-full" style={{ width: `${p}%`, background: "linear-gradient(90deg, hsl(172 70% 35%), hsl(172 70% 50%))" }} />
                 </div>
               </div>
             ))}
           </div>
         </div>
-
-        {/* Right — Learned Terms */}
         <div className="flex-1 rounded-xl border border-navy-light p-5" style={{ background: "hsl(220 55% 10%)" }}>
-          <SectionTitle tip="Custom terminology the Exact Transcription Bot has learned from JASCAYD-specific calls. Terms are weighted by usage frequency and improve model accuracy over time.">Top Learned Terms — This Month</SectionTitle>
+          <SectionTitle tip="Custom terminology learned from JASCAYD-specific calls, weighted by usage frequency.">Top Learned Terms — This Month</SectionTitle>
           <div className="space-y-2">
             {LEARNED_TERMS.map(({ term, uses }) => (
               <div key={term} className="flex items-center justify-between py-1.5 border-b border-navy-light/40 last:border-0">
@@ -420,10 +1144,8 @@ function Tab4Transcription() {
           </div>
         </div>
       </div>
-
-      {/* Bottom — 7-day accuracy */}
       <div className="rounded-xl border border-navy-light p-5" style={{ background: "hsl(220 55% 10%)" }}>
-        <SectionTitle tip="Daily transcription accuracy rate over the past 7 days, calculated as the percentage of transcribed words matching verified ground truth for sampled calls.">7-Day Accuracy Trend</SectionTitle>
+        <SectionTitle tip="Daily transcription accuracy over the past 7 days.">7-Day Accuracy Trend</SectionTitle>
         <div className="flex flex-wrap gap-2">
           {ACCURACY_DAYS.map(({ day, val }) => (
             <div key={day} className="flex-1 min-w-[70px] rounded-lg border border-navy-light text-center py-2.5" style={{ background: "hsl(220 45% 16%)" }}>
@@ -437,17 +1159,13 @@ function Tab4Transcription() {
   );
 }
 
-// ─── Tab 5 — Playback Summary + PII Redaction (combined) ───────────────────
+// ─── Tab 5 — Playback & Compliance ───────────────────────────────────────────
 
 const PHI_BREAKDOWN = [
-  { type: "Patient Name", pct: 38 },
-  { type: "Date of Birth", pct: 22 },
-  { type: "Insurance ID", pct: 19 },
-  { type: "SSN Fragment", pct: 11 },
-  { type: "Phone Number", pct: 7 },
-  { type: "Other", pct: 3 },
+  { type: "Patient Name", pct: 38 }, { type: "Date of Birth", pct: 22 },
+  { type: "Insurance ID", pct: 19 }, { type: "SSN Fragment", pct: 11 },
+  { type: "Phone Number", pct: 7 }, { type: "Other", pct: 3 },
 ];
-
 const REDACTION_LOG = [
   { id: "#8841", agent: "Martinez, Sofia", duration: "4:23", fields: "Name, DOB, Ins. ID" },
   { id: "#8840", agent: "Nguyen, David", duration: "6:11", fields: "Name, SSN" },
@@ -460,20 +1178,17 @@ const REDACTION_LOG = [
 function Tab5PlaybackAndCompliance() {
   return (
     <div className="space-y-6">
-      {/* Stat tiles — combined */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        <KpiTile label="Avg Summary Read Time" value="28 sec" status="blue" />
-        <KpiTile label="Review Time Saved (MTD)" value="847 hrs" status="green" />
-        <KpiTile label="Summaries Generated" value="4,203" status="blue" />
-        <KpiTile label="PHI Events Redacted" value="14,203" status="green" />
-        <KpiTile label="Avg PHI / Call" value="3.2" status="green" />
-        <KpiTile label="Compliance Coverage" value="100%" status="green" />
+        <LegacyKpiTile label="Avg Summary Read Time" value="28 sec" status="blue" />
+        <LegacyKpiTile label="Review Time Saved (MTD)" value="847 hrs" status="green" />
+        <LegacyKpiTile label="Summaries Generated" value="4,203" status="blue" />
+        <LegacyKpiTile label="PHI Events Redacted" value="14,203" status="green" />
+        <LegacyKpiTile label="Avg PHI / Call" value="3.2" status="green" />
+        <LegacyKpiTile label="Compliance Coverage" value="100%" status="green" />
       </div>
-
-      {/* Row 1 — Playback Summary */}
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="flex-1 rounded-xl border border-navy-light p-5" style={{ background: "hsl(220 55% 10%)" }}>
-          <SectionTitle tip="Comparison of average supervisor call review time before AI summaries (full playback) vs. after (reading the structured summary). Represents an 80% time reduction per call.">Productivity Impact</SectionTitle>
+          <SectionTitle tip="Comparison of average supervisor review time before vs. after AI summaries.">Productivity Impact</SectionTitle>
           <div className="space-y-5">
             <div>
               <div className="flex justify-between items-center mb-1.5">
@@ -490,10 +1205,7 @@ function Tab5PlaybackAndCompliance() {
                 <span className="text-sm font-bold text-teal">28 sec</span>
               </div>
               <div className="h-3 rounded-full overflow-hidden" style={{ background: "hsl(220 45% 16%)" }}>
-                <div
-                  className="h-full rounded-full"
-                  style={{ width: "9%", background: "linear-gradient(90deg, hsl(172 70% 35%), hsl(172 70% 50%))" }}
-                />
+                <div className="h-full rounded-full" style={{ width: "9%", background: "linear-gradient(90deg, hsl(172 70% 35%), hsl(172 70% 50%))" }} />
               </div>
             </div>
             <div className="mt-3 rounded-lg border border-teal/20 bg-teal/5 px-4 py-3 text-center">
@@ -502,24 +1214,12 @@ function Tab5PlaybackAndCompliance() {
             </div>
           </div>
         </div>
-
         <div className="flex-1 rounded-xl border border-navy-light p-5" style={{ background: "hsl(220 55% 10%)" }}>
-          <SectionTitle tip="An example of a structured call summary produced by the Playback Summary Bot. Each summary captures intent, sentiment, outcome, and action items — readable in under 30 seconds.">Sample AI-Generated Summary</SectionTitle>
-          <div
-            className="rounded-xl border-l-4 border-teal p-4"
-            style={{ background: "hsl(220 48% 8%)", fontFamily: "ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace" }}
-          >
-            <div className="text-xs text-muted-foreground mb-3">
-              Call #8841 · May 14, 2026 · 4:23 duration<br />
-              Agent: Martinez, Sofia
-            </div>
+          <SectionTitle tip="An example structured call summary produced by the Playback Summary Bot.">Sample AI-Generated Summary</SectionTitle>
+          <div className="rounded-xl border-l-4 border-teal p-4" style={{ background: "hsl(220 48% 8%)", fontFamily: "ui-monospace, monospace" }}>
+            <div className="text-xs text-muted-foreground mb-3">Call #8841 · May 14, 2026 · 4:23 duration<br />Agent: Martinez, Sofia</div>
             <div className="text-xs font-bold text-teal uppercase tracking-widest mb-2">Summary</div>
-            <p className="text-sm text-white/85 leading-relaxed mb-4">
-              Patient called regarding prior authorization status for JASCAYD.
-              Expressed frustration with 3-day delay. Agent confirmed PA submitted
-              and escalated to PA specialist team. Patient agreed to callback
-              by EOD. No PHI issues flagged.
-            </p>
+            <p className="text-sm text-white/85 leading-relaxed mb-4">Patient called regarding prior authorization status for JASCAYD. Expressed frustration with 3-day delay. Agent confirmed PA submitted and escalated to PA specialist team.</p>
             <div className="space-y-1.5 border-t border-navy-light pt-3">
               <div className="text-xs"><span className="text-teal font-semibold">OUTCOME: </span><span className="text-white/80">Escalated — PA Specialist follow-up required</span></div>
               <div className="text-xs"><span className="text-amber-400 font-semibold">SENTIMENT: </span><span className="text-white/80">Frustrated → Resolved</span></div>
@@ -528,21 +1228,9 @@ function Tab5PlaybackAndCompliance() {
           </div>
         </div>
       </div>
-
-      {/* Divider */}
-      <div className="flex items-center gap-3">
-        <div className="flex-1 h-px" style={{ background: "hsl(220 35% 22%)" }} />
-        <div className="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-semibold" style={{ borderColor: "hsl(220 35% 28%)", color: "hsl(220 15% 55%)" }}>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-          PII Redaction & Compliance
-        </div>
-        <div className="flex-1 h-px" style={{ background: "hsl(220 35% 22%)" }} />
-      </div>
-
-      {/* Row 2 — PII Redaction */}
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="lg:w-80 xl:w-96 flex-shrink-0 rounded-xl border border-navy-light p-5" style={{ background: "hsl(220 55% 10%)" }}>
-          <SectionTitle tip="Percentage breakdown of Protected Health Information types automatically identified and redacted from call recordings by the PII Redaction Bot.">PHI Field Breakdown</SectionTitle>
+          <SectionTitle tip="Breakdown of PHI types automatically identified and redacted by the PII Redaction Bot.">PHI Field Breakdown</SectionTitle>
           <div className="space-y-3">
             {PHI_BREAKDOWN.map(({ type, pct: p }) => (
               <div key={type}>
@@ -557,9 +1245,8 @@ function Tab5PlaybackAndCompliance() {
             ))}
           </div>
         </div>
-
         <div className="flex-1 rounded-xl border border-navy-light p-5" style={{ background: "hsl(220 55% 10%)" }}>
-          <SectionTitle tip="Audit log of the most recent calls processed by the PII Redaction Bot, confirming which PHI fields were removed before recordings were stored.">Recent Call Redaction Log</SectionTitle>
+          <SectionTitle tip="Audit log of recent calls processed by the PII Redaction Bot.">Recent Call Redaction Log</SectionTitle>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[480px] text-sm">
               <thead>
@@ -576,9 +1263,7 @@ function Tab5PlaybackAndCompliance() {
                     <td className="py-2.5 pr-4 text-white font-medium">{row.agent}</td>
                     <td className="py-2.5 pr-4 text-muted-foreground">{row.duration}</td>
                     <td className="py-2.5 pr-4 text-white/70 text-xs">{row.fields}</td>
-                    <td className="py-2.5">
-                      <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">✓ Clean</span>
-                    </td>
+                    <td className="py-2.5"><span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">✓ Clean</span></td>
                   </tr>
                 ))}
               </tbody>
@@ -593,44 +1278,25 @@ function Tab5PlaybackAndCompliance() {
 // ─── Tab 6 — Genie AI ─────────────────────────────────────────────────────────
 
 const GENIE_QA = [
-  {
-    q: "What percentage of PA calls resulted in escalation this month?",
-    a: "23% of PA-related calls (284 of 1,231) were escalated to a specialist.",
-  },
-  {
-    q: "Show me patients who mentioned side effects in the last 30 days.",
-    a: "47 calls flagged · Top terms: fatigue (18), nausea (14), injection site (9)",
-  },
-  {
-    q: "What is the average handle time for enrollment calls vs. PA calls?",
-    a: "Enrollment: 5.8 min avg · PA Support: 6.4 min avg",
-  },
-  {
-    q: "How many calls ended without resolution last week?",
-    a: "62 calls (11.4%) — most common reason: patient requested callback",
-  },
+  { q: "What percentage of PA calls resulted in escalation this month?", a: "23% of PA-related calls (284 of 1,231) were escalated to a specialist." },
+  { q: "Show me patients who mentioned side effects in the last 30 days.", a: "47 calls flagged · Top terms: fatigue (18), nausea (14), injection site (9)" },
+  { q: "What is the average handle time for enrollment calls vs. PA calls?", a: "Enrollment: 5.8 min avg · PA Support: 6.4 min avg" },
+  { q: "How many calls ended without resolution last week?", a: "62 calls (11.4%) — most common reason: patient requested callback" },
 ];
 
 function Tab6GenieAI() {
   return (
     <div className="space-y-6">
-      {/* Stat tiles */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <KpiTile label="Queries This Month" value="312" status="blue" />
-        <KpiTile label="Avg Time to Insight" value="1.4 sec" status="blue" />
-        <KpiTile label="Data Records Queried" value="4.2M" status="blue" />
+        <LegacyKpiTile label="Queries This Month" value="312" status="blue" />
+        <LegacyKpiTile label="Avg Time to Insight" value="1.4 sec" status="blue" />
+        <LegacyKpiTile label="Data Records Queried" value="4.2M" status="blue" />
       </div>
-
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Left — Q&A pairs */}
         <div className="flex-1 space-y-3">
-          <SectionTitle tip="Natural language questions submitted by analysts to Genie AI this month, with the structured answers returned. Average response time is 1.4 seconds across 4.2M data records.">Recent Queries & Answers</SectionTitle>
+          <SectionTitle tip="Natural language questions submitted by analysts to Genie AI this month, with the structured answers returned.">Recent Queries & Answers</SectionTitle>
           {GENIE_QA.map(({ q, a }, i) => (
-            <div
-              key={i}
-              className="rounded-xl border-l-4 border-teal/60 p-4"
-              style={{ background: "hsl(220 55% 10%)", borderTopRightRadius: "12px", borderBottomRightRadius: "12px", border: "1px solid hsl(220 35% 22%)", borderLeft: "4px solid hsl(172 70% 45% / 0.6)" }}
-            >
+            <div key={i} className="rounded-xl p-4" style={{ background: "hsl(220 55% 10%)", border: "1px solid hsl(220 35% 22%)", borderLeft: "4px solid hsl(172 70% 45% / 0.6)" }}>
               <div className="text-xs font-semibold text-teal/80 mb-1">Q:</div>
               <p className="text-sm text-white/70 mb-2 leading-snug">{q}</p>
               <div className="text-xs font-semibold text-muted-foreground mb-1">A:</div>
@@ -638,34 +1304,25 @@ function Tab6GenieAI() {
             </div>
           ))}
         </div>
-
-        {/* Right — Decorative query input */}
         <div className="lg:w-72 xl:w-80 flex-shrink-0">
-          <SectionTitle tip="Genie AI accepts plain-English questions across all JASCAYD call data — no dashboards, SQL, or data exports required. Results are returned as structured analysis.">Natural Language Query</SectionTitle>
+          <SectionTitle tip="Genie AI accepts plain-English questions across all JASCAYD call data.">Natural Language Query</SectionTitle>
           <div className="rounded-xl border border-navy-light p-4" style={{ background: "hsl(220 55% 10%)" }}>
             <div className="rounded-lg border border-teal/30 p-3 mb-3" style={{ background: "hsl(220 48% 8%)" }}>
               <div className="text-sm text-muted-foreground mb-2">Ask anything about JASCAYD calls...</div>
               <div className="text-sm text-white/80 italic">"Show refill adherence trend for patients on JASCAYD in Q2..."</div>
               <div className="flex justify-end mt-3">
                 <div className="w-8 h-8 rounded-lg bg-teal flex items-center justify-center text-navy">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                 </div>
               </div>
             </div>
             <p className="text-xs text-muted-foreground text-center">Powered by Genie AI · AssistRx</p>
           </div>
-
-          {/* Quick stat summary */}
           <div className="mt-4 rounded-xl border border-navy-light p-4 space-y-3" style={{ background: "hsl(220 55% 10%)" }}>
-            <SectionTitle tip="Distribution of analyst query topics submitted to Genie AI this month, showing where program teams are focusing their analysis and reporting efforts.">Top Query Categories</SectionTitle>
+            <SectionTitle tip="Distribution of analyst query topics submitted to Genie AI this month.">Top Query Categories</SectionTitle>
             {[
-              { cat: "PA Status & Escalation", share: 31 },
-              { cat: "Refill & Adherence", share: 26 },
-              { cat: "Enrollment Trends", share: 21 },
-              { cat: "Side Effect Reports", share: 14 },
-              { cat: "Other", share: 8 },
+              { cat: "PA Status & Escalation", share: 31 }, { cat: "Refill & Adherence", share: 26 },
+              { cat: "Enrollment Trends", share: 21 }, { cat: "Side Effect Reports", share: 14 }, { cat: "Other", share: 8 },
             ].map(({ cat, share }) => (
               <div key={cat}>
                 <div className="flex justify-between text-xs mb-1">
@@ -684,251 +1341,256 @@ function Tab6GenieAI() {
   );
 }
 
-// ─── Tab panels array ─────────────────────────────────────────────────────────
+// ─── Tab 3 — Sentiment Analysis ──────────────────────────────────────────────
 
-const TAB_PANELS = [
-  Tab1CallReasons,
-  Tab2Journey,
-  Tab3Scheduling,
-  Tab4Transcription,
-  Tab5PlaybackAndCompliance,
-  Tab6GenieAI,
+const SENT_COLORS = { vn: "#e74c3c", ng: "#e8784d", nt: "#b0b0b0", ps: "#7dba7d", vp: "#27ae60" };
+const SENT_ZONES = [
+  { from: -2, to: -1.2, color: SENT_COLORS.vn },
+  { from: -1.2, to: -0.4, color: SENT_COLORS.ng },
+  { from: -0.4, to: 0.4, color: SENT_COLORS.nt },
+  { from: 0.4, to: 1.2, color: SENT_COLORS.ps },
+  { from: 1.2, to: 2.0, color: SENT_COLORS.vp },
+];
+const SENT_GAUGES = [
+  { title: "Speech Sentiment", value: -0.31 },
+  { title: "Text Sentiment", value: 0.58 },
+  { title: "Unified Sentiment", value: 0.41 },
+];
+const SENT_BARS = [
+  { label: "Speech",  vn: 4,    ng: 34.47, nt: 39.59, ps: 21.12, vp: 0.82 },
+  { label: "Text",    vn: 1.97, ng: 24.9,  nt: 18.49, ps: 23.34, vp: 31.3 },
+  { label: "Unified", vn: 1.97, ng: 26.88, nt: 21.27, ps: 22.88, vp: 27.0 },
+];
+const SENT_FILTERS = [
+  { label: "Dates All dates", active: true },
+  { label: "Organization Name (All)", active: false },
+  { label: "Category Names (All)", active: false },
+  { label: "Interaction Channel (All)", active: false },
+  { label: "Sentiment Channel (All)", active: false },
 ];
 
-// ─── NavRail (tab-based) ──────────────────────────────────────────────────────
-
-function NavRail({ activeTab, setActiveTab }: { activeTab: number; setActiveTab: (i: number) => void }) {
+function SentimentGauge({ value, title }: { value: number; title: string }) {
+  const cx = 110, cy = 108, r = 80, sw = 16;
+  const toA = (v: number) => Math.PI - ((v + 2) / 4) * Math.PI;
+  const arcPath = (v1: number, v2: number) => {
+    const a1 = toA(v1), a2 = toA(v2);
+    const x1 = cx + r * Math.cos(a1), y1 = cy - r * Math.sin(a1);
+    const x2 = cx + r * Math.cos(a2), y2 = cy - r * Math.sin(a2);
+    return `M ${x1.toFixed(1)} ${y1.toFixed(1)} A ${r} ${r} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+  };
+  const na = toA(value);
+  const nx = cx + r * Math.cos(na), ny = cy - r * Math.sin(na);
+  const scaleVals = [-2, -1.2, -0.4, 0.4, 1.2, 2];
   return (
-    <aside
-      className="hidden lg:flex fixed left-0 top-0 h-full w-64 flex-col z-50"
-      style={{ background: "hsl(220 55% 8%)", borderRight: "1px solid hsl(220 35% 22%)" }}
-    >
-      {/* Brand */}
-      <div className="px-5 py-5 border-b" style={{ borderColor: "hsl(220 35% 22%)" }}>
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-teal flex items-center justify-center flex-shrink-0">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="hsl(220 55% 10%)">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-            </svg>
-          </div>
-          <div>
-            <div className="text-white font-bold text-sm leading-tight">JASCAYD</div>
-            <div className="text-xs" style={{ color: "hsl(220 15% 55%)" }}>Program Intelligence</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Nav links */}
-      <nav className="flex-1 px-3 py-4 overflow-y-auto">
-        <p className="text-[10px] font-bold uppercase tracking-widest px-2 mb-3" style={{ color: "hsl(220 15% 45%)" }}>Dashboards</p>
-        {DASH_TABS.slice(0, 3).map((tab, i) => {
-          const isActive = activeTab === i;
-          return (
-            <button
-              key={tab.label}
-              onClick={() => setActiveTab(i)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 text-left mb-0.5 ${
-                isActive
-                  ? "text-teal bg-teal/10 border-l-2 border-teal"
-                  : "hover:bg-white/5"
-              }`}
-              style={{ color: isActive ? undefined : "hsl(220 15% 55%)" }}
-            >
-              <span className={isActive ? "text-teal" : ""}>{tab.icon}</span>
-              <span className="leading-tight">{tab.label}</span>
-            </button>
-          );
+    <div style={{ background: "#fff", border: "1px solid #e8e8e8", borderRadius: 6, boxShadow: "0 1px 4px rgba(0,0,0,0.08)", padding: 16 }}>
+      <div style={{ fontSize: 12, fontWeight: 700, color: "#1a202c", marginBottom: 2 }}>{title}</div>
+      <svg viewBox="0 0 220 125" style={{ width: "100%", height: "auto", display: "block" }}>
+        {SENT_ZONES.map(z => (
+          <path key={z.from} d={arcPath(z.from, z.to)} fill="none" stroke={z.color} strokeWidth={sw} strokeLinecap="butt" />
+        ))}
+        <circle cx={nx.toFixed(1)} cy={ny.toFixed(1)} r="7" fill="#cccccc" stroke="white" strokeWidth="2.5" />
+        {scaleVals.map(v => {
+          const a = toA(v), lr = r + 17;
+          const lx = cx + lr * Math.cos(a), ly = cy - lr * Math.sin(a);
+          const anchor = Math.cos(a) < -0.15 ? "end" : Math.cos(a) > 0.15 ? "start" : "middle";
+          return <text key={v} x={lx.toFixed(1)} y={(ly + 3).toFixed(1)} fontSize="8" textAnchor={anchor} fill="#555">{v}</text>;
         })}
-
-        <p className="text-[10px] font-bold uppercase tracking-widest px-2 mb-3 mt-5" style={{ color: "hsl(220 15% 45%)" }}>AI Capabilities</p>
-        {DASH_TABS.slice(3).map((tab, i) => {
-          const idx = i + 3;
-          const isActive = activeTab === idx;
-          return (
-            <button
-              key={tab.label}
-              onClick={() => setActiveTab(idx)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 text-left mb-0.5 ${
-                isActive
-                  ? "text-teal bg-teal/10 border-l-2 border-teal"
-                  : "hover:bg-white/5"
-              }`}
-              style={{ color: isActive ? undefined : "hsl(220 15% 55%)" }}
-            >
-              <span className={isActive ? "text-teal" : ""}>{tab.icon}</span>
-              <span className="leading-tight">{tab.label}</span>
-            </button>
-          );
-        })}
-      </nav>
-
-      {/* Footer */}
-      <div className="px-5 py-4 border-t" style={{ borderColor: "hsl(220 35% 22%)" }}>
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-teal animate-pulse flex-shrink-0" />
-          <span className="text-xs font-semibold text-teal">Live Data · AssistRx</span>
-        </div>
-      </div>
-    </aside>
+        <text x={cx} y={cy - 20} textAnchor="middle" fontSize="28" fontWeight="800" fill="#1a202c">{value}</text>
+        <text x={cx} y={cy - 4} textAnchor="middle" fontSize="9" fill="#888">Average Sentiment Score</text>
+      </svg>
+    </div>
   );
 }
 
-// ─── Mobile Top Bar ───────────────────────────────────────────────────────────
-
-function MobileTopBar({ activeTab, setActiveTab }: { activeTab: number; setActiveTab: (i: number) => void }) {
-  const [open, setOpen] = useState(false);
-
+function SentimentBarChart() {
+  const LW = 66, CW = 680, BH = 34, GAP = 18;
+  const totalH = SENT_BARS.length * (BH + GAP) + 60;
+  const segs = ["vn","ng","nt","ps","vp"] as const;
+  const segColors = [SENT_COLORS.vn, SENT_COLORS.ng, SENT_COLORS.nt, SENT_COLORS.ps, SENT_COLORS.vp];
+  const ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+  const barsY = SENT_BARS.length * (BH + GAP) - GAP + 8;
   return (
-    <>
-      <header
-        className="fixed top-0 left-0 right-0 h-14 flex items-center justify-between px-4 z-40 lg:hidden"
-        style={{ background: "hsl(220 55% 8%)", borderBottom: "1px solid hsl(220 35% 22%)" }}
-      >
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded bg-teal flex items-center justify-center flex-shrink-0">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="hsl(220 55% 10%)">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-            </svg>
-          </div>
-          <span className="text-sm font-bold text-white">JASCAYD</span>
-          <span className="text-xs hidden sm:block" style={{ color: "hsl(220 15% 55%)" }}>· {DASH_TABS[activeTab].label}</span>
-        </div>
-        <button onClick={() => setOpen(true)} className="hover:text-white transition-colors" style={{ color: "hsl(220 15% 55%)" }}>
-          <IconMenu />
-        </button>
-      </header>
-
-      {open && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setOpen(false)} />
-          <div
-            className="absolute right-0 top-0 bottom-0 w-72 flex flex-col"
-            style={{ background: "hsl(220 55% 8%)", borderLeft: "1px solid hsl(220 35% 22%)" }}
-          >
-            <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "hsl(220 35% 22%)" }}>
-              <span className="text-white font-semibold">Navigation</span>
-              <button onClick={() => setOpen(false)} className="hover:text-white transition-colors" style={{ color: "hsl(220 15% 55%)" }}>
-                <IconX />
-              </button>
-            </div>
-            <nav className="flex-1 px-3 py-4 overflow-y-auto">
-              <p className="text-[10px] font-bold uppercase tracking-widest px-2 mb-2" style={{ color: "hsl(220 15% 45%)" }}>Dashboards</p>
-              {DASH_TABS.slice(0, 3).map((tab, i) => (
-                <button
-                  key={tab.label}
-                  onClick={() => { setActiveTab(i); setOpen(false); }}
-                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all text-left mb-0.5 ${
-                    activeTab === i ? "text-teal bg-teal/10 border-l-2 border-teal" : "hover:bg-white/5"
-                  }`}
-                  style={{ color: activeTab === i ? undefined : "hsl(220 15% 55%)" }}
-                >
-                  {tab.icon}
-                  {tab.label}
-                </button>
-              ))}
-              <p className="text-[10px] font-bold uppercase tracking-widest px-2 mb-2 mt-4" style={{ color: "hsl(220 15% 45%)" }}>AI Capabilities</p>
-              {DASH_TABS.slice(3).map((tab, i) => {
-                const idx = i + 3;
+    <div style={{ background: "#fff", border: "1px solid #e8e8e8", borderRadius: 6, boxShadow: "0 1px 4px rgba(0,0,0,0.08)", padding: 16 }}>
+      <div style={{ fontSize: 12, fontWeight: 700, color: "#1a202c", marginBottom: 8 }}>Sentiment Distribution by Channel</div>
+      <svg viewBox={`0 0 ${LW + CW + 36} ${totalH}`} style={{ width: "100%", height: "auto", display: "block" }}>
+        {SENT_BARS.map((bar, bi) => {
+          const y = bi * (BH + GAP);
+          let x = LW;
+          return (
+            <g key={bar.label}>
+              <text x={LW - 8} y={y + BH / 2 + 4} textAnchor="end" fontSize="11" fill="#444">{bar.label}</text>
+              {segs.map((seg, si) => {
+                const pct = bar[seg];
+                const w = (pct / 100) * CW;
+                const rx = x; x += w;
                 return (
-                  <button
-                    key={tab.label}
-                    onClick={() => { setActiveTab(idx); setOpen(false); }}
-                    className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all text-left mb-0.5 ${
-                      activeTab === idx ? "text-teal bg-teal/10 border-l-2 border-teal" : "hover:bg-white/5"
-                    }`}
-                    style={{ color: activeTab === idx ? undefined : "hsl(220 15% 55%)" }}
-                  >
-                    {tab.icon}
-                    {tab.label}
-                  </button>
+                  <g key={seg}>
+                    <rect x={rx} y={y} width={w} height={BH} fill={segColors[si]} />
+                    {pct >= 4 && (
+                      <text x={rx + w / 2} y={y + BH / 2 + 4} textAnchor="middle" fontSize="10" fontWeight="700" fill="white">
+                        {pct}%
+                      </text>
+                    )}
+                  </g>
                 );
               })}
-            </nav>
+              <text x={LW + CW + 5} y={y + BH / 2 + 4} fontSize="10" fill="#666">100%</text>
+            </g>
+          );
+        })}
+        {/* X-axis ticks */}
+        {ticks.map(t => {
+          const tx = LW + (t / 100) * CW;
+          return (
+            <g key={t}>
+              <line x1={tx} y1={barsY} x2={tx} y2={barsY + 5} stroke="#ccc" />
+              <text x={tx} y={barsY + 14} textAnchor="middle" fontSize="9" fill="#888">{t}%</text>
+            </g>
+          );
+        })}
+        <text x={LW + CW / 2} y={barsY + 26} textAnchor="middle" fontSize="10" fill="#888">Interactions %</text>
+        {/* Legend */}
+        {[
+          { color: SENT_COLORS.vn, label: "Very Negative" },
+          { color: SENT_COLORS.ng, label: "Negative" },
+          { color: SENT_COLORS.nt, label: "Neutral" },
+          { color: SENT_COLORS.ps, label: "Positive" },
+          { color: SENT_COLORS.vp, label: "Very Positive" },
+        ].map((item, i) => {
+          const lx = LW + (i / 5) * CW + 10;
+          const ly = barsY + 42;
+          return (
+            <g key={item.label}>
+              <rect x={lx} y={ly - 8} width={10} height={10} fill={item.color} rx="1" />
+              <text x={lx + 14} y={ly} fontSize="10" fill="#555">{item.label}</text>
+            </g>
+          );
+        })}
+      </svg>
+    </div>
+  );
+}
+
+function TabSentimentAnalysis() {
+  const [filters, setFilters] = useState(SENT_FILTERS);
+  return (
+    <div style={{ background: "#f4f6f9", minHeight: "calc(100vh - 48px)", fontFamily: "Inter, sans-serif" }}>
+      {/* Title area */}
+      <div style={{ background: "#fff", borderBottom: "1px solid #e2e8f0", padding: "12px 20px 10px" }}>
+        <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", color: "#9ca3af", textTransform: "uppercase", marginBottom: 4 }}>
+          All Dashboards
+        </div>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+              <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "#4a5568", flexShrink: 0 }}>AL</div>
+              <h1 style={{ fontSize: 18, fontWeight: 700, color: "#1a202c", margin: 0 }}>Sentiment Analysis</h1>
+              {[
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>,
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>,
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>,
+              ].map((icon, i) => (
+                <button key={i} style={{ color: "#9ca3af", background: "none", border: "none", cursor: "pointer", lineHeight: 1, padding: 2 }}>{icon}</button>
+              ))}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+              {["Verint", "Sentiment Scoring Bot", "IA Categories"].map(tag => (
+                <span key={tag} style={{ fontSize: 11, background: "#f1f5f9", border: "1px solid #e2e8f0", borderRadius: 12, padding: "2px 8px", color: "#475569" }}>🏷 {tag}</span>
+              ))}
+              <span style={{ fontSize: 11, color: "#9ca3af" }}>Updated 21 hours ago</span>
+            </div>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 10px", borderRadius: 6, border: "1px solid #d1d5db", background: "#fff", minWidth: 260 }}>
+            <div style={{ width: 18, height: 18, borderRadius: 3, background: TEAL, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: "#fff", flexShrink: 0 }}>V</div>
+            <input type="text" placeholder="Search in AOS Workspace" style={{ flex: 1, fontSize: 12, outline: "none", border: "none", background: "transparent", color: "#374151" }} />
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           </div>
         </div>
-      )}
-    </>
-  );
-}
-
-// ─── Dashboard Header ─────────────────────────────────────────────────────────
-
-function DashboardHeader({ activeTab }: { activeTab: number }) {
-  return (
-    <div
-      className="flex items-center justify-between px-6 py-4 border-b flex-wrap gap-3"
-      style={{ borderColor: "hsl(220 35% 22%)", background: "hsl(220 48% 11%)" }}
-    >
-      <div>
-        <div className="flex items-center gap-2 mb-0.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-teal animate-pulse" />
-          <span className="text-xs font-semibold text-teal uppercase tracking-widest">Live · Contact Center Intelligence</span>
-        </div>
-        <h1 className="text-lg font-black text-white leading-tight">JASCAYD Program Intelligence</h1>
-        <p className="text-xs mt-0.5" style={{ color: "hsl(220 15% 55%)" }}>
-          Powered by contact center speech analytics · AssistRx
-          <span className="mx-2 opacity-40">·</span>
-          <span className="text-white/60">{DASH_TABS[activeTab].label}</span>
-        </p>
       </div>
-      <div className="flex items-center gap-2 flex-wrap">
-        <div className="text-xs font-medium px-3 py-1.5 rounded-lg border border-navy-light" style={{ color: "hsl(220 15% 55%)" }}>
-          MTD · May 2026
+
+      {/* Filter bar */}
+      <div style={{ background: "#fff", borderBottom: "1px solid #e8e8e8", padding: "8px 20px", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        {filters.map((f, i) => (
+          <button key={f.label} onClick={() => setFilters(prev => prev.map((p, j) => ({ ...p, active: i === j })))}
+            style={{
+              fontSize: 11, fontWeight: 500, padding: "4px 10px", borderRadius: 12, cursor: "pointer",
+              border: f.active ? "none" : `1px solid ${TEAL}`,
+              background: f.active ? TEAL : "#fff",
+              color: f.active ? "#fff" : TEAL,
+              display: "flex", alignItems: "center", gap: 4,
+            }}>
+            {f.label}
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        ))}
+      </div>
+
+      {/* Content */}
+      <div style={{ padding: 20 }}>
+        {/* Gauge row */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 20 }}>
+          {SENT_GAUGES.map(g => <SentimentGauge key={g.title} title={g.title} value={g.value} />)}
         </div>
-        <div className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-teal/10 border border-teal/30 text-teal">
-          4,203 calls analyzed
-        </div>
+        {/* Bar chart */}
+        <SentimentBarChart />
       </div>
     </div>
   );
 }
 
-// ─── Tab Strip ────────────────────────────────────────────────────────────────
+// ─── Tab panels ───────────────────────────────────────────────────────────────
 
-function TabStrip({ activeTab, setActiveTab }: { activeTab: number; setActiveTab: (i: number) => void }) {
-  return (
-    <div
-      className="flex overflow-x-auto border-b scrollbar-none"
-      style={{ borderColor: "hsl(220 35% 22%)", background: "hsl(220 48% 11%)" }}
-    >
-      {DASH_TABS.map((tab, i) => (
-        <button
-          key={tab.label}
-          onClick={() => setActiveTab(i)}
-          className={`relative flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors flex-shrink-0 ${
-            activeTab === i ? "text-teal" : "hover:text-white"
-          }`}
-          style={{ color: activeTab === i ? undefined : "hsl(220 15% 50%)" }}
-        >
-          <span className={activeTab === i ? "text-teal" : ""}>{tab.icon}</span>
-          <span>{tab.label}</span>
-          {activeTab === i && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal" />
-          )}
-        </button>
-      ))}
-    </div>
-  );
-}
+const TAB_PANELS = [
+  Tab0QualityDashboard,
+  ExplorePerformance,
+  TabSentimentAnalysis,
+  DiscoverTrends,
+  GenieAI,
+];
 
-// ─── Main Dashboard App ───────────────────────────────────────────────────────
+// ─── Main ─────────────────────────────────────────────────────────────────────
 
 export default function Index() {
   const [activeTab, setActiveTab] = useState(0);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const ActivePanel = TAB_PANELS[activeTab];
+  const isFullPage = activeTab === 1 || activeTab === 2 || activeTab === 3 || activeTab === 4;
 
   return (
-    <div className="min-h-screen font-sans" style={{ background: "hsl(220 55% 8%)" }}>
-      <NavRail activeTab={activeTab} setActiveTab={setActiveTab} />
-      <MobileTopBar activeTab={activeTab} setActiveTab={setActiveTab} />
+    <div style={{ background: PAGE_BG, minHeight: "100vh", fontFamily: "Inter, sans-serif" }}>
+      <VerintHeader onMenuClick={() => setMobileOpen(true)} />
 
-      <main className="lg:pl-64 pt-14 lg:pt-0 flex flex-col h-screen overflow-hidden">
-        <DashboardHeader activeTab={activeTab} />
-        <TabStrip activeTab={activeTab} setActiveTab={setActiveTab} />
+      <NarrowSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <MobileDrawer
+        open={mobileOpen}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onClose={() => setMobileOpen(false)}
+      />
 
-        <div className="flex-1 overflow-y-auto p-5 lg:p-6" style={{ background: "hsl(220 50% 9%)" }}>
-          <ActivePanel />
-        </div>
+      <main style={{ paddingTop: HEADER_H }} className="lg:pl-12">
+        {!isFullPage && <PageTitleArea activeTab={activeTab} />}
+        {activeTab === 0 && <FilterBar />}
+
+        {isFullPage
+          ? activeTab === 3
+            ? <DiscoverTrends onNavigate={setActiveTab} />
+            : activeTab === 4
+              ? <GenieAI />
+              : <ActivePanel />
+          : (
+            <div
+              className="p-5"
+              style={activeTab === 0
+                ? { background: PAGE_BG }
+                : { background: "hsl(220 50% 9%)", minHeight: "calc(100vh - 160px)" }
+              }
+            >
+              <ActivePanel />
+            </div>
+          )
+        }
       </main>
     </div>
   );
