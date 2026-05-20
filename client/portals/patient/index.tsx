@@ -24,6 +24,8 @@ import { PortalRouter, Routes, Route, useNavigate } from "@/lib/portalRouter";
 import { ChatProvider, useChatContext } from "./components/ChatContext";
 import ChatModal from "./components/ChatModal";
 import { useDemoStore } from "@/store/demoStore";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 import Index from "./pages/Index";
 import ConfirmDetails from "./pages/ConfirmDetails";
@@ -75,9 +77,11 @@ function StateDrivenNav() {
 function PatientRoutes() {
   const ctx = useChatContext();
   return (
-    <>
-      <StateDrivenNav />
-      <Routes>
+    <div className="flex flex-col h-full">
+      <Header />
+      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+        <StateDrivenNav />
+        <Routes>
         <Route path="/"                      element={<Index />} />
         <Route path="/confirm-details"       element={<ConfirmDetails />} />
         <Route path="/consent"               element={<Consent />} />
@@ -95,15 +99,17 @@ function PatientRoutes() {
         <Route path="/order-tracker"         element={<OrderTracker />} />
         <Route path="/order-shipped"         element={<OrderShipped />} />
         <Route path="/medication-delivered"  element={<MedicationDelivered />} />
-      </Routes>
-      {ctx?.chatOpen && <ChatModal onClose={ctx.closeChat} />}
-    </>
+        </Routes>
+        {ctx?.chatOpen && <ChatModal onClose={ctx.closeChat} />}
+      </div>
+      <Footer />
+    </div>
   );
 }
 
 export default function PatientPortal() {
   return (
-    <div className="portal-patient min-h-full">
+    <div className="portal-patient h-full flex flex-col">
       <PortalRouter>
         <ChatProvider>
           <PatientRoutes />

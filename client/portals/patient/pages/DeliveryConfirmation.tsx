@@ -1,15 +1,9 @@
 import { useNavigate } from "@/lib/portalRouter";
-import Header from "@patient/components/Header";
-import Footer from "@patient/components/Footer";
-
 export default function DeliveryConfirmation() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-
-      <main className="flex-grow flex items-center justify-center px-6 py-12 bg-arx-primary">
+    <main className="flex-grow flex items-center justify-center px-6 py-12 bg-arx-primary">
         <div className="text-center max-w-sm mx-auto">
           <div className="relative flex items-center justify-center w-36 h-36 mx-auto mb-8">
             {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
@@ -44,9 +38,6 @@ export default function DeliveryConfirmation() {
             Got it
           </button>
         </div>
-      </main>
-
-      <Footer />
-    </div>
+    </main>
   );
 }

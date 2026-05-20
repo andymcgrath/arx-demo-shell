@@ -1,7 +1,5 @@
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { useNavigate } from "@/lib/portalRouter";
-import Header from "@patient/components/Header";
-import Footer from "@patient/components/Footer";
 import { useChatContext } from "@patient/components/ChatContext";
 import ProgramLogo from "@patient/components/brand/ProgramLogo";
 import { PROGRAM } from "@patient/config/branding";
@@ -12,10 +10,7 @@ export default function MedicationDelivered() {
   const { openChat } = useChatContext();
 
   return (
-    <div className="min-h-screen flex flex-col bg-arx-background">
-      <Header />
-
-      <main className="flex-grow pt-[104px] pb-8">
+    <main className="flex-grow pb-8">
         <div className="max-w-lg mx-auto px-4 space-y-5">
 
           {/* Arrived card */}
@@ -98,9 +93,6 @@ export default function MedicationDelivered() {
           </section>
 
         </div>
-      </main>
-
-      <Footer />
-    </div>
+    </main>
   );
 }

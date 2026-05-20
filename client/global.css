@@ -120,8 +120,9 @@
 }
 
 .phone-portal-screen.screen {
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
 }
 
 /* ── Provider portal (iAssist Prior Authorization) ───────────────────────── */

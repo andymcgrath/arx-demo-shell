@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "@/lib/portalRouter";
 import { CalendarDays, Check } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import EnrollmentShell from "@/components/enrollment/EnrollmentShell";
 
 function isUnavailable(d: Date): boolean {
@@ -35,9 +33,7 @@ export default function DeliveryDate() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col bg-arx-background pt-16">
-      <Header />
-      <main className="flex-grow">
+    <main className="flex-grow">
         <EnrollmentShell
           icon={<CalendarDays className="w-7 h-7" />}
           title="Please select a delivery date from the available dates below"
@@ -91,8 +87,6 @@ export default function DeliveryDate() {
             </button>
           </div>
         </EnrollmentShell>
-      </main>
-      <Footer />
-    </div>
+    </main>
   );
 }

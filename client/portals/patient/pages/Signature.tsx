@@ -1,8 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "@/lib/portalRouter";
 import { PenLine, ChevronRight } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import EnrollmentShell from "@/components/enrollment/EnrollmentShell";
 
 export default function Signature() {
@@ -65,10 +63,7 @@ export default function Signature() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-arx-background pt-16">
-      <Header />
-
-      <main className="flex-grow">
+    <main className="flex-grow">
         <EnrollmentShell
           icon={<PenLine className="w-7 h-7" />}
           title="Please provide your signature"
@@ -130,9 +125,6 @@ export default function Signature() {
             </button>
           </div>
         </EnrollmentShell>
-      </main>
-
-      <Footer />
-    </div>
+    </main>
   );
 }

@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "@/lib/portalRouter";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { PROGRAM } from "@/config/branding";
 
 const LIST_PRICE = 575;
@@ -17,10 +15,7 @@ export default function DeliveryPayment() {
   const [cardOpen, setCardOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col bg-arx-background">
-      <Header />
-
-      <main className="flex-grow pt-20 pb-8">
+    <main className="flex-grow pb-8">
         <div className="max-w-lg mx-auto px-4">
           <div className="bg-white rounded-2xl shadow-sm border border-arx-borders overflow-hidden">
 
@@ -179,9 +174,6 @@ export default function DeliveryPayment() {
             </div>
           </div>
         </div>
-      </main>
-
-      <Footer />
-    </div>
+    </main>
   );
 }

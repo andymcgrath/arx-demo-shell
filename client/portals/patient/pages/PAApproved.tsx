@@ -1,7 +1,5 @@
 import { useNavigate } from "@/lib/portalRouter";
 import { ArrowRight, ChevronRight, BookOpen, CreditCard } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import ProgramLogo from "@/components/brand/ProgramLogo";
 import { PROGRAM } from "@/config/branding";
 
@@ -12,10 +10,7 @@ export default function PAApproved() {
   const timeStr = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
 
   return (
-    <div className="min-h-screen flex flex-col bg-arx-background">
-      <Header />
-
-      <main className="flex-grow pt-24 pb-8">
+    <main className="flex-grow pb-8">
         <div className="max-w-lg mx-auto px-4 space-y-5">
 
           {/* PA Approved card */}
@@ -123,9 +118,6 @@ export default function PAApproved() {
           </section>
 
         </div>
-      </main>
-
-      <Footer />
-    </div>
+    </main>
   );
 }

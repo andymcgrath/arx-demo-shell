@@ -1,8 +1,5 @@
 import { ChevronRight, Check } from "lucide-react";
 import { useNavigate } from "@/lib/portalRouter";
-import Header from "@patient/components/Header";
-import Footer from "@patient/components/Footer";
-
 const ORDER_NUMBER = "428046573";
 const ORDER_DATE = "May 23, 2026";
 
@@ -54,9 +51,7 @@ function StepRow({ step, onClick }: { step: typeof STEPS[number]; onClick?: () =
 export default function OrderTracker() {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen flex flex-col bg-arx-background">
-      <Header />
-      <main className="flex-grow pt-20 pb-8">
+    <main className="flex-grow pb-8">
         <div className="max-w-lg mx-auto px-4 space-y-5">
           <div className="bg-white rounded-2xl shadow-sm p-5 border border-arx-borders">
             <div className="flex items-start justify-between gap-3 mb-3">
@@ -86,8 +81,6 @@ export default function OrderTracker() {
             </div>
           </section>
         </div>
-      </main>
-      <Footer />
-    </div>
+    </main>
   );
 }

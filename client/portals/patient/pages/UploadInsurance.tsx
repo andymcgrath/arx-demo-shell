@@ -1,8 +1,6 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "@/lib/portalRouter";
 import { ClipboardList, Camera, Check } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import EnrollmentShell from "@/components/enrollment/EnrollmentShell";
 
 interface UploadedFile {
@@ -26,10 +24,7 @@ export default function UploadInsurance() {
   const bothUploaded = !!frontFile && !!backFile;
 
   return (
-    <div className="min-h-screen flex flex-col bg-arx-background pt-16">
-      <Header />
-
-      <main className="flex-grow">
+    <main className="flex-grow">
         <EnrollmentShell
           icon={<ClipboardList className="w-7 h-7" />}
           title="Upload documents to verify insurance details"
@@ -73,10 +68,7 @@ export default function UploadInsurance() {
             </button>
           </div>
         </EnrollmentShell>
-      </main>
-
-      <Footer />
-    </div>
+    </main>
   );
 }
 
