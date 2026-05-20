@@ -84,7 +84,9 @@ export interface DemoActions {
   // flow
   changeFlow: (flow: FlowType) => void;
   resetDemo: (flow?: FlowType) => void;
+  undoLast: () => void;
   // internal
+  _snapshot: () => void;
   _logEvent: (type: string, portal: Portal, meta?: Record<string, unknown>) => void;
   _deriveStep: () => number;
 }
@@ -147,9 +149,24 @@ export const useDemoStore = create<DemoStore>()(
   persist(
     (set, get) => ({
       ...SEED,
+      _snapshots: [] as DemoState[],
 
       _deriveStep(): number {
         return deriveStep(get());
+      },
+
+      _snapshot(): void {
+        const { _snapshots, ...state } = get() as DemoStore & { _snapshots: DemoState[] };
+        const snapshots = [...(_snapshots ?? []), state as DemoState];
+        set({ _snapshots: snapshots.slice(-20) } as Partial<DemoStore>);
+      },
+
+      undoLast(): void {
+        const { _snapshots } = get() as DemoStore & { _snapshots: DemoState[] };
+        if (!_snapshots || _snapshots.length === 0) return;
+        const prev = _snapshots[_snapshots.length - 1];
+        const remaining = _snapshots.slice(0, -1);
+        set({ ...prev, _snapshots: remaining } as Partial<DemoStore>);
       },
 
       _logEvent(type, portal, meta = {}): void {
@@ -166,6 +183,7 @@ export const useDemoStore = create<DemoStore>()(
       },
 
       enrollPatient(): void {
+        get()._snapshot();
         const now = new Date().toISOString();
         set({ enrollmentStatus: "enrolled", consentStatus: "confirmed", updatedAt: now, updatedBy: "Patient" });
         set({ workflowStep: get()._deriveStep() });
@@ -173,12 +191,14 @@ export const useDemoStore = create<DemoStore>()(
       },
 
       runBI(): void {
+        get()._snapshot();
         const now = new Date().toISOString();
         set({ biStatus: "running", updatedAt: now, updatedBy: "HUB" });
         get()._logEvent("bi_initiated", "HUB");
       },
 
       completeBI(result): void {
+        get()._snapshot();
         const now = new Date().toISOString();
         set({ biStatus: "complete", biResult: result, updatedAt: now, updatedBy: "HUB" });
         set({ workflowStep: get()._deriveStep() });
@@ -186,6 +206,7 @@ export const useDemoStore = create<DemoStore>()(
       },
 
       submitPA(metadata = {}): void {
+        get()._snapshot();
         const now = new Date().toISOString();
         set({ paStatus: "submitted", paSubmittedAt: now, updatedAt: now, updatedBy: "Provider" });
         set({ workflowStep: get()._deriveStep() });
@@ -193,6 +214,7 @@ export const useDemoStore = create<DemoStore>()(
       },
 
       approvePA(): void {
+        get()._snapshot();
         const now = new Date().toISOString();
         set({ paStatus: "approved", paApprovedAt: now, updatedAt: now, updatedBy: "Provider" });
         set({ workflowStep: get()._deriveStep() });
@@ -200,6 +222,7 @@ export const useDemoStore = create<DemoStore>()(
       },
 
       denyPA(): void {
+        get()._snapshot();
         const now = new Date().toISOString();
         set({ paStatus: "denied", updatedAt: now, updatedBy: "Provider" });
         set({ workflowStep: get()._deriveStep() });
@@ -207,6 +230,7 @@ export const useDemoStore = create<DemoStore>()(
       },
 
       activateQS(): void {
+        get()._snapshot();
         const now = new Date().toISOString();
         set({ qsStatus: "active", paStatus: "submitted", paSubmittedAt: now, updatedAt: now, updatedBy: "Provider" });
         set({ workflowStep: get()._deriveStep() });
@@ -214,11 +238,13 @@ export const useDemoStore = create<DemoStore>()(
       },
 
       discontinueQS(): void {
+        get()._snapshot();
         set({ qsStatus: "discontinued", updatedAt: new Date().toISOString(), updatedBy: "Provider" });
         get()._logEvent("qs_discontinued", "Provider");
       },
 
       enrollPAP(): void {
+        get()._snapshot();
         const now = new Date().toISOString();
         set({ papStatus: "active", updatedAt: now, updatedBy: "HUB" });
         set({ workflowStep: get()._deriveStep() });
@@ -226,16 +252,19 @@ export const useDemoStore = create<DemoStore>()(
       },
 
       auditPAP(): void {
+        get()._snapshot();
         set({ papStatus: "audit_pending", updatedAt: new Date().toISOString(), updatedBy: "HUB" });
         get()._logEvent("pap_audit_initiated", "HUB");
       },
 
       discontinuePAP(): void {
+        get()._snapshot();
         set({ papStatus: "discontinued", updatedAt: new Date().toISOString(), updatedBy: "HUB" });
         get()._logEvent("pap_discontinued", "HUB");
       },
 
       fillRx(): void {
+        get()._snapshot();
         const now = new Date().toISOString();
         set({ pharmacyStatus: "processing", updatedAt: now, updatedBy: "HUB" });
         set({ workflowStep: get()._deriveStep() });
@@ -243,6 +272,7 @@ export const useDemoStore = create<DemoStore>()(
       },
 
       shipRx(): void {
+        get()._snapshot();
         const now = new Date().toISOString();
         set({ pharmacyStatus: "shipped", updatedAt: now, updatedBy: "HUB" });
         set({ workflowStep: get()._deriveStep() });
@@ -250,6 +280,7 @@ export const useDemoStore = create<DemoStore>()(
       },
 
       deliverRx(): void {
+        get()._snapshot();
         const now = new Date().toISOString();
         set({ pharmacyStatus: "delivered", updatedAt: now, updatedBy: "HUB" });
         set({ workflowStep: get()._deriveStep() });
