@@ -1,7 +1,11 @@
 import { CheckCircle } from "lucide-react";
 import { PROGRAM } from "@/config/branding";
+import { useNavigate } from "@/lib/portalRouter";
+import { useDemoStore } from "@/store/demoStore";
 
 export default function PapEnrollmentComplete() {
+  const navigate = useNavigate();
+  const dismissWelcome = useDemoStore((s) => s.dismissWelcome);
   return (
     <main className="flex-grow flex items-center justify-center px-6 py-12 bg-arx-primary">
       <div className="text-center max-w-sm mx-auto">
@@ -22,6 +26,13 @@ export default function PapEnrollmentComplete() {
         <p className="text-white/90 text-sm leading-relaxed mb-8">
           No further action is needed at this time. We'll notify you as soon as there's an update.
         </p>
+
+        <button
+          onClick={() => { dismissWelcome(); navigate("/"); }}
+          className="w-full bg-white text-arx-primary font-semibold py-4 rounded-lg hover:bg-arx-sky transition-colors"
+        >
+          Got it
+        </button>
       </div>
     </main>
   );

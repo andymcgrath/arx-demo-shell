@@ -55,7 +55,7 @@ function derivePatientRoute(state: ReturnType<typeof useDemoStore.getState>): st
   if (state.pharmacyStatus !== "none")      return "/order-tracker";
 
   if (state.flowType === "Fax_PAP_Audit") {
-    if (state.incomeStatus === "verified") return "/pap-enrollment-complete";
+    if (state.incomeStatus === "verified") return state.welcomeDismissed ? "/" : "/pap-enrollment-complete";
     if (state.consentStatus === "confirmed") return "/pap-income-verification";
     return "/";
   }
@@ -71,7 +71,7 @@ function derivePatientRoute(state: ReturnType<typeof useDemoStore.getState>): st
   if (state.paStatus === "denied")          return "/pa-denied";
   if (state.paStatus === "approved")        return "/pa-approved";
   if (state.paStatus === "submitted")       return "/pa-status";
-  if (state.consentStatus === "confirmed")  return "/enrollment-complete";
+  if (state.consentStatus === "confirmed")  return state.welcomeDismissed ? "/" : "/enrollment-complete";
   return "/";
 }
 
@@ -84,11 +84,12 @@ function StateDrivenNav() {
   const enrollmentStatus = useDemoStore((s) => s.enrollmentStatus);
   const incomeStatus     = useDemoStore((s) => s.incomeStatus);
   const flowType         = useDemoStore((s) => s.flowType);
+  const welcomeDismissed = useDemoStore((s) => s.welcomeDismissed);
 
   useEffect(() => {
     const target = derivePatientRoute(useDemoStore.getState());
     navigate(target, { replace: true });
-  }, [pharmacyStatus, paStatus, consentStatus, enrollmentStatus, incomeStatus, flowType, navigate]);
+  }, [pharmacyStatus, paStatus, consentStatus, enrollmentStatus, incomeStatus, flowType, welcomeDismissed, navigate]);
 
   return null;
 }

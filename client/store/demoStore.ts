@@ -52,6 +52,7 @@ export interface DemoState {
 
   // UI tab state
   enrollmentFormTabOpen: boolean;
+  welcomeDismissed: boolean;
 }
 
 export interface DemoEvent {
@@ -94,6 +95,7 @@ export interface DemoActions {
   undoLast: () => void;
   closeEnrollmentFormTab: () => void;
   openEnrollmentFormTab: () => void;
+  dismissWelcome: () => void;
   // internal
   _snapshot: () => void;
   _logEvent: (type: string, portal: Portal, meta?: Record<string, unknown>) => void;
@@ -137,6 +139,7 @@ export const SEED: DemoState = {
   events: [],
 
   enrollmentFormTabOpen: false,
+  welcomeDismissed: false,
 };
 
 // ── Step derivation ───────────────────────────────────────────────────────────
@@ -321,6 +324,10 @@ export const useDemoStore = create<DemoStore>()(
 
       openEnrollmentFormTab(): void {
         set({ enrollmentFormTabOpen: true });
+      },
+
+      dismissWelcome(): void {
+        set({ welcomeDismissed: true });
       },
 
       changeFlow(flow): void {
