@@ -54,8 +54,8 @@ const SLUG_TO_PORTAL: Record<string, PortalId> = {
 const PORTALS: { id: PortalId; label: string; color: string }[] = [
   { id: "crm",       label: "HUB / CRM",    color: "#0176d3" },
   { id: "patient",   label: "Patient",       color: "#16a34a" },
-  { id: "analytics", label: "Analytics",     color: "#d97706" },
   { id: "provider",  label: "Provider",      color: "#7c3aed" },
+  { id: "analytics", label: "Analytics",     color: "#d97706" },
 ];
 
 /** Renders the portal component for the given id */
@@ -80,7 +80,7 @@ interface PanelState {
 const DEFAULT_PANELS: Record<LayoutMode, PanelState[]> = {
   "1up": [{ portal: "crm" }],
   "2up": [{ portal: "crm" }, { portal: "patient" }],
-  "3up": [{ portal: "crm" }, { portal: "patient" }, { portal: "analytics" }],
+  "3up": [{ portal: "crm" }, { portal: "patient" }, { portal: "provider" }],
 };
 
 // ── Flow options ──────────────────────────────────────────────────────────────
