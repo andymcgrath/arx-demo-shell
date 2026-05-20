@@ -429,6 +429,7 @@ export default function Index() {
   const papStatus = useDemoStore((s) => s.papStatus);
   const incomeStatus = useDemoStore((s) => s.incomeStatus);
   const pharmacyStatus = useDemoStore((s) => s.pharmacyStatus);
+  const enrollPatient = useDemoStore((s) => s.enrollPatient);
   const runBI = useDemoStore((s) => s.runBI);
   const completeBI = useDemoStore((s) => s.completeBI);
   const isPapFlow = flowType === "Fax_PAP_Audit";
@@ -1425,6 +1426,7 @@ export default function Index() {
                           <th className="px-3 py-2 text-left font-semibold text-[#3e3e3c] border-b border-[#dddbda]">Missing Item</th>
                           <th className="px-3 py-2 text-left font-semibold text-[#3e3e3c] border-b border-[#dddbda]">Status</th>
                           <th className="px-3 py-2 text-left font-semibold text-[#3e3e3c] border-b border-[#dddbda]">Impact</th>
+                          <th className="px-3 py-2 border-b border-[#dddbda]" />
                         </tr>
                       </thead>
                       <tbody>
@@ -1434,6 +1436,15 @@ export default function Index() {
                             <span className="px-2 py-0.5 rounded text-[11px] font-medium" style={{ background: "#fff3cd", color: "#856404" }}>Pending</span>
                           </td>
                           <td className="px-3 py-2.5 border-b border-[#dddbda] text-[#706e6b]">Benefits Investigation has not yet run</td>
+                          <td className="px-3 py-2.5 border-b border-[#dddbda]">
+                            <button
+                              onClick={enrollPatient}
+                              className="px-2.5 py-1 rounded text-[11px] font-semibold text-white transition-colors hover:opacity-90"
+                              style={{ background: FC_BLUE }}
+                            >
+                              Enroll Patient
+                            </button>
+                          </td>
                         </tr>
                       </tbody>
                     </table>
