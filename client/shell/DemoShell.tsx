@@ -55,7 +55,6 @@ const PORTALS: { id: PortalId; label: string; color: string }[] = [
   { id: "crm",       label: "HUB / CRM",    color: "#0176d3" },
   { id: "patient",   label: "Patient",       color: "#16a34a" },
   { id: "analytics", label: "Analytics",     color: "#d97706" },
-  { id: "field",     label: "Field Portal",  color: "#0891b2" },
   { id: "provider",  label: "Provider",      color: "#7c3aed" },
 ];
 

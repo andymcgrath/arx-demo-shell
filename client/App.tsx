@@ -46,7 +46,6 @@ function App() {
           <Route path="/hub" element={<DemoShell />} />
           <Route path="/patient" element={<DemoShell />} />
           <Route path="/analytics" element={<DemoShell />} />
-          <Route path="/field" element={<DemoShell />} />
           <Route path="/provider" element={<DemoShell />} />
           <Route path="*" element={<Navigate to="/hub" replace />} />
         </Routes>
