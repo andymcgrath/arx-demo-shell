@@ -45,12 +45,20 @@ import OrderTracker from "./pages/OrderTracker";
 import OrderShipped from "./pages/OrderShipped";
 import MedicationDelivered from "./pages/MedicationDelivered";
 import IncomeQualification from "./pages/IncomeQualification";
+import PapIncomeVerification from "./pages/PapIncomeVerification";
+import PapEnrollmentComplete from "./pages/PapEnrollmentComplete";
 
 /** Maps current demo state to the patient-facing route */
 function derivePatientRoute(state: ReturnType<typeof useDemoStore.getState>): string {
   if (state.pharmacyStatus === "delivered") return "/medication-delivered";
   if (state.pharmacyStatus === "shipped")   return "/order-shipped";
   if (state.pharmacyStatus !== "none")      return "/order-tracker";
+
+  if (state.flowType === "Fax_PAP_Audit") {
+    if (state.incomeStatus === "verified") return "/pap-enrollment-complete";
+    if (state.consentStatus === "confirmed") return "/pap-income-verification";
+    return "/";
+  }
 
   if (state.flowType === "CoA_DTP") {
     if (state.paStatus === "approved")  return "/pa-approved";
@@ -110,7 +118,9 @@ function PatientRoutes() {
           <Route path="/order-tracker"         element={<OrderTracker />} />
           <Route path="/order-shipped"         element={<OrderShipped />} />
           <Route path="/medication-delivered"  element={<MedicationDelivered />} />
-          <Route path="/income-qualification"  element={<IncomeQualification />} />
+          <Route path="/income-qualification"      element={<IncomeQualification />} />
+          <Route path="/pap-income-verification"  element={<PapIncomeVerification />} />
+          <Route path="/pap-enrollment-complete"  element={<PapEnrollmentComplete />} />
         </Routes>
         <Footer />
         {ctx?.chatOpen && <ChatModal onClose={ctx.closeChat} />}
