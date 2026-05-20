@@ -1,20 +1,20 @@
 /**
  * CRM Portal — Shell wrapper
  *
- * MemoryRouter provides the Router context that useNavigate() / useLocation()
- * need inside the CRM pages, isolated from the shell (no BrowserRouter needed).
+ * PortalRouter provides isolated navigation context without nesting a real
+ * Router inside the shell's BrowserRouter (which React Router v6 forbids).
  */
-import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { PortalRouter, Routes, Route } from "@/lib/portalRouter";
 import Index from "./pages/Index";
 import FulfilmentCenter from "./pages/FulfilmentCenter";
 
 export default function CrmPortal() {
   return (
-    <MemoryRouter>
+    <PortalRouter>
       <Routes>
         <Route path="/"                  element={<Index />} />
         <Route path="/fulfilment-center" element={<FulfilmentCenter />} />
       </Routes>
-    </MemoryRouter>
+    </PortalRouter>
   );
 }

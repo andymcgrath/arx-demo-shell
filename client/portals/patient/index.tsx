@@ -20,7 +20,7 @@
  *   (default)                  → /         (welcome / not yet enrolled)
  */
 import { useEffect } from "react";
-import { MemoryRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { PortalRouter, Routes, Route, useNavigate } from "@/lib/portalRouter";
 import { ChatProvider, useChatContext } from "./components/ChatContext";
 import ChatModal from "./components/ChatModal";
 import { useDemoStore } from "@/store/demoStore";
@@ -104,11 +104,11 @@ function PatientRoutes() {
 export default function PatientPortal() {
   return (
     <div className="portal-patient min-h-full">
-      <MemoryRouter>
+      <PortalRouter>
         <ChatProvider>
           <PatientRoutes />
         </ChatProvider>
-      </MemoryRouter>
+      </PortalRouter>
     </div>
   );
 }

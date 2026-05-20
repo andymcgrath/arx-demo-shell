@@ -19,6 +19,8 @@ import {
   createContext,
   useContext,
   useState,
+  Children,
+  isValidElement,
   type ReactNode,
   type MouseEvent,
   type AnchorHTMLAttributes,
@@ -28,7 +30,7 @@ import {
 
 interface PortalNavCtx {
   path: string;
-  navigate: (to: string) => void;
+  navigate: (to: string, opts?: { replace?: boolean }) => void;
 }
 
 const Ctx = createContext<PortalNavCtx | null>(null);
@@ -49,7 +51,28 @@ export function PortalRouter({
   initialPath?: string;
 }) {
   const [path, setPath] = useState(initialPath);
-  return <Ctx.Provider value={{ path, navigate: setPath }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ path, navigate: (to) => setPath(to) }}>{children}</Ctx.Provider>;
+}
+
+// ── Routing ───────────────────────────────────────────────────────────────────
+
+/** Drop-in for react-router-dom's Route (config only; Routes handles rendering) */
+export function Route(_: { path: string; element: ReactNode }) {
+  return null;
+}
+
+/** Drop-in for react-router-dom's Routes — renders the first matching Route child */
+export function Routes({ children }: { children: ReactNode }) {
+  const { path } = useCtx();
+  let match: ReactNode = null;
+  Children.forEach(children, (child) => {
+    if (!isValidElement(child) || match !== null) return;
+    const routePath = (child.props as { path: string }).path;
+    if (routePath === path) {
+      match = (child.props as { element: ReactNode }).element;
+    }
+  });
+  return <>{match ?? null}</>;
 }
 
 // ── Hooks ─────────────────────────────────────────────────────────────────────

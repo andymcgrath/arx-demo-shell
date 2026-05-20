@@ -17,6 +17,7 @@
  * switching a panel from Patient to Analytics shows the same workflow step.
  */
 import React, { useRef, useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDemoStore, type FlowType } from "@/store/demoStore";
 import {
   RefreshCw, Undo2, Zap, ChevronDown,
@@ -33,6 +34,22 @@ import FieldPortal    from "@/portals/field/index";
 import ProviderPortal from "@/portals/provider/index";
 
 export type PortalId = "crm" | "patient" | "analytics" | "field" | "provider";
+
+const PORTAL_SLUG: Record<PortalId, string> = {
+  crm: "hub",
+  patient: "patient",
+  analytics: "analytics",
+  field: "field",
+  provider: "provider",
+};
+
+const SLUG_TO_PORTAL: Record<string, PortalId> = {
+  hub: "crm",
+  patient: "patient",
+  analytics: "analytics",
+  field: "field",
+  provider: "provider",
+};
 
 const PORTALS: { id: PortalId; label: string; color: string }[] = [
   { id: "crm",       label: "HUB / CRM",    color: "#0176d3" },
@@ -196,9 +213,14 @@ export default function DemoShell() {
   const _snapshots = useDemoStore((s) => (s as Record<string, unknown>)._snapshots as unknown[]);
   const canUndo = Array.isArray(_snapshots) && _snapshots.length > 0;
 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const urlSlug = location.pathname.slice(1) || "hub";
+  const urlPortal: PortalId = SLUG_TO_PORTAL[urlSlug] ?? "crm";
+
   // Layout state
   const [layout, setLayout] = useState<LayoutMode>("1up");
-  const [panels, setPanels] = useState<PanelState[]>(DEFAULT_PANELS["1up"]);
+  const [panels, setPanels] = useState<PanelState[]>([{ portal: urlPortal }]);
 
   // Measure shell header height so panels can fill the remaining viewport
   const headerRef = useRef<HTMLElement>(null);
@@ -215,14 +237,17 @@ export default function DemoShell() {
 
   function switchLayout(next: LayoutMode) {
     setLayout(next);
-    // Preserve first panel's portal when switching, fill rest with defaults
-    const current = panels[0]?.portal ?? "crm";
+    const current = urlPortal;
     const defaults = DEFAULT_PANELS[next];
     setPanels([{ portal: current }, ...defaults.slice(1)]);
   }
 
   function updatePanel(index: number, portalId: PortalId) {
-    setPanels((prev) => prev.map((p, i) => (i === index ? { portal: portalId } : p)));
+    if (layout === "1up" && index === 0) {
+      navigate(`/${PORTAL_SLUG[portalId]}`);
+    } else {
+      setPanels((prev) => prev.map((p, i) => (i === index ? { portal: portalId } : p)));
+    }
   }
 
   const handleUndo = () => {
@@ -230,6 +255,9 @@ export default function DemoShell() {
   };
 
   const showSelector = layout !== "1up";
+
+  // In 1up mode, always derive the active portal from the URL
+  const activePanels = layout === "1up" ? [{ portal: urlPortal }] : panels;
 
   return (
     <div className="flex flex-col h-screen bg-[#0f172a] overflow-hidden">
@@ -248,12 +276,12 @@ export default function DemoShell() {
           {/* Portal tabs (single-panel mode: clicking selects that portal) */}
           <nav className="flex items-stretch flex-1 overflow-x-auto">
             {PORTALS.map((tab) => {
-              const isActive = layout === "1up" && panels[0]?.portal === tab.id;
+              const isActive = layout === "1up" && urlPortal === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => {
-                    if (layout === "1up") updatePanel(0, tab.id);
+                    if (layout === "1up") navigate(`/${PORTAL_SLUG[tab.id]}`);
                   }}
                   className={cn(
                     "flex items-center gap-1.5 px-4 py-2.5 text-[13px] font-medium border-b-2 transition-all whitespace-nowrap",
@@ -344,7 +372,7 @@ export default function DemoShell() {
 
       {/* ── Portal panels ──────────────────────────────────────────────────── */}
       <div className="flex flex-1 overflow-hidden">
-        {panels.map((panel, i) => (
+        {activePanels.map((panel, i) => (
           <Panel
             key={i}
             portal={panel.portal}

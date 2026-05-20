@@ -9,6 +9,7 @@ import "./global.css";
 import { createRoot } from "react-dom/client";
 import { Component, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
 import DemoShell from "@/shell/DemoShell";
 
@@ -37,10 +38,20 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Toaster position="top-right" richColors />
-      <DemoShell />
-    </QueryClientProvider>
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <Toaster position="top-right" richColors />
+        <Routes>
+          <Route path="/" element={<Navigate to="/hub" replace />} />
+          <Route path="/hub" element={<DemoShell />} />
+          <Route path="/patient" element={<DemoShell />} />
+          <Route path="/analytics" element={<DemoShell />} />
+          <Route path="/field" element={<DemoShell />} />
+          <Route path="/provider" element={<DemoShell />} />
+          <Route path="*" element={<Navigate to="/hub" replace />} />
+        </Routes>
+      </QueryClientProvider>
+    </BrowserRouter>
   );
 }
 
