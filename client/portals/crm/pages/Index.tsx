@@ -446,6 +446,7 @@ export default function Index() {
   const enrollPatient = useDemoStore((s) => s.enrollPatient);
   const runBI = useDemoStore((s) => s.runBI);
   const completeBI = useDemoStore((s) => s.completeBI);
+  const fillRx = useDemoStore((s) => s.fillRx);
   const isPapFlow = flowType === "Fax_PAP_Audit";
   const [selectedPharmacy, setSelectedPharmacy] = useState("Biologics");
   const [pharmacyPickerOpen, setPharmacyPickerOpen] = useState(false);
@@ -465,6 +466,13 @@ export default function Index() {
       setActivePatientSubTab("onboarding");
     }
   }, [enrollmentFormTabOpen]);
+
+  useEffect(() => {
+    if (isPapFlow && papStatus === "active" && pharmacyStatus === "none") {
+      const t = setTimeout(() => fillRx(), 1200);
+      return () => clearTimeout(t);
+    }
+  }, [isPapFlow, papStatus, pharmacyStatus]);
 
   useEffect(() => {
     if (consentStatus === "confirmed" && biStatus === "none") {
