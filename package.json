@@ -21,8 +21,8 @@
     "electron:build": "pnpm run build:client && electron-builder"
   },
   "build": {
-  "appId": "com.yourname.yourapp",
-  "productName": "Your App Name",
+  "appId": "com.arx.demo",
+  "productName": "Arx Demo",
   "files": [
     "dist/**/*",
     "public/electron.js"
